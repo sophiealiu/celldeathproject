@@ -203,3 +203,26 @@ scoresPd1$y <- scoresPd1$y / 1.5454
 write.csv(scoresPd1, file.path(inputdir, "pd1spatial_sig.csv"))
 
 
+# *****************************************************************************
+# 3. REPETITION AGAIN BUT WITH ALL GENES INSTEAD OF SIGNATURES ****************
+coords_pd1 <- readRDS(file.path(inputdir, "Seurat objects", "coords_pd1.rds"))
+
+expr <- GetAssayData(pd1_norm, 
+                         assay = "Spatial.008um", 
+                         layer = "data")
+expr <- t(expr)  %>% # transposing to overlay
+  as.data.frame(expr)
+
+rownames(expr) <- colnames(GetAssayData(pd1_norm, assay = "Spatial.008um", layer = "data"))
+                                                    # have to make sure row names match
+
+overlay <- cbind(cell_coords, expr_aligned[, sort(colnames(expr_aligned))]) 
+                                                    # alphabetical order for better organization
+overlay[4000:4010, 1:10] # sanity check
+
+# transforming to microns. 
+overlay$x <- overlay$x / 1.5454 
+overlay$y <- overlay$y / 1.5454
+
+write_feather(overlay, file.path(inputdir, "spatial_all_genes")) # faster than CSV
+
