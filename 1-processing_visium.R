@@ -16,6 +16,7 @@ library(SeuratData)
 inputdir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20260413_final_merge/data"
 
 pd1_norm <- readRDS(file.path(inputdir, "Seurat objects", "pd1_norm.rds"))
+            # generated using Load10x function then log normalization
 iso7_norm <- readRDS(file.path(inputdir, "Seurat objects", "iso7_norm.rds"))
 
 
@@ -68,7 +69,6 @@ signatures <- list(
 
 # *****************************************************************************
 # 2. GENERATING ISO7 VISIUM BIN COORDINATE-GENE EXPRESSION DATASET ************
-# this is the updated (and should be used for future) generation. From 0429, 0501
 iso7_coords <- readRDS(file.path(inputdir, "Seurat objects", "iso7bin_coords.rds"))
     # from GetTissueCoordinates function, make sure to include image = NULL
 
@@ -149,8 +149,7 @@ check <- function(df_IF, df_visium, trans) {
       axis.text.y  = element_text(color = "white", size = 12),
       
       axis.line = element_line(color = "white")
-    )
-  
+    )  
 }
 
 test <- check(df_iso7IF, scoresIso, 0.05)
