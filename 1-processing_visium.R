@@ -78,6 +78,16 @@ expr_matIso <- GetAssayData(iso7_norm,
                          assay = "Spatial.008um",
                          layer = "data")
 
+# optional explicitly making sure there's no missing genes
+all_genes <- rownames(expr_matIso)
+
+signatures <- lapply(signatures, function(genes) {
+  present <- intersect(genes, all_genes)
+  if (length(present) == 0) {
+    warning("No genes found for signature: ", paste(genes, collapse=", "))
+  }
+  present
+})
 
 # assigning the gene expression to each bin
 sig_Iso <- do.call(rbind, lapply(signatures, function(genes) {
@@ -154,8 +164,12 @@ check <- function(df_IF, df_visium, trans) {
     )  
 }
 
+stopifnot(all(c("x", "y") %in% colnames(scoresIso)))
+stopifnot(all(c("x", "y", "cell_type") %in% colnames(df_iso7IF)))
+
 test <- check(df_iso7IF, scoresIso, 0.05)
 test # make sure it looks okay before running below
+
 
 # export
 write.csv(scoresIso, file.path(inputdir, "iso7spatial_sig.csv"))
