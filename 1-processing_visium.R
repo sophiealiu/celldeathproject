@@ -23,7 +23,7 @@ iso7_norm <- readRDS(file.path(inputdir, "Seurat objects", "iso7_norm.rds"))
 # *****************************************************************************
 # 2. LISTING THE KNOWN SIGNATURES *********************************************
 cd8_effector <- c("Cd8a","Cd8b1","Gzmb","Gzmk","Prf1","Ifng",
-                  "Nkg7","Cx3cr1","Klrk1","Ccl5","Xcl1")    # Cx3cr1 missing
+                  "Nkg7","Cx3cr1","Klrk1","Ccl5","Xcl1")    # Cx3cr1 missing from our dataset
 cd8_effector <- setdiff(cd8_effector, "Cx3cr1")
 
 cd8_exhausted <- c("Pdcd1","Ctla4","Lag3","Havcr2","Tigit",
@@ -35,11 +35,11 @@ treg <- c("Foxp3","Il2ra","Ctla4","Ikzf2","Tnfrsf18","Tnfrsf4","Entpd1")
 nk <- c("Ncr1","Klrk1","Klrd1","Nkg7","Gzmb","Prf1","Ifng","Xcl1")
 
 folr2_mac <- c( "Folr2","Lyve1","Mrc1","Sepp1",
-                "Gas6","Timd4")                             # Sepp1 missing
+                "Gas6","Timd4")                             # Sepp1 missing ""
 folr2_mac <- setdiff(folr2_mac, "Sepp1")
 
 monocytes <- c("Ly6c2","Ccr2","Sell","S100a8","S100a9",
-               "Plac8","Lyz2")                              # Ly6c2 missing
+               "Plac8","Lyz2")                              # Ly6c2 missing ""
 monocytes <- setdiff(monocytes, "Ly6c2")
 
 cdc1 <- c("Xcr1","Clec9a","Batf3","Irf8",
