@@ -3,7 +3,6 @@
 # aligns them with immunofluorescence (IF) annotated cell-types
 # -----------------------------------------------------------------------------
 
-
 # *****************************************************************************
 # Loading in necessary libraries & directories ********************************
 library(arrow)
