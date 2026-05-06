@@ -69,7 +69,6 @@ signatures <- list(
 
 # *****************************************************************************
 # 2. GENERATING ISO7 VISIUM BIN COORDINATE-GENE EXPRESSION DATASET ************
-# this is the updated (and should be used for future) generation. From 0429, 0501
 iso7_coords <- readRDS(file.path(inputdir, "Seurat objects", "iso7bin_coords.rds"))
     # from GetTissueCoordinates function, make sure to include image = NULL
 
