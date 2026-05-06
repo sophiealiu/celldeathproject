@@ -1,5 +1,5 @@
 # This file uses isolated control vs. experimental before DE on pseudobulked data
-# combining the spatial coordinates of the gene expression of our 19060 genes for all 367559 bins
+# combining the spatial coordinates of the gene expression of our 19060 genes for all 367559 bins (many are empty)
 # saveRDS(object, file = file.path(inputdir, "Seurat objects", "obj.rds"))
 # write.csv(object, file.path(dir, "obj.csv"))
 
