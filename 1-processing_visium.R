@@ -8,9 +8,9 @@ library(arrow)
 library(dplyr)
 library(ggplot2)
 library(limma)
-library(presto)
+library(presto)      # Seurat V5 incompatible so force in using remotes + Github
 library(Seurat)
-library(SeuratData)
+library(SeuratData)  # same as above
 
 
 inputdir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20260413_final_merge/data"
