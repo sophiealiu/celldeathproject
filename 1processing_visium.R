@@ -1,7 +1,5 @@
 # This file is processing isolated control vs. experimental upstream of neighborhood generation
 # to get gene expression mapped to correct bins & spatial location
-# saveRDS(object, file = file.path(inputdir, "Seurat objects", "obj.rds"))
-# write.csv(object, file.path(dir, "obj.csv"))
 
 
 # *****************************************************************************
