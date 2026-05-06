@@ -1,5 +1,7 @@
-# This file is processing isolated control vs. experimental upstream of neighborhood generation
-# to get gene expression mapped to correct bins & spatial location
+# -----------------------------------------------------------------------------
+# this file computes gene signature scores for Visium spatial transcriptomics data and
+# aligns them with immunofluorescence (IF) annotated cell-types
+# -----------------------------------------------------------------------------
 
 
 # *****************************************************************************
@@ -77,6 +79,7 @@ expr_matIso <- GetAssayData(iso7_norm,
                          assay = "Spatial.008um",
                          layer = "data")
 
+
 # assigning the gene expression to each bin
 sig_Iso <- do.call(rbind, lapply(signatures, function(genes) {
   colMeans(expr_matIso[genes, , drop = FALSE], na.rm = TRUE)
@@ -95,7 +98,7 @@ scoresIso$y <- scoresIso$y / 1.5454
 
 
 # *****************************************************************************
-# verify visually transformation & proper spatial location (a bit crude) ******
+# verify visually transformation & proper spatial location ********************
 df_iso7IF <- read.csv(file.path(inputdir, "iso7_coords_clean.csv"))
                 # generated from Imaris
 
