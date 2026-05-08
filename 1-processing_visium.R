@@ -227,3 +227,33 @@ overlay$y <- overlay$y / 1.5454
 write_feather(overlay, file.path(inputdir, "spatial_all_genes")) # faster than CSV
 
 
+# *****************************************************************************
+# REPETITION WITH DE GENES FOUND FROM FINDMARKERS FUNCTION. *******************
+# planning to use DEseq2 next for more validity
+DEgenes <- read.csv(file.path(inputdir, "topDE.csv"))
+genelist <- DEgenes$gene
+
+
+# matrix
+expr_matIso <- GetAssayData(iso7_norm,
+                            assay = "Spatial.008um",
+                            layer = "data")
+
+# expression to bin
+sig_Iso <- do.call(rbind, lapply(genelist, function(genes) {
+  colMeans(expr_matIso[genes, , drop = FALSE], na.rm = TRUE)
+}))
+
+# transpose
+sig_Iso <- t(sig_Iso) %>%
+  as.data.frame()
+
+# coords to bins
+scoresIso <- cbind(iso7_coords, sig_Iso)
+
+# transform
+scoresIso$x <- scoresIso$x / 1.5454 
+scoresIso$y <- scoresIso$y / 1.5454
+
+# export
+write.csv(scoresIso, file.path(inputdir, "iso7spatial_mark.csv"))
