@@ -233,12 +233,6 @@ write_feather(overlay, file.path(inputdir, "spatial_all_genes")) # faster than C
 DEgenes <- read.csv(file.path(inputdir, "topDE.csv"))
 genelist <- DEgenes$gene
 
-
-# matrix
-expr_matIso <- GetAssayData(iso7_norm,
-                            assay = "Spatial.008um",
-                            layer = "data")
-
 # expression to bin
 sig_Iso <- do.call(rbind, lapply(genelist, function(genes) {
   colMeans(expr_matIso[genes, , drop = FALSE], na.rm = TRUE)
