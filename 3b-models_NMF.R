@@ -12,11 +12,10 @@ datadir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20
 overall <- read.csv(file = file.path(datadir, "0514_NMF20calc.csv"))     
 
 
-# What are our assumptions?
+# What are our limitations?
 # - know data is nonlinear and non-normal so we're oversimplifying
-# - noisy experimental
+# - potential experimental noise
 # - better but still non-orthogonal when using NMF. raw counts, per-gene weights
-# - many samples but independence violated because of spatial overlap
 
 # -----------------------------------------------------------------------------
 # 1. Model iteration
