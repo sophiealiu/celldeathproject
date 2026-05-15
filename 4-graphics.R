@@ -1,4 +1,8 @@
-# this file is visualization to confirm data. Can generate a nice graphic
+# -----------------------------------------------------------------------------
+# Author: Sophie A. Liu
+# Date : 05/08/2026
+# Purpose: Creating spatial overlay graphics.
+# -----------------------------------------------------------------------------
 
 library(readr)
 library(dplyr)
