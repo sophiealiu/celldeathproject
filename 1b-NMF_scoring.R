@@ -28,14 +28,15 @@ emat <- GetAssayData(pd1_raw,
                      layer = "counts")
 
 # per-gene normalization
-emat_sub <- emat[rowSums(emat) >0, ]          # some genes not present at all
+emat_sub <- emat[rowSums(emat) >0, ]                # some genes not present at all
 gene_max <- apply(emat_sub, 1, max)
 
-emat_by_gene <- sweep(emat, 1, gene_max, "/") # sweep 1 for rows
+emat_by_gene <- sweep(emat, 1, gene_max, "/")       # sweep 1 for rows
 
 # per-bin normalization
 bin_sums <- colSums(emat)
-emat_by_bin <- sweep(emat, 2, bin_sums, "/")  # sweep 2 for columns
+emat_clean <- emat[,bin_sums>0]
+emat_by_bin <- sweep(emat_clean, 2, bin_sums, "/")  # sweep 2 for columns
 
 
 # -----------------------------------------------------------------------------
