@@ -54,22 +54,22 @@ fibroblast <- c("Col1a1","Col1a2","Col3a1","Pdgfra",
 
 # aggregating
 signatures <- list(
-  cd8_effector = cd8_effector,
-  cd8_exhausted = cd8_exhausted,
-  cd4_effector = cd4_effector,
-  treg = treg,
-  nk = nk,
-  folr2_mac = folr2_mac,
-  monocytes = monocytes,
-  cdc1 = cdc1,
-  cdc2 = cdc2,
-  endothelial = endothelial,
-  fibroblast = fibroblast
+  cd8_effector,
+  cd8_exhausted,
+  cd4_effector,
+  treg,
+  nk,
+  folr2_mac,
+  monocytes,
+  cdc1,
+  cdc2,
+  endothelial,
+  fibroblast
 )
 
 
 # -----------------------------------------------------------------------------
-# 1. Binding expression per bin with bin coordinates
+# 1a. Obtaining known signature expression per bin
 iso7_coords <- readRDS(file.path(inputdir, "Seurat objects", "iso7bin_coords.rds"))
     # from GetTissueCoordinates function, image = NULL
 
@@ -89,6 +89,12 @@ signatures <- lapply(signatures, function(genes) {
   present
 })
 
+# 1b. Using all genes instead of known signatures. Same logic.
+DEgenes <- read.csv(file.path(inputdir, "topDE.csv"))
+genelist <- DEgenes$gene
+
+# -----------------------------------------------------------------------------
+# 2. Binding expression per bin with bin coordinates
 # assigning the gene expression to each bin
 sig_Iso <- do.call(rbind, lapply(signatures, function(genes) {
   colMeans(expr_matIso[genes, , drop = FALSE], na.rm = TRUE)
@@ -107,29 +113,9 @@ scoresIso$y <- scoresIso$y / 1.5454
 
 
 # -----------------------------------------------------------------------------
-# 2. Verify proper spatial location 
+# 3. Verify proper spatial location 
 SpatialDimPlot(scoresIso)
 
-# -----------------------------------------------------------------------------
-# 3. Using all genes instead of known signatures. Same logic.
-DEgenes <- read.csv(file.path(inputdir, "topDE.csv"))
-genelist <- DEgenes$gene
-
-# expression to bin
-sig_Iso <- do.call(rbind, lapply(genelist, function(genes) {
-  colMeans(expr_matIso[genes, , drop = FALSE], na.rm = TRUE)
-}))
-
-# transpose
-sig_Iso <- t(sig_Iso) %>%
-  as.data.frame()
-
-# coords to bins
-scoresIso <- cbind(iso7_coords, sig_Iso)
-
-# transform
-scoresIso$x <- scoresIso$x / 1.5454 
-scoresIso$y <- scoresIso$y / 1.5454
 
 # export
 write.csv(scoresIso, file.path(inputdir, "iso7spatial_mark.csv"))
