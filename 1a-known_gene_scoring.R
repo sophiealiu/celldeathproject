@@ -107,71 +107,8 @@ scoresIso$y <- scoresIso$y / 1.5454
 
 
 # -----------------------------------------------------------------------------
-# 2. Verify visually proper spatial location
-df_iso7IF <- read.csv(file.path(inputdir, "iso7_coords_clean.csv"))
-                # generated from Imaris
-
-check <- function(df_IF, df_visium, trans) { 
-  ggplot() +
-    stat_density_2d(
-      data = filter(df_IF, cell_type == "tdtomato"), # density, too many tdtomato
-      aes(x = x, y = y),
-      fill        = "red",
-      geom        = "density_2d_filled",
-      contour_var = "ndensity",
-      alpha       = 0.10,
-      n           = 400,
-      na.rm       = TRUE
-    ) +
-    geom_point(
-      data  = filter(df_IF, cell_type == "cd8"),    # points, clarity
-      aes(x = x, y = y),
-      color = "#02819e",
-      alpha = 0.20,
-      size  = 0.01
-    ) +
-    geom_point(
-      data  = filter(df_IF, cell_type == "gc3ai"),
-      aes(x = x, y = y),
-      color = "green4",
-      size  = 0.0005, 
-      alpha = 0.15
-    ) +  
-    
-    geom_point(
-      data = df_visium,                             # overlay
-      aes(x = x, y = y),
-      color = "white",
-      alpha = trans,
-      size = 0.01
-    ) +
-    
-# formatting
-    scale_x_continuous(expand = c(0.05, 0.05)) +
-    scale_y_continuous(expand = c(0.05, 0.05)) +
-    coord_equal(clip = "off") +
-    theme(
-      panel.background = element_rect(fill = "black"),
-      plot.background  = element_rect(fill = "black"),
-      panel.grid       = element_blank(),
-      
-      axis.text.x  = element_text(color = "white", size = 12),
-      axis.text.y  = element_text(color = "white", size = 12),
-      
-      axis.line = element_line(color = "white")
-    )  
-}
-
-stopifnot(all(c("x", "y") %in% colnames(scoresIso)))
-stopifnot(all(c("x", "y", "cell_type") %in% colnames(df_iso7IF)))
-
-test <- check(df_iso7IF, scoresIso, 0.05)
-test # make sure it looks okay before running below
-
-
-# export
-write.csv(scoresIso, file.path(inputdir, "iso7spatial_sig.csv"))
-
+# 2. Verify proper spatial location 
+SpatialDimPlot(scoresIso)
 
 # -----------------------------------------------------------------------------
 # 3. Using all genes instead of known signatures. Same logic.
