@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
-# Date : 05/15 10:47am
-# Purpose: Vers2.0, generation of gene scores based on known genes and signatures.
+# Date : 05/06/2026
+# Purpose: Generation of gene scores based on known genes and signatures.
 # -----------------------------------------------------------------------------
 
 # Loading in necessary libraries & directories 
