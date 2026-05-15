@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
-# Date : 05/15/26 10:39am
+# Date : 05/15/2026 10:39am
 # Purpose: Creating NMF factors from Visium data and determining the best scaling method
 # -----------------------------------------------------------------------------
 # X ≈ WH (W is defining genes, H is spatial location)
