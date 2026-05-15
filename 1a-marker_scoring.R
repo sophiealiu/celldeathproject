@@ -93,6 +93,7 @@ signatures <- lapply(signatures, function(genes) {
 DEgenes <- read.csv(file.path(inputdir, "topDE.csv"))
 genelist <- DEgenes$gene
 
+
 # -----------------------------------------------------------------------------
 # 2. Binding expression per bin with bin coordinates
 # assigning the gene expression to each bin
