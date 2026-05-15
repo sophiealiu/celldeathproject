@@ -101,13 +101,13 @@ for (k in ks) {
   # not using colmeans to preserve more NMF obs
   NMF_scores <- t(fit$h)
   
-  scoresNMF <- cbind(coords_16, NMF_scores)
+  joined <- cbind(coords_16, NMF_scores)
   
   # scale to microns
-  scoresNMF$x <- scoresNMF$x / 1.5454
-  scoresNMF$y <- scoresNMF$y / 1.5454
+  joined$x <- joined$x / 1.5454
+  joined$y <- joined$y / 1.5454
   
-  all_scores[[paste0("k", k)]] <- scoresNMF
+  all_scores[[paste0("k", k)]] <- joined
 }
 
 # export
