@@ -111,3 +111,4 @@ for (k in ks) {
 # export
 write.csv(all_scores$k10, file.path(datadir, "0515_NMF10.csv"))
 
+
