@@ -60,6 +60,7 @@ for (k in ks) {
   colnames(NMF_fits[[paste0("k", k)]]$h) <- colnames(emat_by_bin)
 }                                                    
 
+# verification
 fit20 <- NMF_fits[["k20"]]
 head(sort(fit20$w[, 12], decreasing = TRUE), 20)
 
