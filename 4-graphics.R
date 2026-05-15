@@ -34,7 +34,9 @@ draw <- function(df_IF, df_visium, trans) {
       ),
       names_to = "gene",
       values_to = "value") %>%
-      filter(value > 1)
+    group_by(gene) %>%
+    filter(value > quantile(value, 0.8)) %>%        # isolate highest expressed areas
+    ungroup()
     
   ggplot() +
   
