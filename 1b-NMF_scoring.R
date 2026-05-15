@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
-# Date : 05/15 10:39am
+# Date : 05/15/26 10:39am
 # Purpose: Creating NMF factors from Visium data and determining the best scaling method
 # -----------------------------------------------------------------------------
 # X ≈ WH (W is defining genes, H is spatial location)
@@ -83,4 +83,32 @@ for (i in c(1,2,7,9,12)) {
   
 wrap_plots(plots, ncol = 3)
 
+
+# -----------------------------------------------------------------------------
+# 4. Binding spatial data
+coords <- GetTissueCoordinates(pd1_raw, image = NULL)
+all_scores <- list()
+
+# looped logic, for NMF we preserved weights from counts instead of means smoothing
+for (k in ks) {
+  fit <- NMF_fits[[paste0("k", k)]]
+  
+  NMF_factors <- lapply(1:k, function(i) {
+    names(sort(fit$w[, i], decreasing = TRUE)[1:20])
+  })
+  
+  # not using colmeans to preserve more NMF obs
+  NMF_scores <- t(fit$h)
+  
+  scoresNMF <- cbind(coords_16, NMF_scores)
+  
+  # scale to microns
+  scoresNMF$x <- scoresNMF$x / 1.5454
+  scoresNMF$y <- scoresNMF$y / 1.5454
+  
+  all_scores[[paste0("k", k)]] <- scoresNMF
+}
+
+# export
+write.csv(all_scores$k10, file.path(datadir, "0515_NMF10.csv"))
 
