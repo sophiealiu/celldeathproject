@@ -13,7 +13,7 @@ overall <- read.csv(file = file.path(datadir, "0514_NMF20calc.csv"))
 
 
 # What are our assumptions?
-# - know data is nonlinear and non-normal
+# - know data is nonlinear and non-normal so we're oversimplifying
 # - noisy experimental
 # - better but still non-orthogonal when using NMF. raw counts, per-gene weights
 # - many samples but independence violated because of spatial overlap
