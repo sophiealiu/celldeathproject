@@ -1,15 +1,15 @@
 # -----------------------------------------------------------------------------
-# this file computes gene signature scores for Visium spatial transcriptomics data and
-# aligns them with immunofluorescence (IF) annotated cell-types
+# Author: Sophie A. Liu
+# Date : 05/15 10:47am
+# Purpose: Vers2.0, generation of gene scores based on known genes and signatures.
 # -----------------------------------------------------------------------------
 
-# *****************************************************************************
-# Loading in necessary libraries & directories ********************************
+# Loading in necessary libraries & directories 
 library(arrow)
 library(dplyr)
 library(ggplot2)
 library(limma)
-library(presto)      # Seurat V5 incompatible so force in using remotes + Github
+library(presto)      # Seurat V5 incompatible, forced in using remotes + Github
 library(Seurat)
 library(SeuratData)  # same as above
 
@@ -21,8 +21,8 @@ pd1_norm <- readRDS(file.path(inputdir, "Seurat objects", "pd1_norm.rds"))
 iso7_norm <- readRDS(file.path(inputdir, "Seurat objects", "iso7_norm.rds"))
 
 
-# *****************************************************************************
-# 2. LISTING THE KNOWN SIGNATURES *********************************************
+# -----------------------------------------------------------------------------
+# List of known signatures
 cd8_effector <- c("Cd8a","Cd8b1","Gzmb","Gzmk","Prf1","Ifng",
                   "Nkg7","Cx3cr1","Klrk1","Ccl5","Xcl1")    # Cx3cr1 missing from our dataset
 cd8_effector <- setdiff(cd8_effector, "Cx3cr1")
@@ -68,12 +68,12 @@ signatures <- list(
 )
 
 
-# *****************************************************************************
-# 2. GENERATING ISO7 VISIUM BIN COORDINATE-GENE EXPRESSION DATASET ************
+# -----------------------------------------------------------------------------
+# 1. Binding expression per bin with bin coordinates
 iso7_coords <- readRDS(file.path(inputdir, "Seurat objects", "iso7bin_coords.rds"))
-    # from GetTissueCoordinates function, make sure to include image = NULL
+    # from GetTissueCoordinates function, image = NULL
 
-# expression matrix (all the genes by expression) for Isotype condition
+# expression matrix (all the genes by expression)
 expr_matIso <- GetAssayData(iso7_norm,
                          assay = "Spatial.008um",
                          layer = "data")
@@ -106,16 +106,15 @@ scoresIso$x <- scoresIso$x / 1.5454
 scoresIso$y <- scoresIso$y / 1.5454
 
 
-# *****************************************************************************
-# verify visually transformation & proper spatial location ********************
+# -----------------------------------------------------------------------------
+# 2. Verify visually proper spatial location
 df_iso7IF <- read.csv(file.path(inputdir, "iso7_coords_clean.csv"))
                 # generated from Imaris
 
 check <- function(df_IF, df_visium, trans) { 
   ggplot() +
-# IF Imaris DATA FIRST ********************************************************
     stat_density_2d(
-      data = filter(df_IF, cell_type == "tdtomato"), # used density bc too many tdtomato
+      data = filter(df_IF, cell_type == "tdtomato"), # density, too many tdtomato
       aes(x = x, y = y),
       fill        = "red",
       geom        = "density_2d_filled",
@@ -125,7 +124,7 @@ check <- function(df_IF, df_visium, trans) {
       na.rm       = TRUE
     ) +
     geom_point(
-      data  = filter(df_IF, cell_type == "cd8"),    # but points ok for others
+      data  = filter(df_IF, cell_type == "cd8"),    # points, clarity
       aes(x = x, y = y),
       color = "#02819e",
       alpha = 0.20,
@@ -139,16 +138,15 @@ check <- function(df_IF, df_visium, trans) {
       alpha = 0.15
     ) +  
     
-# overlay plotting ************************************************************
     geom_point(
-      data = df_visium,
+      data = df_visium,                             # overlay
       aes(x = x, y = y),
       color = "white",
       alpha = trans,
       size = 0.01
     ) +
     
-# formatting so it looks better ***********************************************
+# formatting
     scale_x_continuous(expand = c(0.05, 0.05)) +
     scale_y_continuous(expand = c(0.05, 0.05)) +
     coord_equal(clip = "off") +
@@ -175,61 +173,8 @@ test # make sure it looks okay before running below
 write.csv(scoresIso, file.path(inputdir, "iso7spatial_sig.csv"))
 
 
-# *****************************************************************************
-# DOING IT AGAIN FOR THE EXPERIMENTAL PD1-TREATED CONDITION *******************
-pd1_coords <- readRDS(file.path(inputdir, "Seurat objects", "pd1bin_coords.rds"))
-
-
-expr_matPd1 <- GetAssayData(pd1_norm,
-                            assay = "Spatial.008um",
-                            layer = "data")
-
-# gene expression
-sig_Pd1 <- do.call(rbind, lapply(signatures, function(genes) {
-  colMeans(expr_matPd1[genes, , drop = FALSE], na.rm = TRUE)
-}))
-
-# transpose
-sig_Pd1 <- t(sig_Pd1) %>%
-  as.data.frame()
-
-# coordinates
-scoresPd1 <- cbind(pd1_coords, sig_Pd1)
-
-# transform
-scoresPd1$x <- scoresPd1$x / 1.5454 
-scoresPd1$y <- scoresPd1$y / 1.5454
-
-write.csv(scoresPd1, file.path(inputdir, "pd1spatial_sig.csv"))
-
-
-# *****************************************************************************
-# 3. REPETITION AGAIN BUT WITH ALL GENES INSTEAD OF SIGNATURES ****************
-coords_pd1 <- readRDS(file.path(inputdir, "Seurat objects", "coords_pd1.rds"))
-
-expr <- GetAssayData(pd1_norm, 
-                         assay = "Spatial.008um", 
-                         layer = "data")
-expr <- t(expr)  %>% # transposing to overlay
-  as.data.frame(expr)
-
-rownames(expr) <- colnames(GetAssayData(pd1_norm, assay = "Spatial.008um", layer = "data"))
-                                                    # have to make sure row names match
-
-overlay <- cbind(cell_coords, expr_aligned[, sort(colnames(expr_aligned))]) 
-                                                    # alphabetical order for better organization
-overlay[4000:4010, 1:10] # sanity check
-
-# transforming to microns. 
-overlay$x <- overlay$x / 1.5454 
-overlay$y <- overlay$y / 1.5454
-
-write_feather(overlay, file.path(inputdir, "spatial_all_genes")) # faster than CSV
-
-
-# *****************************************************************************
-# REPETITION WITH DE GENES FOUND FROM FINDMARKERS FUNCTION. *******************
-# planning to use DEseq2 next for more validity
+# -----------------------------------------------------------------------------
+# 3. Using all genes instead of known signatures. Same logic.
 DEgenes <- read.csv(file.path(inputdir, "topDE.csv"))
 genelist <- DEgenes$gene
 
