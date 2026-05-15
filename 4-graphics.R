@@ -20,8 +20,7 @@ df_pd1IF <- read_csv(file.path(inputdir, "pd1-9_coords_final.csv"))
 df_pd1visium <- read_csv(file.path(inputdir, "pd1spatial_sig.csv"))
 
 
-# *****************************************************************************
-# creating plots **************************************************************
+# -----------------------------------------------------------------------------
 draw <- function(df_IF, df_visium, trans) { 
   df_visium_long <- df_visium %>% # have to flip the format so it recognizes gene cols
     pivot_longer(
@@ -38,9 +37,9 @@ draw <- function(df_IF, df_visium, trans) {
       filter(value > 1)
     
   ggplot() +
-# IF Imaris DATA FIRST ********************************************************
+  
     stat_density_2d(
-      data = filter(df_IF, cell_type == "tdtomato"), # used density bc too many tdtomato
+      data = filter(df_IF, cell_type == "tdtomato"), # density avoiding overplotting
       aes(x = x, y = y),
       fill        = "red",
       geom        = "density_2d_filled",
@@ -50,7 +49,7 @@ draw <- function(df_IF, df_visium, trans) {
       na.rm       = TRUE
     ) +
     geom_point(
-      data  = filter(df_IF, cell_type == "cd8"),    # but points ok for others
+      data  = filter(df_IF, cell_type == "cd8"),    # points for clarity
       aes(x = x, y = y),
       color = "#02819e",
       alpha = 0.20,
@@ -64,15 +63,14 @@ draw <- function(df_IF, df_visium, trans) {
       alpha = 0.25
     ) +  
     geom_point(
-      data  = filter(df_IF, cell_type == "lectin"),    # but points ok for others
+      data  = filter(df_IF, cell_type == "lectin"),    
       aes(x = x, y = y),
       color = "#D9C20B",
       alpha = 0.1,
       size  = 0.005) +
     
-# overlay plotting ************************************************************
     geom_point(
-      data = filter(df_visium_long, gene > 1),
+      data = filter(df_visium_long, gene > 1),     # overlaying
       aes(
         x = x,
         y = y,
@@ -81,7 +79,7 @@ draw <- function(df_IF, df_visium, trans) {
       size = 0.1
     ) +
     
-# formatting so it looks better ***********************************************
+# formatting
     scale_x_continuous(expand = c(0.05, 0.05)) +
     scale_y_continuous(expand = c(0.05, 0.05)) +
     coord_equal(clip = "off") +
@@ -105,28 +103,25 @@ draw <- function(df_IF, df_visium, trans) {
         # "cdc1" = "blue"
         "treg" = "white"
         #"folr2_mac" = "pink"
-        #"fibroblast" = "orange"  # add in others but for color/visualization purposes
-                                 # keeping it fairly preliminary
+        #"fibroblast" = "orange"  
       ),
       name = "gene signature",
       guide = guide_legend(
         override.aes = list(shape = 15, size = 5, alpha = 1)))
 }
 
-
-# *****************************************************************************
-# VISUALIZATION ***************************************************************
+# -----------------------------------------------------------------------------
+# Visualization & exporting for more graphics
 test <- draw(df_iso7IF, df_iso7visium, 0.2)
 test
-
 
 setwd(
   "I:/Hu Lab/Sophie/Visium/visium image manual spot selection/20260413_final_merge/current data/graphics creation")
 
-# automating frame creation, join to make movie in Adobe **********************                                      # print frames up to alpha = 0.15, should be bright enough
+# automating frame creation, join to make movie in Adobe
 for (i in 0:30) { 
   alpha <- 0.005*i 
-  p <- draw(df_IF, df_visium, alpha) # by transparency intervals
+  p <- draw(df_IF, df_visium, alpha)               # by transparency intervals
     
   ggsave(
     filename <- sprintf("frames/frame_%02d_alpha_%0.1f.png", i, alpha),
