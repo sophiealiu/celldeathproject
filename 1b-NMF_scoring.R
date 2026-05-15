@@ -52,12 +52,12 @@ NMF_fits <- list()
 set.seed(42)                             # the answer to to the ultimate question of life, 
                                          # the universe, and everything.
 for (k in ks) {
-    NMF_fits[[paste0("k", k)]] <- nmf(emat_scaled,
+    NMF_fits[[paste0("k", k)]] <- nmf(emat_by_bin),
                                       k = k,
                                       verbose = FALSE
   )
-  rownames(NMF_fits[[paste0("k", k)]]$w) <- rownames(emat_scaled)
-  colnames(NMF_fits[[paste0("k", k)]]$h) <- colnames(emat_scaled)
+  rownames(NMF_fits[[paste0("k", k)]]$w) <- rownames(emat_by_bin)
+  colnames(NMF_fits[[paste0("k", k)]]$h) <- colnames(emat_by_bin)
 }                                                    
 
 fit20 <- NMF_fits[["k20"]]
