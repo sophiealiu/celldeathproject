@@ -69,7 +69,6 @@ signatures <- list(
 
 
 # -----------------------------------------------------------------------------
-# 1a. Obtaining known signature expression per bin
 iso7_coords <- readRDS(file.path(inputdir, "Seurat objects", "iso7bin_coords.rds"))
     # from GetTissueCoordinates function, image = NULL
 
@@ -81,6 +80,8 @@ expr_matIso <- GetAssayData(iso7_norm,
 # optional explicitly making sure there's no missing genes
 all_genes <- rownames(expr_matIso)
 
+
+# 1a. Obtaining known signature expression per bin
 signatures <- lapply(signatures, function(genes) {
   present <- intersect(genes, all_genes)
   if (length(present) == 0) {
@@ -96,7 +97,7 @@ genelist <- DEgenes$gene
 
 # -----------------------------------------------------------------------------
 # 2. Binding expression per bin with bin coordinates
-# assigning the gene expression to each bin
+# assigning the gene expression to each bin. substitute signatures for gene_list for DE
 sig_Iso <- do.call(rbind, lapply(signatures, function(genes) {
   colMeans(expr_matIso[genes, , drop = FALSE], na.rm = TRUE)
 }))
