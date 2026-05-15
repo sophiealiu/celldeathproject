@@ -44,7 +44,6 @@ emat_by_bin <- sweep(emat, 2, bin_sums, "/")  # sweep 2 for columns
 #                        assay = "Spatial.016um",
 #                        layer = "data")  
 
-
 # factorization stops when X ≈ WH is good enough 
 ks <- c(5, 10, 20, 50)                   # varying number of programs for optimal model.
 NMF_fits <- list()
