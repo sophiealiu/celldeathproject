@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
-# Date : 05/21/2026 3:58pm
+# Date : 05/28/2026 10:51am
 # Purpose: Creating NMF factors from Visium data and optimizing for downstream
 # -----------------------------------------------------------------------------
 # X ≈ WH (W is feature matrix ie. gene components, H is coefficient matrix ie. weights)
@@ -9,7 +9,7 @@ library(Matrix)
 library(ggplot2)
 library(RcppML)        # faster computationally but treats it as sparse matrix
 library(Seurat)
-        
+
 # importing files
 datadir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20260413_final_merge/data"
 
@@ -38,16 +38,31 @@ colnames(mat_pd1) <- paste0("pd1_", colnames(mat_pd1))
 # removing invalid/empty columns
 mat_iso <- mat_iso[, Matrix::colSums(mat_iso) > 0]
 mat_pd1 <- mat_pd1[, Matrix::colSums(mat_pd1) > 0]
-mat_iso <- na.omit(mat_iso)
-mat_pd1 <- na.omit(mat_pd1)
 
 # merging genes
 all_genes <- union(rownames(mat_iso), rownames(mat_pd1))
 
-mat_iso <- mat_iso[match(all_genes, rownames(mat_iso)), ]
-mat_pd1 <- mat_pd1[match(all_genes, rownames(mat_pd1)), ]
 
-merged_mat <- cbind(mat_iso, mat_pd1)
+# allowing zeroes: if gene A doesn't exist in one condition, still keep relevance
+iso_full <- Matrix(0,
+  nrow = length(all_genes), ncol = ncol(mat_iso),
+  sparse = TRUE
+)
+
+pd1_full <- Matrix(0,
+  nrow = length(all_genes), ncol = ncol(mat_pd1),
+  sparse = TRUE
+)
+
+# have to match names back
+rownames(iso_full) <- rownames(mat_iso)
+rownames(pd1_full) <- rownames(mat_pd1)
+
+colnames(iso_full) <- colnames(mat_iso)
+colnames(pd1_full) <- colnames(mat_pd1)
+
+# final merged matrix
+merged_mat <- cbind(iso_full, pd1_full)
 
 
 # -----------------------------------------------------------------------------
@@ -120,7 +135,7 @@ barplot(stability,
 par(cex.main = 0.75)
 par(cex.axis = 0.5)
 abline(h = 0.75, col = "blue", lwd = 2, lty =2)
-                 
+
 
 # -----------------------------------------------------------------------------
 # 4. NMF on optimal k rank (16) on combined samples 
@@ -134,7 +149,7 @@ colnames(fit16$h) <- colnames(merged_mat)
 W <- fit16$w
 H <- fit16$h  
 
-                 
+
 # -----------------------------------------------------------------------------
 # 5. viewing if the factors are orthogonal. using cosine similarity btwn vectors
 library(proxyC)
@@ -186,4 +201,4 @@ pd1_joined$y <- pd1_joined$y / 1.5454
 write.csv(iso_joined, file.path(datadir, "0525_NMF_iso.csv"))
 
 ds_merged <- rbind(pd1_joined, iso_joined)              # for later optional use
-                 
+
