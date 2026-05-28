@@ -88,7 +88,7 @@ names(merged_mse) <- ks
 merged_mseNum <- as.numeric(merged_mse)
 delta <- diff(merged_mseNum)
 
-plot(2:50, delta, type = "b",
+plot(2:50, delta, type = "b",          # begins from plotting change 2 -> 3
      xlab = "k",
      ylab = "change in MSE")
 
