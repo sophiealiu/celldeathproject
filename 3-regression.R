@@ -122,8 +122,8 @@ for(i in 1:10) {
   col_name <- paste0("X", i)
   plotResiduals(sim_res, form = pd[[col_name]])
   
-  # visual slow.
-  readline(prompt = paste("Showing", col_name, "- Press [Enter] for next plot..."))
+  # visuals are slow.
+  readline(prompt = paste("factor", col_name, "- [Enter] for next"))
 }
 
 
