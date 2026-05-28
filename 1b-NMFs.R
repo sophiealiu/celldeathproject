@@ -154,7 +154,7 @@ corrplot(
 
 # -----------------------------------------------------------------------------
 # 6. finalizing, binding spatial data
-pd1_vis_coords <- readRDS(datadir, "pd1_vis_coords.rds")
+pd1_vis_coords <- readRDS(file.path(datadir, "pd1_vis_coords.rds"))
 iso_vis_coords <- readRDS(datadir, "iso_vis_coords.rds")
 
 rownames(pd1_vis_coords)  <- paste0("pd1_", rownames(pd1_vis_coords))
