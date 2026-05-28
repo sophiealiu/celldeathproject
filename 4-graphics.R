@@ -111,7 +111,7 @@ draw <- function(df_IF, df_visium, trans) {
         # "X4" = "",
         # "X5" = "",
         #"X6" = color1
-        # "X7" = "#9678B6",                        # purple mountain majesty, courtesy of DB
+        # "X7" = "#9678B6",                         # purple mountain majesty, courtesy of DB
        #"X8" = color1           
         # "X9" = "",
         # "X10" = ""  
