@@ -45,6 +45,11 @@ pheatmap(mat,
          cluster_rows = TRUE,
          cluster_cols = TRUE)
 
+# LISTING ASSOCIATED GENES WITH FACTORS
+sorted_genes <- (sort(W[,4], decreasing = TRUE))
+head(names(sorted_genes), 40)
+
+
 # ----------------------------------------------------------------------------_
 # BEGINNING MODELING
 
@@ -54,22 +59,23 @@ pheatmap(mat,
 # - better but still non-orthogonal when using NMF. raw counts, per-gene weights
 # - attempted to restore pseudo-independence by sampling non-overlapping disks
 
-
 # -----------------------------------------------------------------------------
 # 1. Cleaning, removing sparsity effects/edge effects
 pd <- pd %>% drop_na()
 iso <- iso %>% drop_na()
 
-x <- as.matrix(iso[, fact_cols])
+x <- as.matrix(pd[, fact_cols])
 x_scaled <- scale(x)
 
 # y_binar <- pd$exist_dying 
-y_disc <- iso$n_dying
-y_cont <- iso$prop_dying   # regions with no dying tumor are still useful
+y_disc <- pd$n_dying
+y_cont <- pd$prop_dying               # regions with no dying tumor are still useful
 
 # -----------------------------------------------------------------------------
 # 2. Determining the best model
-# looking at distribution of data to inform family choice
+# recall, NMFs trained from experimental condition
+
+# appears to be some kind of exponential decay
 hist(y_cont, breaks = 30)
 
 # basic log-norm. bad residuals
@@ -77,6 +83,7 @@ ln <- glm(y_cont ~ x_scaled,
           family = "gaussian")
 
 r_sq <- 1 - (ln$deviance / ln$null.deviance)
+
 
 # negative binomial
 library(MASS)
@@ -87,7 +94,7 @@ library(glmmTMB)
 zero <- glmmTMB(y_disc ~ x_scaled, 
                 ziformula = ~1,
                 data = pd, 
-                family = nbinom2)    # does variance increase linearly? nbinom1
+                family = nbinom2)    # if variance increases linearly, use nbinom1
 
 # using dx plots to alter my 10 vars. will be hard to do non-manually later
 library(splines)
@@ -108,15 +115,15 @@ check_zeroinflation(zero)
 
 library(DHARMa)
 sim_res <- simulateResiduals(nb)
-plot(sim_res)               # QQ and residual plots
+plot(sim_res)                       # QQ and residual plots
 
 # finding the culprit throwing off my data
-for(i in 1:k) {             # k defined upstream as 16
+for(i in 1:k) {                     # k defined upstream as 16
   col_name <- paste0("X", i)
   plotResiduals(sim_res, form = pd[[col_name]])
   
   # visuals are slow.
-  readline(prompt = paste("factor", col_name, "- [Enter] for next"))
+  readline(prompt = paste("factor", col_name, "- [Enter] for next plot..."))
 }
 
 
