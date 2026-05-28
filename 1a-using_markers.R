@@ -22,7 +22,7 @@ iso7_norm <- readRDS(file.path(inputdir, "Seurat objects", "iso7_norm.rds"))
 
 
 # -----------------------------------------------------------------------------
-# List of known signatures
+# 1. List of known signatures
 cd8_effector <- c("Cd8a","Cd8b1","Gzmb","Gzmk","Prf1","Ifng",
                   "Nkg7","Cx3cr1","Klrk1","Ccl5","Xcl1")    # Cx3cr1 missing from our dataset
 cd8_effector <- setdiff(cd8_effector, "Cx3cr1")
@@ -67,8 +67,25 @@ signatures <- list(
   fibroblast
 )
 
+# -----------------------------------------------------------------------------
+# 2. FindMarkers on manually annotated merged MC38s
+celltypes <- levels(Idents(merged_annotated))       # inspecting metadata first
+
+de.mark_known <- list()
+
+for (ct in celltypes) {
+  de.mark_known[[ct]] <- FindMarkers(
+    merged_annotated,
+    ident.1 = ct
+  )
+}
+
+saveRDS(de.mark_known, file.path(inputdir, "Seurat objects", "mark_known.rds"))
+head(rownames(de.mark_known[["Fibroblasts"]]), 10)   # inspection
+
 
 # -----------------------------------------------------------------------------
+# 3. binding spatially 
 iso7_coords <- readRDS(file.path(inputdir, "Seurat objects", "iso7bin_coords.rds"))
     # from GetTissueCoordinates function, image = NULL
 
@@ -82,7 +99,7 @@ all_genes <- rownames(expr_matIso)
 
 
 # 1a. Obtaining known signature expression per bin
-signatures <- lapply(signatures, function(genes) {
+signatures <- lapply(signatures, function(genes) {   # for 2, sub mark_known for signatures
   present <- intersect(genes, all_genes)
   if (length(present) == 0) {
     warning("No genes found for signature: ", paste(genes, collapse=", "))
@@ -97,7 +114,6 @@ genelist <- DEgenes$gene
 
 # -----------------------------------------------------------------------------
 # 2. Binding expression per bin with bin coordinates
-# assigning the gene expression to each bin. substitute signatures for gene_list for DE
 sig_Iso <- do.call(rbind, lapply(signatures, function(genes) {
   colMeans(expr_matIso[genes, , drop = FALSE], na.rm = TRUE)
 }))
