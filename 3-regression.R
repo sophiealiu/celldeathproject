@@ -49,7 +49,6 @@ pheatmap(mat,
 sorted_genes <- (sort(W[,4], decreasing = TRUE))
 head(names(sorted_genes), 40)
 
-
 # ----------------------------------------------------------------------------_
 # BEGINNING MODELING
 
@@ -58,6 +57,7 @@ head(names(sorted_genes), 40)
 # - means smoothing need to incorporate density covariate
 # - better but still non-orthogonal when using NMF. raw counts, per-gene weights
 # - attempted to restore pseudo-independence by sampling non-overlapping disks
+
 
 # -----------------------------------------------------------------------------
 # 1. Cleaning, removing sparsity effects/edge effects
