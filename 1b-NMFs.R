@@ -18,7 +18,7 @@ pd1_raw <- readRDS(file = file.path(datadir, "Seurat objects", "pd1_raw.rds"))
 
 
 # -----------------------------------------------------------------------------
-# 1. Expression matrix X before decomposing. must merge here instead of upstream
+# 1. Expression matrix X before decomposing. merging here because raw unable to get matrix
 mat_iso <- GetAssayData(
   iso_raw,
   assay = "Spatial.008um",
