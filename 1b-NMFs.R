@@ -149,7 +149,11 @@ colnames(fit16$h) <- colnames(merged_mat)
 W <- fit16$w
 H <- fit16$h  
 
+# LISTING ASSOCIATED TOP GENES WITH FACTORS (for verification)
+sorted_genes <- (sort(W[,4], decreasing = TRUE))
+head(names(sorted_genes), 40)
 
+                 
 # -----------------------------------------------------------------------------
 # 5. viewing if the factors are orthogonal. using cosine similarity btwn vectors
 library(proxyC)
