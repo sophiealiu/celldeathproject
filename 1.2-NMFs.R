@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
-# Date : 05/28/2026 10:51am
+# Date : 05/25/2026 
 # Purpose: Creating NMF factors from Visium data and optimizing for downstream
 # -----------------------------------------------------------------------------
 # X ≈ WH (W is feature matrix ie. gene components, H is coefficient matrix ie. weights)
