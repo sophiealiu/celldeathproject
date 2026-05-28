@@ -3,7 +3,7 @@
 # Date : 05/21/2026 3:58pm
 # Purpose: Creating NMF factors from Visium data and optimizing for downstream
 # -----------------------------------------------------------------------------
-# X ≈ WH (W is feature matrix/# gene components, H is coefficient matrix/weights)
+# X ≈ WH (W is feature matrix ie. gene components, H is coefficient matrix ie. weights)
 
 library(Matrix)
 library(ggplot2)
