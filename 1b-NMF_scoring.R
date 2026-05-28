@@ -9,7 +9,6 @@ library(Matrix)
 library(ggplot2)
 library(RcppML)        # faster computationally but treats it as sparse matrix
 library(Seurat)
-
         
 # importing files
 datadir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20260413_final_merge/data"
