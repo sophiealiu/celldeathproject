@@ -55,6 +55,7 @@ head(sort(W[,7], decreasing = TRUE), 20)
 # - means smoothing need to incorporate density covariate
 # - better but still non-orthogonal when using NMF. raw counts, per-gene weights
 
+
 # -----------------------------------------------------------------------------
 # 1. Cleaning, removing sparsity effects (0,1) instead of [0,1] inclusive
 df_nonempty <- pd1 %>%
