@@ -1,39 +1,41 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
-# Date : 05/18/2026
+# Date : 05/19/2026
 # Purpose: model iterations, regression dying tumor ~ NMF factors
 # -----------------------------------------------------------------------------
 
 library(dplyr)
 library(glmnet)
 library(pheatmap)
+library(tidyr)
 
 datadir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20260413_final_merge/data"
-iso <- read.csv(file = file.path(datadir, "0518_NMF_iso_calc.csv"))     
-pd1 <- read.csv(file = file.path(datadir, "0518_NMF_pd1_calc.csv"))     
+iso <- read.csv(file = file.path(datadir, "0525_NMF_iso_calc.csv"))
+iso_sub <- read.csv(file = file.path(datadir, "0519_NMF_iso_calc_smallRad.csv"))
+                                              # 10 micron vs 40 micron radius. verification
+
+pd <- read.csv(file = file.path(datadir, "0525_NMF_pd1_calc.csv"))     
+pd_sub <- read.csv(file = file.path(datadir, "0519_NMF_pd_calc_smallRad.csv"))
 
 
 # -----------------------------------------------------------------------------
-# 0. primary sanity checks of known cell type and my NMF factors
-# nothing specific found with cd8s. but yes for tdtomato.
-fact_cols <- names(iso)[12:21]                         # indices, NMF columns begin @12
-cell_types <- unique(iso$cell_type)
-factor_sums <- colSums(iso[, fact_cols])
+# 0. primary checks of known cell type and my NMF factors
+fact_cols <- names(pd)[12:28]                         # indices, NMF columns begin @12
+cell_types <- unique(pd$cell_type)
+factor_sums <- colSums(pd[, fact_cols])
 
 # Distribution of cell across factors
 percent_type <- list()
 for (type in cell_types) {
-  subset_df <- iso[iso$cell_type == type, ]
+  subset_df <- pd[cell_types == type, ]
   
   by_factor <- colSums(subset_df[, fact_cols])
   total <- sum(by_factor)
   
   percent <- (by_factor/total) * 100
-  
   percent_type[[type]] <- percent
 }
 percent_type <- do.call(rbind, percent_type)
-percent_type
 
 # visualization
 mat <- as.matrix(percent_type)
@@ -43,8 +45,9 @@ pheatmap(mat,
          cluster_rows = TRUE,
          cluster_cols = TRUE)
 
-# top 20 associated genes with factors
-head(sort(W[,7], decreasing = TRUE), 20)
+# LISTING ASSOCIATED GENES WITH FACTORS
+sorted_genes <- (sort(W[,4], decreasing = TRUE))
+head(names(sorted_genes), 40)
 
 
 # ----------------------------------------------------------------------------_
@@ -54,81 +57,82 @@ head(sort(W[,7], decreasing = TRUE), 20)
 # - know data is nonlinear and non-normal
 # - means smoothing need to incorporate density covariate
 # - better but still non-orthogonal when using NMF. raw counts, per-gene weights
-
-
-# -----------------------------------------------------------------------------
-# 1. Cleaning, removing sparsity effects (0,1) instead of [0,1] inclusive
-df_nonempty <- pd1 %>%
-  filter(prop_dying != 0 & prop_dying != 1)
-
-x <- as.matrix(pd1[, fact_cols])
-x_scaled <- scale(as.matrix(df_nonempty[, fact_cols]))
-
+# - attempted to restore pseudo-independence by sampling non-overlapping disks
 
 # -----------------------------------------------------------------------------
-# 2. Beta regression. determined from 0515 that this was the best model
-# determining significance from experimental condition because that's where I trained NMF
-library(betareg)
+# 1. Cleaning, removing sparsity effects/edge effects
+pd <- pd %>% drop_na()
+iso <- iso %>% drop_na()
 
-# y <- pd1$exist_dying                  # binomial regression [N] from inspection
-y_cont <- df_nonempty$prop_dying        # linear gaussian     [N]
-                                        # beta regression     [possible]
-y_disc <- df_nonempty$n_dying           # poisson             [N], but
-                                        # negative binomial   [possible]
-# - may require transformation of response variable addressing variance
-# - poisson dispersion ~ 2. residuals fan out
+x <- as.matrix(iso[, fact_cols])
+x_scaled <- scale(x)
 
-
-beta <- betareg(y_cont ~ x_scaled)
-
+# y_binar <- pd$exist_dying 
+y_disc <- iso$n_dying
+y_cont <- iso$prop_dying   # regions with no dying tumor are still useful
 
 # -----------------------------------------------------------------------------
-# 2. Negative binomial regression for counts discrete data, 
-# maintains more uncertainty
+# 2. Determining the best model
+# recall, NMFs trained from experimental condition
+
+# appears to be some kind of exponential decay
+hist(y_cont, breaks = 30)
+
+# basic log-norm. bad residuals
+ln <- glm(y_cont ~ x_scaled,
+          family = "gaussian")
+
+r_sq <- 1 - (ln$deviance / ln$null.deviance)
+
+
+# negative binomial
 library(MASS)
-
-# requires more incorporation of polynomial or spline terms. 
-# however those still maintain fanned residuals
 nb <- glm.nb(y_disc ~ x_scaled)
-nb_poly <- glm.nb(y_disc ~ poly(x_scaled,2))
 
-library(mgcv)
-nb_spline <- gam(y_disc ~ s(x_scaled),  # larger k = more "curve" in model
-                 family = nb(), 
-                 data = overall)
+# zero-inflated NB
+library(glmmTMB)
+zero <- glmmTMB(y_disc ~ x_scaled, 
+                ziformula = ~1,
+                data = pd, 
+                family = nbinom2)    # does variance increase linearly? nbinom1
+
+# using dx plots to alter my 10 vars. will be hard to do non-manually later
+library(splines)
+zero2 <- glmmTMB(y_disc ~ X1 + 
+                  log1p(X2 + 1) +    # adding transform for upwards slope
+                  ns(X3, df = 3) +   # adding a spline
+                  X4 + X5 + X6 + X7 + X8 + X9 +
+                  X10 + I(X10^2),    # negative parabolic curve
+                
+                ziformula = ~1,
+                data = pd, 
+                family = nbinom2)
+
+# -----------------------------------------------------------------------------
+# 4. summary graphics
+library(performance)
+check_zeroinflation(zero)
+
+library(DHARMa)
+sim_res <- simulateResiduals(nb)
+plot(sim_res)               # QQ and residual plots
+
+# finding the culprit throwing off my data
+for(i in 1:10) {
+  col_name <- paste0("X", i)
+  plotResiduals(sim_res, form = pd[[col_name]])
+  
+  # visual slow.
+  readline(prompt = paste("Showing", col_name, "- Press [Enter] for next plot..."))
+}
 
 
 # -----------------------------------------------------------------------------
-# 4. summary stats, NB shows worse residuals, therefore maybe not the best model
-summary(nb)
-summary(beta)
+# 5. permutation test. Want to see the model break
+y_messUp <- sample(y_disc)
 
-plot(beta)
-qqnorm(residuals(beta, type = "quantile"))
-qqline(residuals(beta, type = "quantile"))
+nb_mess <- glm.nb(y_messUp ~ x_scaled)
 
-# displays different default plots
-plot(nb)
-plot(cooks.distance(nb), type = "h", 
-     ylab = "Cook's Distance", xlab = "Obs. Number")
-
-
-# -----------------------------------------------------------------------------
-# 4. isolating high-death chunk vs low-death (1mm^2), dying pocket (0.25mm^2)
-# issue is too sparse!
-df_high_death <- df_nonempty %>%
-  filter(cx >= 2500 & cx <= 3500,      # recall I renamed the variables in jupyter
-         cy >= 4500 & cy <= 5500)
-
-df_low_death <- df_nonempty %>%
-  filter(cx >= 5000 & cx <= 6000,
-         cy >= 4500 & cy <= 5500)
-
-df_death_pocket <- df_nonempty %>%
-  filter(cx >= 3500 & cx <= 4500,
-         cy >= 3000 & cy <= 4000)
-
-x_spec <- as.matrix(df_death_pocket[, fact_cols])
-y_spec <- df_death_pocket$n_dying
-nb_spec <- glm.nb(y_spec ~ x_spec)
+zero_mess <- zeroinfl(y_messUp ~ x_scaled | x_scaled, 
+                      data = pd, dist = "negbin")
 
