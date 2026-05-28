@@ -70,12 +70,12 @@ for (i in seq_along(ks)) {
 
 names(merged_mse) <- ks
 
+merged_mseNum <- as.numeric(merged_mse)
+delta <- diff(merged_mseNum)
+
 plot(2:50, delta, type = "b",
      xlab = "k",
      ylab = "change in MSE")
-
-merged_mseNum <- as.numeric(merged_mse)
-delta <- diff(merged_mseNum)
 
 
 # -----------------------------------------------------------------------------
