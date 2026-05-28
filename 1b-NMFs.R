@@ -186,5 +186,5 @@ pd1_joined$y <- pd1_joined$y / 1.5454
 # export
 write.csv(iso_joined, file.path(datadir, "0525_NMF_iso.csv"))
 
-ds_merged <- merge(pd1_joined, iso_joined)              # for later optional use
+ds_merged <- rbind(pd1_joined, iso_joined)              # for later optional use
                  
