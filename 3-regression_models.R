@@ -45,9 +45,6 @@ pheatmap(mat,
          cluster_rows = TRUE,
          cluster_cols = TRUE)
 
-# LISTING ASSOCIATED GENES WITH FACTORS
-sorted_genes <- (sort(W[,4], decreasing = TRUE))
-head(names(sorted_genes), 40)
 
 # ----------------------------------------------------------------------------_
 # BEGINNING MODELING
