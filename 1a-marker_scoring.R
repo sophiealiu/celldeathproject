@@ -116,8 +116,8 @@ scoresIso$y <- scoresIso$y / 1.5454
 
 # -----------------------------------------------------------------------------
 # 3. Verify proper spatial location 
-SpatialDimPlot(scoresIso)
-
+plot(scoresIso)
 
 # export
 write.csv(scoresIso, file.path(inputdir, "iso7spatial_mark.csv"))
+
