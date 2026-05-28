@@ -121,10 +121,23 @@ barplot(stability,
 par(cex.main = 0.75)
 par(cex.axis = 0.5)
 abline(h = 0.75, col = "blue", lwd = 2, lty =2)
-
+                 
 
 # -----------------------------------------------------------------------------
-# 4. viewing if the factors are orthogonal. using cosine similarity btwn vectors
+# 4. NMF on optimal k rank (16) on combined samples 
+fit16 <- nmf(merged_mat, k = 16, verbose = FALSE)
+
+# re-aligning row and column names (lost before)
+rownames(fit16$w) <- rownames(merged_mat)
+colnames(fit16$h) <- colnames(merged_mat)
+
+# renaming for ease of reference
+W <- fit16$w
+H <- fit16$h  
+
+                 
+# -----------------------------------------------------------------------------
+# 5. viewing if the factors are orthogonal. using cosine similarity btwn vectors
 library(proxyC)
 factor_sim <- simil(
   t(W),                        # required to transpose to get factor x gene
@@ -137,19 +150,6 @@ corrplot(
   method = "color",
   type = "upper"
 )
-
-
-# -----------------------------------------------------------------------------
-# 5. NMF on optimal k rank (16) on combined samples 
-fit16 <- nmf(merged_mat, k = 16, verbose = FALSE)
-
-# re-aligning row and column names (lost before)
-rownames(fit16$w) <- rownames(merged_mat)
-colnames(fit16$h) <- colnames(merged_mat)
-
-# renaming for ease of reference
-W <- fit16$w
-H <- fit16$h  
 
 
 # -----------------------------------------------------------------------------
