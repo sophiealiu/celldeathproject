@@ -131,7 +131,6 @@ factor_sim <- simil(
   method = "cosine"
 )
 
-
 library(corrplot)
 corrplot(
   as.matrix(factor_sim),
