@@ -25,16 +25,21 @@ draw <- function(df_IF, df_visium, trans) {
   df_visium_long <- df_visium %>% # have to flip the format so it recognizes gene cols
     pivot_longer(
       cols = c(
-        #monocytes,
-        treg
-        # cdc1,
-        # cdc2
-        # #folr2_mac
-        #fibroblast
+        # X1,
+        #X2
+        X3
+        # X4,
+        # X5,
+        #X6
+        #X7,
+        #X8
+        # X9,
+        # X10
+        #cdc1, cdc2
       ),
-      names_to = "gene",
+      names_to = "factor",
       values_to = "value") %>%
-    group_by(gene) %>%
+    group_by(factor) %>%
     filter(value > quantile(value, 0.8)) %>%        # isolate highest expressed areas
     ungroup()
     
@@ -72,11 +77,11 @@ draw <- function(df_IF, df_visium, trans) {
       size  = 0.005) +
     
     geom_point(
-      data = filter(df_visium_long, gene > 1),     # overlaying
+      data = filter(df_visium_long),                # overlaying
       aes(
-        x = x,
-        y = y,
-        color = gene
+        x = cx,                                     # renamed vars in jupyter
+        y = cy,
+        color = factor
       ),
       size = 0.1
     ) +
@@ -99,13 +104,18 @@ draw <- function(df_IF, df_visium, trans) {
     )  +
     
     scale_color_manual(
-      values = c(
-        #"monocytes" = "orange",
-        # "cdc2" = "purple",
-        # "cdc1" = "blue"
-        "treg" = "white"
-        #"folr2_mac" = "pink"
-        #"fibroblast" = "orange"  
+      values =  c(
+        # "X1" = "",
+        #"X2" = color2
+        "X3" = color2
+        # "X4" = "",
+        # "X5" = "",
+        #"X6" = color1
+        # "X7" = "#9678B6",                        # purple mountain majesty, courtesy of DB
+       #"X8" = color1           
+        # "X9" = "",
+        # "X10" = ""  
+        #cdc1 = color1, cdc2 = color2
       ),
       name = "gene signature",
       guide = guide_legend(
