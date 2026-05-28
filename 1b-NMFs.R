@@ -79,8 +79,7 @@ plot(2:50, delta, type = "b",
 
 
 # -----------------------------------------------------------------------------
-# 3. manually checking stability. re-seeding. from optimization, k = 16
-
+# 3. QC of NMFs by re-seeding. from optimization, k = 16
 n <- 30                                # CLT, number of runs
 iterate_fit16 <- vector("list", n)
 
