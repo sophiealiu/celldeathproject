@@ -35,7 +35,7 @@ mat_pd1 <- GetAssayData(
 colnames(mat_iso)  <- paste0("iso_", colnames(mat_iso))
 colnames(mat_pd1) <- paste0("pd1_", colnames(mat_pd1))
 
-# removing columns I don't want
+# removing invalid/empty columns
 mat_iso <- mat_iso[, Matrix::colSums(mat_iso) > 0]
 mat_pd1 <- mat_pd1[, Matrix::colSums(mat_pd1) > 0]
 mat_iso <- na.omit(mat_iso)
