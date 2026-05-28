@@ -45,7 +45,6 @@ pheatmap(mat,
          cluster_rows = TRUE,
          cluster_cols = TRUE)
 
-
 # ----------------------------------------------------------------------------_
 # BEGINNING MODELING
 
