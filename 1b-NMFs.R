@@ -86,7 +86,7 @@ iterate_fit16 <- vector("list", n)
 
 for (i in 1: n) {
   set.seed(7*i)                        # my lucky number is 7. 
-  iterate_fit16[[i]] <- nmf(merged_mat, k = 17, verbose = FALSE)
+  iterate_fit16[[i]] <- nmf(merged_mat, k = 16, verbose = FALSE)
   
   rownames(iterate_fit16[[i]]$w) <- rownames(merged_mat)
   colnames(iterate_fit16[[i]]$h) <- colnames(merged_mat)
