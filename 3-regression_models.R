@@ -111,7 +111,7 @@ sim_res <- simulateResiduals(nb)
 plot(sim_res)               # QQ and residual plots
 
 # finding the culprit throwing off my data
-for(i in 1:10) {
+for(i in 1:k) {             # k defined upstream as 16
   col_name <- paste0("X", i)
   plotResiduals(sim_res, form = pd[[col_name]])
   
