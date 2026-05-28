@@ -73,9 +73,8 @@ y_cont <- iso$prop_dying   # regions with no dying tumor are still useful
 
 # -----------------------------------------------------------------------------
 # 2. Determining the best model
-# recall, NMFs trained from experimental condition
 
-# appears to be some kind of exponential decay
+# looking at distribution of data to inform family choice
 hist(y_cont, breaks = 30)
 
 # basic log-norm. bad residuals
