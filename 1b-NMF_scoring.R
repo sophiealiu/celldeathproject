@@ -149,7 +149,7 @@ colnames(fit16$h) <- colnames(merged_mat)
 
 # renaming for ease of reference
 W <- fit16$w
-H <- fit16$h  # do I need to scale this?
+H <- fit16$h  
 
 
 # -----------------------------------------------------------------------------
