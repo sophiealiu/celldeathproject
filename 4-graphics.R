@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
-# Date : 05/15/2026
+# Date : 05/29/2026 11:34am
 # Purpose: Creating nice spatial overlay graphics.
 # -----------------------------------------------------------------------------
 
@@ -21,32 +21,24 @@ df_pd1visium <- read_csv(file.path(inputdir, "pd1spatial_sig.csv"))
 
 
 # -----------------------------------------------------------------------------
-draw <- function(df_IF, df_visium, trans) { 
-  df_visium_long <- df_visium %>% # have to flip the format so it recognizes gene cols
+draw <- function(df_IF, df_visium,
+                 factor_cols,
+                 colors, size, trans,
+                 threshold) { 
+  
+  df_visium_long <- df_visium %>%          # flipping to orient
     pivot_longer(
-      cols = c(
-        # X1,
-        #X2
-        X3
-        # X4,
-        # X5,
-        #X6
-        #X7,
-        #X8
-        # X9,
-        # X10
-        #cdc1, cdc2
-      ),
+      cols = factor_cols,
       names_to = "factor",
       values_to = "value") %>%
     group_by(factor) %>%
-    filter(value > quantile(value, 0.8)) %>%        # isolate highest expressed areas
+    filter(value > quantile(value, threshold)) %>%        # isolate highest expressed areas
     ungroup()
-    
-  ggplot() +
   
+  ggplot() +
+    
     stat_density_2d(
-      data = filter(df_IF, cell_type == "tdtomato"), # density avoiding overplotting
+      data = filter(df_IF, cell_type == "tdtomato"), 
       aes(x = x, y = y),
       fill        = "red",
       geom        = "density_2d_filled",
@@ -56,7 +48,7 @@ draw <- function(df_IF, df_visium, trans) {
       na.rm       = TRUE
     ) +
     geom_point(
-      data  = filter(df_IF, cell_type == "cd8"),    # points for clarity
+      data  = filter(df_IF, cell_type == "cd8"),    
       aes(x = x, y = y),
       color = "#02819e",
       alpha = 0.20,
@@ -77,23 +69,24 @@ draw <- function(df_IF, df_visium, trans) {
       size  = 0.005) +
     
     geom_point(
-      data = filter(df_visium_long),                # overlaying
+      data = df_visium_long,     
       aes(
-        x = cx,                                     # renamed vars in jupyter
+        x = cx,     # recall, renamed these in jupyter
         y = cy,
         color = factor
       ),
-      size = 0.1
+      size = size,
+      alpha = trans
     ) +
     
-# formatting
+    # formatting
     scale_x_continuous(expand = c(0.05, 0.05)) +
     scale_y_continuous(expand = c(0.05, 0.05)) +
     coord_equal(clip = "off") +
     theme(
       panel.background = element_rect(fill = "black"),
       plot.background  = element_rect(fill = "black"),
-      panel.grid       = element_blank(),
+      panel.grid       = element_blank(),               # later if I want gridlines, change
       
       axis.text.x  = element_text(color = "white", size = 12),
       axis.text.y  = element_text(color = "white", size = 12),
@@ -104,27 +97,17 @@ draw <- function(df_IF, df_visium, trans) {
     )  +
     
     scale_color_manual(
-      values =  c(
-        # "X1" = "",
-        #"X2" = color2
-        "X3" = color2
-        # "X4" = "",
-        # "X5" = "",
-        #"X6" = color1
-        # "X7" = "#9678B6",                         # purple mountain majesty, courtesy of DB
-       #"X8" = color1           
-        # "X9" = "",
-        # "X10" = ""  
-        #cdc1 = color1, cdc2 = color2
-      ),
-      name = "gene signature",
+      values = colors,
+      name = "factor",
       guide = guide_legend(
         override.aes = list(shape = 15, size = 5, alpha = 1)))
 }
 
 # -----------------------------------------------------------------------------
 # Visualization & exporting for more graphics
-test <- draw(df_iso7IF, df_iso7visium, 0.2)
+colors <- c("pink", "blue")                           # require character vectors
+factor_cols <- c("X9", "X10")
+test <- draw(df_pd1IF, df_pd1visium, factor_cols, colors, 1, 1, 0.95)
 test
 
 setwd(
