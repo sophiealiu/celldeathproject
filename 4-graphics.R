@@ -110,10 +110,12 @@ factor_cols <- c("X9", "X10")
 test <- draw(df_pd1IF, df_pd1visium, factor_cols, colors, 1, 1, 0.95)
 test
 
+
+# ------------------------------------------------------------------------------
+# being *extra* and automating frame creation, joining to make movie in Adobe
 setwd(
   "I:/Hu Lab/Sophie/Visium/visium image manual spot selection/20260413_final_merge/current data/graphics creation")
 
-# automating frame creation, join to make movie in Adobe
 for (i in 0:30) { 
   alpha <- 0.005*i 
   p <- draw(df_IF, df_visium, alpha)                      # by transparency intervals
