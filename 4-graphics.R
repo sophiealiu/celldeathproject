@@ -86,7 +86,7 @@ draw <- function(df_IF, df_visium,
     theme(
       panel.background = element_rect(fill = "black"),
       plot.background  = element_rect(fill = "black"),
-      panel.grid       = element_blank(),               # later if I want gridlines, change
+      panel.grid       = element_blank(),                 # change later if I want gridlines 
       
       axis.text.x  = element_text(color = "white", size = 12),
       axis.text.y  = element_text(color = "white", size = 12),
@@ -105,7 +105,7 @@ draw <- function(df_IF, df_visium,
 
 # -----------------------------------------------------------------------------
 # Visualization & exporting for more graphics
-colors <- c("pink", "blue")                           # require character vectors
+colors <- c("pink", "blue")                               # require character vectors
 factor_cols <- c("X9", "X10")
 test <- draw(df_pd1IF, df_pd1visium, factor_cols, colors, 1, 1, 0.95)
 test
@@ -116,7 +116,7 @@ setwd(
 # automating frame creation, join to make movie in Adobe
 for (i in 0:30) { 
   alpha <- 0.005*i 
-  p <- draw(df_IF, df_visium, alpha)               # by transparency intervals
+  p <- draw(df_IF, df_visium, alpha)                      # by transparency intervals
     
   ggsave(
     filename <- sprintf("frames/frame_%02d_alpha_%0.1f.png", i, alpha),
