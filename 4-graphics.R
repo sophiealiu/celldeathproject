@@ -21,6 +21,7 @@ df_pd1visium <- read_csv(file.path(inputdir, "pd1spatial_sig.csv"))
 
 
 # -----------------------------------------------------------------------------
+# 1. regular overlay factors on top of IF
 draw <- function(df_IF, df_visium,
                  factor_cols,
                  colors, size, trans,
@@ -105,11 +106,49 @@ draw <- function(df_IF, df_visium,
 
 
 # -----------------------------------------------------------------------------
-# Visualization & exporting for more graphics
-colors <- c("pink", "blue")                               # require character vectors
+# 2. dead or cd8 spots on top of heatmap of factors
+heat <- function(df_IF, df_visium, 
+                 factor_num, type, 
+                 color, size, trans, 
+                 thresh_fact) {
+  
+  # have to convert to something ggplot understands
+  factor_col <- rlang::sym(factor_num)
+  cell_col <- rlang::sym(type)
+  
+  df_vis_filt <- df_visium %>% 
+    filter(!!factor_col > quantile(!!factor_col, thresh_fact))
+  
+  
+   ggplot(df_vis_filt, aes(x = cx, y = cy)) +
+     geom_density_2d_filled(
+      aes(fill = after_stat(level),
+          weight = !!factor_col),                      # jupyter names cx changed
+    ) +
+     
+   scale_fill_viridis_d(option = "A") +                # magma, not sure why discrete
+   
+   geom_point(
+     data  = filter(df_IF, cell_type == type),
+     aes(x = x, y = y),
+      color = color,
+      size  = size, 
+      alpha = trans
+  )
+}
+
+
+# -----------------------------------------------------------------------------
+# 3. Visualization & exporting for more graphics
+colors <- c("pink", "blue")                           # require character vectors
 factor_cols <- c("X9", "X10")
-test <- draw(df_pd1IF, df_pd1visium, factor_cols, colors, 1, 1, 0.95)
+
+test <- draw(df_pd1IF, df_pd1visium, factor_cols, colors, 1, 1, 0.95, 0.99)
 test
+
+test2 <- heat(df_pd1IF, df_pd1visium, "X17", "lectin",
+              "#D9C20B", 0.05, 1, 0.9)                 # unfortunately can't subset the IF spots
+test2
 
 
 # ------------------------------------------------------------------------------
