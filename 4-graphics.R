@@ -103,6 +103,7 @@ draw <- function(df_IF, df_visium,
         override.aes = list(shape = 15, size = 5, alpha = 1)))
 }
 
+
 # -----------------------------------------------------------------------------
 # Visualization & exporting for more graphics
 colors <- c("pink", "blue")                               # require character vectors
