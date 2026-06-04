@@ -135,7 +135,7 @@ heat <- function(df_IF, df_visium,
      theme(
        panel.background = element_rect(fill = "black"),
        plot.background  = element_rect(fill = "black"),
-       panel.grid       = element_blank(),               # later if I want gridlines, change
+       panel.grid       = element_blank(),               
        
        axis.text.x  = element_text(color = "white", size = 12),
        axis.text.y  = element_text(color = "white", size = 12),
