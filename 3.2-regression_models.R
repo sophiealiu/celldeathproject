@@ -93,25 +93,16 @@ nb <- glm.nb(y_disc ~ x_scaled)
 p_vals <- sort(
   coef(summary(nb_test))[, "Pr(>|z|)"], 
   decreasing = FALSE)
-p_vals_adj <- p.adjust(p_vals, method = "BH")     # prefer benjamini but still optimistic
+p_vals_adj <- p.adjust(p_vals, method = "BH")     # prefer benjamini but still optimistic                      
 
-# b. elastic net is another way to see what factors are most predictive
-library(glmnet)
-# finding optimal penalization term using cross-validation to minimize MSE
-crval <- cv.glmnet(x_scaled, y_disc, alpha = 0.5, nfolds = 10)
-optim <- crval$lambda.min
-
-elastic <- glmnet(x_scaled, y_disc, alpha = 0.5, lambda = optim)
-coef(elastic)                       
-
-# c. reduced model, only "significant" predictors. AIC = 4008.8
+# b. reduced model, only "significant" predictors. AIC = 4008.8
 red_col <- fact_cols[c(1, 3, 11, 13, 22)]
 x_red <- as.matrix(pd[, red_col])
 x_red_sc <- scale(x_red)
 
 nb_red <- glm.nb(y_disc ~ x_red_sc)
 
-# d. refining the model nonlinearity. parsimony
+# c. refining the model nonlinearity. parsimony
 x_red_rf <- x_red_sc
 x_red_rf[,3] <- x_red_sc[,3] + I(x_red_sc[,3]^2)   # polynomial term
 
@@ -120,6 +111,15 @@ nb_rf <- glm.nb(y_disc ~ x_red_rf)
 intthir <- x_red_sc[,3] * x_red_sc[,4]             # slope interaction
 nb_int <- glm.nb(y_disc ~ x_red_sc + 
                           intthir)
+
+# d. elastic net. alternative 
+library(glmnet)
+# finding optimal penalization term using cross-validation to minimize MSE
+crval <- cv.glmnet(x_scaled, y_disc, alpha = 0.5, nfolds = 10)
+optim <- crval$lambda.min
+
+elastic <- glmnet(x_scaled, y_disc, alpha = 0.5, lambda = optim)
+coef(elastic) 
 
 
 # -----------------------------------------------------------------------------
