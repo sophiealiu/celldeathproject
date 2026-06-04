@@ -44,7 +44,7 @@ write.csv(head(df_weighted, 40), file.path(datadir, "factor_weights40.csv"),
 # ----------------------------------------------------------------------------_
 # ASSUMPTIONS AND LIMITATIONS
 # - know data is nonlinear and non-normal
-# - means smoothing need to incorporate density covariate
+# - means smoothing possible density covariate
 # - better but still non-orthogonal when using NMF. raw counts, per-gene weights
 # - attempted to restore pseudo-independence by sampling non-overlapping disks
 
