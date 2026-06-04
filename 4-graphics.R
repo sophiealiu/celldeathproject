@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
 # Date : 05/29/2026 11:34am
-# Purpose: Creating nice spatial overlay graphics.
+# Purpose: Nice lil spatial overlay graphics.
 # -----------------------------------------------------------------------------
 
 library(readr)
