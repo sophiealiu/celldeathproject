@@ -88,7 +88,6 @@ hist(y_disc,
      main = "Distribution of count dying",
      xlab = "number of dying cells in 40 micron vicinity")
 
-
 # a. negative binomial AIC = 3994.1
 library(MASS)
 nb <- glm.nb(y_disc ~ x_scaled)
