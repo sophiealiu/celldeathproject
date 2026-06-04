@@ -1,6 +1,4 @@
 # celldeathproject
-gene-first and IF-first approaches for IDing gene-set predictors associated with high areas of dying cells. also looking at relationship with efficacy of each cd8 labeled IF T-cell.
-
-My current approach is once we have gene expression and each bin that corresponds, we spatially overlay with our manually selected IF data (in same micron coordinate system) to analyze behavior around individual cells.
+Spatial transcriptomics: gene expression obtained from Visium HD Genomics 10x. Our goal is to identify latent gene programs, spatially overlay it with our manually selected IF data (in same micron coordinate system), and finally creating a statistically robust model to determine local apoptotic behavior.
 
 - Hu Lab, Immunology, MD Anderson
