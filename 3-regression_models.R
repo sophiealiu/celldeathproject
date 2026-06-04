@@ -144,7 +144,7 @@ sim_res <- simulateResiduals(nb_red)
 plot(sim_res)       
 
 # finding the culprit throwing off my data
-for(i in 1:5) {                     # k defined upstream, number of predictors
+for(i in 1:k) {                     # k defined upstream, number of predictors
   plotResiduals(sim_res, x_red_sc[, i],
                 main = colnames(x_red_sc)[i])
 }
