@@ -51,11 +51,11 @@ write.csv(head(df_weighted, 40), file.path(datadir, "factor_weights40.csv"),
 
 # -----------------------------------------------------------------------------
 # 1. setting vars and family
-x <- as.matrix(iso[, fact_cols])       # 2x control cond. & exp
+x <- as.matrix(pd[, fact_cols])       # 2x rep control cond. & exp
 x_scaled <- scale(x)                  # visible representation of RNA counts
 
 y_binar <- pd$exist_dying             # binomial  [X]
-y_disc <- iso$n_dying                  # overdispersion -> negative binomial
+y_disc <- pd$n_dying                  # overdispersion -> negative binomial
                                       # zero inflation overfit from performance stats
 yd_test <- pd$n_lectin                # known vasculature for verification
 
