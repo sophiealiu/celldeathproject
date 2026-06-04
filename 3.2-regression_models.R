@@ -115,10 +115,10 @@ nb_int <- glm.nb(y_disc ~ x_red_sc +
 # d. elastic net. alternative 
 library(glmnet)
 # finding optimal penalization term using cross-validation to minimize MSE
-crval <- cv.glmnet(x_scaled, y_disc, alpha = 0.5, nfolds = 10)
+crval <- cv.glmnet(x_red_sc, y_disc, alpha = 0.5, nfolds = 10)
 optim <- crval$lambda.min
 
-elastic <- glmnet(x_scaled, y_disc, alpha = 0.5, lambda = optim)
+elastic <- glmnet(x_red_sc, y_disc, alpha = 0.5, lambda = optim)
 coef(elastic) 
 
 
