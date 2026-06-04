@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
-# Date : 05/19/2026
+# Date : 06/02/2026 4:59pm
 # Purpose: model iterations, regression dying tumor ~ NMF factors
 # -----------------------------------------------------------------------------
 
@@ -10,45 +10,36 @@ library(pheatmap)
 library(tidyr)
 
 datadir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20260413_final_merge/data"
-iso <- read.csv(file = file.path(datadir, "0525_NMF_iso_calc.csv"))
-iso_sub <- read.csv(file = file.path(datadir, "0519_NMF_iso_calc_smallRad.csv"))
-                                              # 10 micron vs 40 micron radius. verification
+iso <- read.csv(file = file.path(datadir, "0528_22NMF_iso_40.csv"))
 
-pd <- read.csv(file = file.path(datadir, "0525_NMF_pd1_calc.csv"))     
-pd_sub <- read.csv(file = file.path(datadir, "0519_NMF_pd_calc_smallRad.csv"))
+pd <- read.csv(file = file.path(datadir, "0602_22NMF_pd1_40incl.csv"))    
 
 
 # -----------------------------------------------------------------------------
-# 0. primary checks of known cell type and my NMF factors
-fact_cols <- names(pd)[12:28]                         # indices, NMF columns begin @12
-cell_types <- unique(pd$cell_type)
-factor_sums <- colSums(pd[, fact_cols])
+# preliminary checks of NMF factors
+fact_cols <- names(pd)[12:33]                         # indices, NMF columns begin @12
 
-# Distribution of cell across factors
-percent_type <- list()
-for (type in cell_types) {
-  subset_df <- pd[cell_types == type, ]
+sorted_genes <- (sort(W[,17], decreasing = TRUE))     # summary of top genes
+head(names(sorted_genes), 10)
+
+sorted_factor <- list()
+for (i in 1:length(fact_cols)) {
+  ord <- order(W[, i], decreasing = TRUE)             # re-import gene factors
   
-  by_factor <- colSums(subset_df[, fact_cols])
-  total <- sum(by_factor)
+  sorted_factor[[i]] <- data.frame(
+    gene   = rownames(W)[ord],
+    weight = W[ord, i]
+  )
   
-  percent <- (by_factor/total) * 100
-  percent_type[[type]] <- percent
+  colnames(sorted_factor[[i]]) <- c(
+    paste0("factor_", fact_cols[i], "_gene"),
+    paste0("factor_", fact_cols[i], "_weight")
+  )
 }
-percent_type <- do.call(rbind, percent_type)
 
-# visualization
-mat <- as.matrix(percent_type)
-
-pheatmap(mat,
-         scale = "none",
-         cluster_rows = TRUE,
-         cluster_cols = TRUE)
-
-# LISTING ASSOCIATED GENES WITH FACTORS
-sorted_genes <- (sort(W[,4], decreasing = TRUE))
-head(names(sorted_genes), 40)
-
+df_weighted <- do.call(cbind, sorted_factor)
+write.csv(head(df_weighted, 40), file.path(datadir, "factor_weights40.csv"),
+          rownames = FALSE)
 
 # ----------------------------------------------------------------------------_
 # BEGINNING MODELING
@@ -59,80 +50,147 @@ head(names(sorted_genes), 40)
 # - better but still non-orthogonal when using NMF. raw counts, per-gene weights
 # - attempted to restore pseudo-independence by sampling non-overlapping disks
 
-# -----------------------------------------------------------------------------
-# 1. Cleaning, removing sparsity effects/edge effects
-pd <- pd %>% drop_na()
-iso <- iso %>% drop_na()
-
-x <- as.matrix(pd[, fact_cols])
-x_scaled <- scale(x)
-
-# y_binar <- pd$exist_dying 
-y_disc <- pd$n_dying
-y_cont <- pd$prop_dying               # regions with no dying tumor are still useful
 
 # -----------------------------------------------------------------------------
-# 2. Determining the best model
-# recall, NMFs trained from experimental condition
+# 1. setting vars and family
+x <- as.matrix(iso[, fact_cols])       # 2x control cond. & exp
+x_scaled <- scale(x)                  # visible representation of RNA counts
 
-# appears to be some kind of exponential decay
-hist(y_cont, breaks = 30)
+y_binar <- pd$exist_dying             # binomial  [X]
+y_disc <- iso$n_dying                  # overdispersion -> negative binomial
+                                      # zero inflation overfit from performance stats
+yd_test <- pd$n_lectin                # known vasculature for verification
 
-# basic log-norm. bad residuals
-ln <- glm(y_cont ~ x_scaled,
-          family = "gaussian")
-
-r_sq <- 1 - (ln$deviance / ln$null.deviance)
+y_cont <- pd$prop_dying               # beta, non-gaussian
 
 
-# negative binomial
+# -----------------------------------------------------------------------------
+# 2. basic comparative univariate odds-ratios
+OR <- glm(
+  reformulate(x_scaled, response = y_binar),
+  family = "binomial"
+)
+
+OR_clean <- tidy(OR, conf.int = TRUE, exponentiate = TRUE)
+
+ggplot(OR_clean %>% 
+         filter(term != "(Intercept)"),          # only displaying the actual factors
+       aes(x = reorder(term, estimate), y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) 
+)
+
+
+# -----------------------------------------------------------------------------
+# 3. using counts considers sequencing depth
+hist(y_disc, 
+     breaks = 30,
+     main = "Distribution of count dying",
+     xlab = "number of dying cells in 40 micron vicinity")
+
+
+# a. negative binomial AIC = 3994.1
 library(MASS)
 nb <- glm.nb(y_disc ~ x_scaled)
 
-# zero-inflated NB
-library(glmmTMB)
-zero <- glmmTMB(y_disc ~ x_scaled, 
-                ziformula = ~1,
-                data = pd, 
-                family = nbinom2)    # if variance increases linearly, use nbinom1
+p_vals <- sort(
+  coef(summary(nb_test))[, "Pr(>|z|)"], 
+  decreasing = FALSE)
+p_vals_adj <- p.adjust(p_vals, method = "BH")     # prefer benjamini but still optimistic
 
-# using dx plots to alter my 10 vars. will be hard to do non-manually later
-library(splines)
-zero2 <- glmmTMB(y_disc ~ X1 + 
-                  log1p(X2 + 1) +    # adding transform for upwards slope
-                  ns(X3, df = 3) +   # adding a spline
-                  X4 + X5 + X6 + X7 + X8 + X9 +
-                  X10 + I(X10^2),    # negative parabolic curve
-                
-                ziformula = ~1,
-                data = pd, 
-                family = nbinom2)
+
+# b. elastic net is another way to see what factors are most predictive
+library(glmnet)
+
+# finding optimal penalization term using cross-validation to minimize MSE
+crval <- cv.glmnet(x_scaled, y_disc, alpha = 0.5, nfolds = 10)
+optim <- crval$lambda.min
+
+elastic <- glmnet(x_scaled, y_disc, alpha = 0.5, lambda = optim)
+coef(elastic)                       
+
+
+# c. reduced model, only "significant" predictors. AIC = 4008.8
+red_col <- fact_cols[c(1, 3, 11, 13, 22)]
+x_red <- as.matrix(pd[, red_col])
+x_red_sc <- scale(x_red)
+
+nb_red <- glm.nb(y_disc ~ x_red_sc)
+
+
+# d. refining the model nonlinearity. parsimony
+x_red_rf <- x_red_sc
+x_red_rf[,3] <- x_red_sc[,3] + I(x_red_sc[,3]^2)   # polynomial term
+
+nb_rf <- glm.nb(y_disc ~ x_red_rf)
+
+intthir <- x_red_sc[,3] * x_red_sc[,4]             # slope interaction
+nb_int <- glm.nb(y_disc ~ x_red_sc + 
+                          intthir)
+
 
 # -----------------------------------------------------------------------------
-# 4. summary graphics
-library(performance)
-check_zeroinflation(zero)
+# 4. Examining continuous models, however, proportion is oversmoothed
+library(betareg)
 
+pd_val <- pd %>%
+  filter(pd$n_immune != 0)
+
+xv <- as.matrix(pd_val[, fact_cols])
+xv_scaled <- scale(xv)
+
+yc2 <- pd_val$efficacy                             # depends on definition
+                                                   # gamma if using dying counts per instead
+beta <- betareg(yc2 ~ xv_scaled)  
+
+
+# -----------------------------------------------------------------------------
+# 5. diagnostic stats
+# a. discrete
 library(DHARMa)
-sim_res <- simulateResiduals(nb)
-plot(sim_res)                       # QQ and residual plots
+sim_res <- simulateResiduals(nb_red)
+plot(sim_res)       
 
 # finding the culprit throwing off my data
-for(i in 1:k) {                     # k defined upstream as 16
-  col_name <- paste0("X", i)
-  plotResiduals(sim_res, form = pd[[col_name]])
-  
-  # visuals are slow.
-  readline(prompt = paste("factor", col_name, "- [Enter] for next plot..."))
+for(i in 1:5) {                     # k defined upstream, number of predictors
+  plotResiduals(sim_res, x_red_sc[, i],
+                main = colnames(x_red_sc)[i])
 }
+
+# b. continuous
+qqnorm(residuals(beta, type = "quantile"))
+qqline(residuals(beta, type = "quantile"))
 
 
 # -----------------------------------------------------------------------------
-# 5. permutation test. Want to see the model break
+# 6. permutation test. Want to see the model fail
+set.seed(42)
 y_messUp <- sample(y_disc)
 
 nb_mess <- glm.nb(y_messUp ~ x_scaled)
 
-zero_mess <- zeroinfl(y_messUp ~ x_scaled | x_scaled, 
-                      data = pd, dist = "negbin")
+
+# -----------------------------------------------------------------------------
+# 7. radii sensitivity
+pd10 <- read.csv(file = file.path(datadir, "0602_22NMF_pd1_10incl.csv"))
+pd20 <- read.csv(file = file.path(datadir, "0602_22NMF_pd1_20incl.csv"))  
+pd80 <- read.csv(file = file.path(datadir, "0602_22NMF_pd1_80incl.csv"))  
+
+x10 <- as.matrix(pd10[, fact_cols])
+x10sc <- scale(x10)  
+
+x20 <- as.matrix(pd20[, fact_cols])
+x20sc <- scale(x20)  
+
+x80 <- as.matrix(pd80[, fact_cols])
+x80sc <- scale(x80)  
+
+y10d <- pd10$n_dying
+y20d <- pd20$n_dying
+y80d <- pd80$n_dying
+
+nb10 <- glm.nb(y10d ~ x10sc)
+nb20 <- glm.nb(y20d ~ x20sc)
+nb80 <- glm.nb(y80d ~ x80sc)
+
 
