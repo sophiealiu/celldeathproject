@@ -109,45 +109,55 @@ draw <- function(df_IF, df_visium,
 # 2. dead or cd8 spots on top of heatmap of factors
 heat <- function(df_IF, df_visium, 
                  factor_num, type, 
-                 color, size, trans, 
-                 thresh_fact) {
+                 color, pt_size, trans, 
+                 bin_num, thresh_fact) {
   
-  # have to convert to something ggplot understands
-  factor_col <- rlang::sym(factor_num)
-  cell_col <- rlang::sym(type)
+   df_vis_filt <- df_visium %>% 
+     filter(.data[[factor_num]] > quantile(.data[[factor_num]], thresh_fact))
+   
+   ggplot() +
   
-  df_vis_filt <- df_visium %>% 
-    filter(!!factor_col > quantile(!!factor_col, thresh_fact))
-  
-  
-   ggplot(df_vis_filt, aes(x = cx, y = cy)) +
-     geom_density_2d_filled(
-      aes(fill = after_stat(level),
-          weight = !!factor_col),                      # jupyter names cx changed
-    ) +
-     
-   scale_fill_viridis_d(option = "A") +                # magma, not sure why discrete
+   geom_hex(data = df_vis_filt, aes(x = cx, y = cy),
+            bins = bin_num,
+            alpha = trans) +
+   scale_fill_viridis_c(option = "A") +
    
    geom_point(
      data  = filter(df_IF, cell_type == type),
      aes(x = x, y = y),
       color = color,
-      size  = size, 
-      alpha = trans
-  )
+    size  = pt_size
+  ) + 
+     
+   scale_x_continuous(expand = c(0.05, 0.05)) +
+     scale_y_continuous(expand = c(0.05, 0.05)) +
+     coord_equal(clip = "off") +
+     theme(
+       panel.background = element_rect(fill = "black"),
+       plot.background  = element_rect(fill = "black"),
+       panel.grid       = element_blank(),               # later if I want gridlines, change
+       
+       axis.text.x  = element_text(color = "white", size = 12),
+       axis.text.y  = element_text(color = "white", size = 12),
+       
+       plot.title = element_text(color = "white", size = 15, face = "bold"),
+       
+       axis.line = element_line(color = "white")
+     )
 }
 
 
 # -----------------------------------------------------------------------------
 # 3. Visualization & exporting for more graphics
-colors <- c("pink", "blue")                           # require character vectors
-factor_cols <- c("X9", "X10")
+colors <- c("pink")                           # require character vectors
+factor_cols <- c("X11")
 
-test <- draw(df_pd1IF, df_pd1visium, factor_cols, colors, 1, 1, 0.95, 0.99)
+test <- draw(df_isoIF, df_isovisium, factor_cols, colors, 1, 1, 0.6)
 test
 
-test2 <- heat(df_pd1IF, df_pd1visium, "X17", "lectin",
-              "#D9C20B", 0.05, 1, 0.9)                 # unfortunately can't subset the IF spots
+#D9C20B
+test2 <- heat(df_isoIF, df_isovisium, "X17", "lectin",
+              "#D9C20B", 3, 0.6, 30, 0)                 
 test2
 
 
