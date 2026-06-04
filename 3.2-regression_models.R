@@ -42,9 +42,7 @@ write.csv(head(df_weighted, 40), file.path(datadir, "factor_weights40.csv"),
           rownames = FALSE)
 
 # ----------------------------------------------------------------------------_
-# BEGINNING MODELING
-
-# What are our assumptions?
+# ASSUMPTIONS AND LIMITATIONS
 # - know data is nonlinear and non-normal
 # - means smoothing need to incorporate density covariate
 # - better but still non-orthogonal when using NMF. raw counts, per-gene weights
