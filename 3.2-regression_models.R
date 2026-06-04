@@ -127,7 +127,6 @@ nb_int <- glm.nb(y_disc ~ x_red_sc +
 # -----------------------------------------------------------------------------
 # 4. Examining continuous models, however, proportion is oversmoothed
 library(betareg)
-
 pd_val <- pd %>%
   filter(pd$n_immune != 0)
 
