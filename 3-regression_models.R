@@ -93,7 +93,7 @@ nb <- glm.nb(y_disc ~ x_scaled)
 p_vals <- sort(
   coef(summary(nb_test))[, "Pr(>|z|)"], 
   decreasing = FALSE)
-p_vals_adj <- p.adjust(p_vals, method = "BH")     # prefer benjamini but still optimistic                      
+p_vals_adj <- p.adjust(p_vals, method = "BH")     # benjamini > bonferroni but still optimistic                      
 
 # b. reduced model, only "significant" predictors. AIC = 4008.8
 red_col <- fact_cols[c(1, 3, 11, 13, 22)]
