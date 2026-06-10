@@ -94,20 +94,20 @@ plot(2:50, delta, type = "b",          # begins from plotting change 2 -> 3
 
 
 # -----------------------------------------------------------------------------
-# 3. QC of NMFs by re-seeding. from optimization, k = 16
+# 3. QC of NMFs by re-seeding. from optimization, k = 22
 n <- 30                                # CLT, number of runs
-iterate_fit16 <- vector("list", n)
+iterate_fit22 <- vector("list", n)
 
 for (i in 1: n) {
   set.seed(7*i)                        # my lucky number is 7. 
-  iterate_fit16[[i]] <- nmf(merged_mat, k = 16, verbose = FALSE)
+  iterate_fit22[[i]] <- nmf(merged_mat, k = 22, verbose = FALSE)
   
-  rownames(iterate_fit16[[i]]$w) <- rownames(merged_mat)
-  colnames(iterate_fit16[[i]]$h) <- colnames(merged_mat)
+  rownames(iterate_fit22[[i]]$w) <- rownames(merged_mat)
+  colnames(iterate_fit22[[i]]$h) <- colnames(merged_mat)
 }
 
 # pair-wise comparison against reference
-W_list <- lapply(iterate_fit16, function(x) x$w)
+W_list <- lapply(iterate_fit22, function(x) x$w)
 W_ref <- W_list[[1]]        
 
 cor_matrix <- list()
@@ -131,23 +131,23 @@ barplot(stability,
         ylim = c(0, 1),
         xlab = "NMF run",
         ylab = "proportion similar",
-        main = "NMF similarity across 30 runs (k = 16), reference column 1")
+        main = "NMF similarity across 30 runs (k = 22), reference column 1")
 par(cex.main = 0.75)
 par(cex.axis = 0.5)
 abline(h = 0.75, col = "blue", lwd = 2, lty =2)
 
 
 # -----------------------------------------------------------------------------
-# 4. NMF on optimal k rank (16) on combined samples 
-fit16 <- nmf(merged_mat, k = 16, verbose = FALSE)
+# 4. NMF on optimal k rank (22) on combined samples 
+fit22 <- nmf(merged_mat, k = 22, verbose = FALSE)
 
 # re-aligning row and column names (lost before)
-rownames(fit16$w) <- rownames(merged_mat)
-colnames(fit16$h) <- colnames(merged_mat)
+rownames(fit22$w) <- rownames(merged_mat)
+colnames(fit22$h) <- colnames(merged_mat)
 
 # renaming for ease of reference
-W <- fit16$w
-H <- fit16$h  
+W <- fit22$w
+H <- fit22$h  
 
                  
 # -----------------------------------------------------------------------------
