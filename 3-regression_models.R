@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
-# Date : 06/02/2026 4:59pm
+# Date : 06/11/2026 11:30am
 # Purpose: model iterations, regression dying tumor ~ NMF factors
 # -----------------------------------------------------------------------------
 
@@ -12,12 +12,12 @@ library(tidyr)
 datadir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20260413_final_merge/data"
 iso <- read.csv(file = file.path(datadir, "0528_22NMF_iso_40.csv"))
 
-pd <- read.csv(file = file.path(datadir, "0602_22NMF_pd1_40incl.csv"))    
+pd <- read.csv(file = file.path(datadir, "0609_10NSF_pd1_40.csv"))
 
 
 # -----------------------------------------------------------------------------
 # preliminary checks of NMF factors
-fact_cols <- names(pd)[12:33]                         # indices, NMF columns begin @12
+fact_cols <- names(pd)[13:32]                         # indices, check head first
 
 sorted_genes <- (sort(W[,17], decreasing = TRUE))     # summary of top genes
 head(names(sorted_genes), 10)
@@ -42,22 +42,23 @@ write.csv(head(df_weighted, 40), file.path(datadir, "factor_weights40.csv"),
           rownames = FALSE)
 
 # ----------------------------------------------------------------------------_
-# ASSUMPTIONS AND LIMITATIONS
+# BEGINNING MODELING
+
+# What are our assumptions?
 # - know data is nonlinear and non-normal
-# - means smoothing possible density covariate
+# - means smoothing need to incorporate density covariate
 # - better but still non-orthogonal when using NMF. raw counts, per-gene weights
 # - attempted to restore pseudo-independence by sampling non-overlapping disks
 
 
 # -----------------------------------------------------------------------------
 # 1. setting vars and family
-x <- as.matrix(pd[, fact_cols])       # 2x rep control cond. & exp
-x_scaled <- scale(x)                  # visible representation of RNA counts
+x <- as.matrix(pd[, fact_cols])       # 2x repeated control condition & treated
+x_scaled <- scale(x)                  # visible representation of RNA counts. z-scores
 
 y_binar <- pd$exist_dying             # binomial  [X]
 y_disc <- pd$n_dying                  # overdispersion -> negative binomial
                                       # zero inflation overfit from performance stats
-yd_test <- pd$n_lectin                # known vasculature for verification
 
 y_cont <- pd$prop_dying               # beta, non-gaussian
 
@@ -80,39 +81,39 @@ ggplot(OR_clean %>%
 
 
 # -----------------------------------------------------------------------------
-# 3. using counts considers sequencing depth
+# 3. using counts considers sequencing depth. iterate after diagnosis in 5
 hist(y_disc, 
      breaks = 30,
      main = "Distribution of count dying",
      xlab = "number of dying cells in 40 micron vicinity")
 
-# a. negative binomial AIC = 3994.1
+
+# a. negative binomial. AIC = 3994.1
 library(MASS)
 nb <- glm.nb(y_disc ~ x_scaled)
 
-p_vals <- sort(
-  coef(summary(nb_test))[, "Pr(>|z|)"], 
+p_vals <- sort(                                   # first visualization
+  coef(summary(nb))[, "Pr(>|z|)"], 
   decreasing = FALSE)
-p_vals_adj <- p.adjust(p_vals, method = "BH")     # benjamini > bonferroni but still optimistic                      
+p_vals_adj <- p.adjust(p_vals, method = "BH")     # prefer benjamini but still optimistic
 
-# b. reduced model, only "significant" predictors. AIC = 4008.8
-red_col <- fact_cols[c(1, 3, 11, 13, 22)]
+# b. required to control for geographical trends. AIC = 3915.2
+library(mgcv)
+spatial <- gam(y_disc ~ x_scaled + s(cx, cy, bs = "gp"),  # spatial smoothing
+               data = pd,
+               family = nb())
+
+# c. reduced model, only "significant" predictors. AIC = 3959.2, not worrisome
+red_col <- fact_cols[c(1, 3, 7, 11, 17, 22)]
 x_red <- as.matrix(pd[, red_col])
 x_red_sc <- scale(x_red)
 
-nb_red <- glm.nb(y_disc ~ x_red_sc)
+spatial_red <- gam(y_disc ~ x_red_sc + s(cx, cy, bs = "gp"),
+                   data = pd,
+                   family = nb())
 
-# c. refining the model nonlinearity. parsimony
-x_red_rf <- x_red_sc
-x_red_rf[,3] <- x_red_sc[,3] + I(x_red_sc[,3]^2)   # polynomial term
 
-nb_rf <- glm.nb(y_disc ~ x_red_rf)
-
-intthir <- x_red_sc[,3] * x_red_sc[,4]             # slope interaction
-nb_int <- glm.nb(y_disc ~ x_red_sc + 
-                          intthir)
-
-# d. elastic net. alternative collinearity, same factors pop out
+# d. elastic net to account for more collinearity. 
 library(glmnet)
 # finding optimal penalization term using cross-validation to minimize MSE
 crval <- cv.glmnet(x_scaled, y_disc, alpha = 0.5, nfolds = 10)
@@ -121,37 +122,53 @@ optim <- crval$lambda.min
 elastic <- glmnet(x_scaled, y_disc, alpha = 0.5, lambda = optim)
 coef(elastic) 
 
+# e. adding an interaction term. AIC = 3955.4
+inter <- x_red_sc[,2] * x_red_sc[,4]             # slope interaction
+spatial_int <- gam(y_disc ~ x_red_sc + inter + s(cx, cy, bs = "gp"),
+                   data = pd,
+                   family = nb())
+
+# f. addressing the curved residuals. parsimony!! AIC = 3945.9
+x_red_rf <- x_red_sc
+x_red_rf[,2] <- x_red_sc[,2] + I(x_red_sc[,2]^2)   # polynomial term
+spatial_intC <- gam(y_disc ~ x_red_rf + inter + s(cx, cy, bs = "gp"),
+                   data = pd,
+                   family = nb())
+
 
 # -----------------------------------------------------------------------------
 # 4. Examining continuous models, however, proportion is oversmoothed
-library(betareg)
-pd_val <- pd %>%
-  filter(pd$n_immune != 0)
-
-xv <- as.matrix(pd_val[, fact_cols])
-xv_scaled <- scale(xv)
-
 yc2 <- pd_val$efficacy                             # depends on definition
                                                    # gamma if using dying counts per instead
-beta <- betareg(yc2 ~ xv_scaled)  
+gamma <- glm(yc2 ~ x_scaled,
+             data = pd, 
+             family = Gamma) 
 
 
 # -----------------------------------------------------------------------------
 # 5. diagnostic stats
 # a. discrete
 library(DHARMa)
-sim_res <- simulateResiduals(nb_red)
+sim_res <- simulateResiduals(spatial_red)
+sim_res2 <- simulateResiduals(spatial_intC)
 plot(sim_res)       
 
 # finding the culprit throwing off my data
-for(i in 1:k) {                     # k defined upstream, number of predictors
-  plotResiduals(sim_res, x_red_sc[, i],
-                main = colnames(x_red_sc)[i])
+for(i in 1:6) {                                   # number of reduced factors
+  plotResiduals(sim_res2, x_red_rf[, i],
+                main = colnames(x_red_rf)[i])
 }
 
 # b. continuous
 qqnorm(residuals(beta, type = "quantile"))
 qqline(residuals(beta, type = "quantile"))
+
+# c. checking spatial autocorrelation
+library(spdep)
+coords <- as.matrix(pd[, c("cx", "cy")])
+nb <- knn2nb(knearneigh(coords, k = 4))           # baseline querying 4 nearest neighbors
+weights <- nb2listw(nb, style = "W")
+testSpatialAutocorrelation(sim_res, x = pd$cx, y = pd$cy)
 
 
 # -----------------------------------------------------------------------------
@@ -185,4 +202,6 @@ nb10 <- glm.nb(y10d ~ x10sc)
 nb20 <- glm.nb(y20d ~ x20sc)
 nb80 <- glm.nb(y80d ~ x80sc)
 
+yd_test <- pd10$n_lectin            # vasculature for verification. cell type proximity
+nb_test <- glm.nb(yd_test ~ x10sc)
 
