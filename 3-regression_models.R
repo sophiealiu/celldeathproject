@@ -96,7 +96,7 @@ p_vals <- sort(                                   # first visualization
   decreasing = FALSE)
 p_vals_adj <- p.adjust(p_vals, method = "BH")     # prefer benjamini but still optimistic
 
-# b. required to control for geographical trends. AIC = 3915.2
+# b. gen. add to control for geographical trends. AIC = 3915.2
 library(mgcv)
 spatial <- gam(y_disc ~ x_scaled + s(cx, cy, bs = "gp"),  # spatial smoothing
                data = pd,
