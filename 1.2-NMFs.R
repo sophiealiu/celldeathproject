@@ -76,7 +76,7 @@ for (i in 1:(n - 1)) {
     matched_corrs <- numeric(ks)
     temp_mat <- cor_mat
     
-    # greedy matching computationally more feasible. sorry to marriage problem
+    # greedy matching computationally more feasible. 
     for (f in 1:ks) {
       max <- which(temp_mat == max(temp_mat), arr.ind = TRUE)[1, ]
       matched_corrs[f] <- temp_mat[max_idx[1], max_idx[2]]
@@ -138,7 +138,7 @@ pd1_joined <- cbind(
 )
 
 # scale from pixels to microns for euclidean spatial alignment
-pd1_joined$x <- pd1_joined$x / 1.5454              # careful with overwriting.
+pd1_joined$x <- pd1_joined$x / 1.5454              
 pd1_joined$y <- pd1_joined$y / 1.5454              
 
 # export, repeating above for isotype control
