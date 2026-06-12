@@ -60,7 +60,7 @@ y_binar <- pd$exist_dying             # binomial  [X]
 y_disc <- pd$n_dying                  # overdispersion -> negative binomial
                                       # zero inflation overfit from performance stats
 
-y_cont <- pd$prop_dying               # beta, non-gaussian
+y_cont <- pd$prop_dying               # beta or gamma dep. def, non-gaussian
 
 
 # -----------------------------------------------------------------------------
