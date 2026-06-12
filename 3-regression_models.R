@@ -102,7 +102,12 @@ spatial <- gam(y_disc ~ x_scaled + s(cx, cy, bs = "gp"),  # spatial smoothing
                data = pd,
                family = nb())
 
-# c. reduced model, only "significant" predictors. AIC = 3959.2, not worrisome
+# c. given it's sparse, wanted to see zeroes
+library(performance)
+zero <- glm(y_disc ~ x_scaled, family = nb, data = pd)
+check_zeroinflation(zero)
+
+# d. reduced model, only "significant" predictors. AIC = 3959.2, not worrisome
 red_col <- fact_cols[c(1, 3, 7, 11, 17, 22)]
 x_red <- as.matrix(pd[, red_col])
 x_red_sc <- scale(x_red)
@@ -111,7 +116,7 @@ spatial_red <- gam(y_disc ~ x_red_sc + s(cx, cy, bs = "gp"),
                    data = pd,
                    family = nb())
 
-# d. elastic net cross-check factors. 
+# e. elastic net cross-check factors. 
 library(glmnet)
 # finding optimal penalization term using cross-validation to minimize MSE
 crval <- cv.glmnet(x_scaled, y_disc, alpha = 0.5, nfolds = 10)
@@ -120,13 +125,13 @@ optim <- crval$lambda.min
 elastic <- glmnet(x_scaled, y_disc, alpha = 0.5, lambda = optim)
 coef(elastic) 
 
-# e. adding an interaction term. AIC = 3955.4
+# f. adding an interaction term. AIC = 3955.4
 inter <- x_red_sc[,2] * x_red_sc[,4]             # slope interaction
 spatial_int <- gam(y_disc ~ x_red_sc + inter + s(cx, cy, bs = "gp"),
                    data = pd,
                    family = nb())
 
-# f. addressing the curved residuals. parsimony!! AIC = 3945.9
+# g. addressing the curved residuals. parsimony!! AIC = 3945.9
 x_red_rf <- x_red_sc
 x_red_rf[,2] <- x_red_sc[,2] + I(x_red_sc[,2]^2)   # polynomial term
 spatial_intC <- gam(y_disc ~ x_red_rf + inter + s(cx, cy, bs = "gp"),
