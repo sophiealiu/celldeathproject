@@ -126,7 +126,7 @@ iso_vis_coords <- readRDS(file.path(datadir, "iso_vis_coords.rds"))
 rownames(pd1_vis_coords)  <- paste0("pd1_", rownames(pd1_vis_coords))
 rownames(iso_vis_coords) <- paste0("iso_", rownames(iso_vis_coords))
 
-tH <- t(H)   # required to transpose to line up. colnamesH holds both
+tH <- t(H)                                         # transpose to line up & colnamesH holds both samples
 
 common_pd1 <- rownames(pd1_vis_coords)[
   rownames(pd1_vis_coords) %in% colnames(H)
