@@ -149,7 +149,7 @@ heat <- function(df_IF, df_visium,
 
 # -----------------------------------------------------------------------------
 # 3. Visualization & exporting for more graphics
-colors <- c("pink")                           # require character vectors
+colors <- c("#9678B6")                                   # purple mountain majesty, courtesy of DB
 factor_cols <- c("X11")
 
 test <- draw(df_isoIF, df_isovisium, factor_cols, colors, 1, 1, 0.6)
