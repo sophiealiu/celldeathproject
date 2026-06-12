@@ -79,9 +79,9 @@ for (i in 1:(n - 1)) {
     # greedy matching computationally more feasible. 
     for (f in 1:ks) {
       max <- which(temp_mat == max(temp_mat), arr.ind = TRUE)[1, ]
-      matched_corrs[f] <- temp_mat[max_idx[1], max_idx[2]]
-      temp_mat[max_idx[1], ] <- -1
-      temp_mat[, max_idx[2]] <- -1
+      matched_corrs[f] <- temp_mat[max[1], max[2]]
+      temp_mat[max[1], ] <- -1
+      temp_mat[, max[2]] <- -1
     }
     
     pair_stab <- c(pair_stab, mean(matched_corrs))
