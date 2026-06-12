@@ -60,10 +60,10 @@ k_opt <- uik(x = ks, y = mean_loss)
 
 # b. stability score at optimal rank
 n3 <- 30                                             # here, CLT
-Ws <- vector("list", n3)
+W_list <- vector("list", n3)
 for (i in 1:n3) {
   mod_stab <- nmf(merged_mat, k = k_opt, seed = 7*i, verbose = FALSE)
-  Ws[[i]] <- mod_stab$w
+  W_list[[i]] <- mod_stab$w
 }
 
 pair_stab <- c()
@@ -114,7 +114,7 @@ factor_sim <- simil(
 
 library(pheatmap)
 pheatmap(factor_sim, 
-         clustering_distance_rows = "correlation",
+         clustering_distance_roW_list = "correlation",
          clustering_distance_cols = "correlation",
 
          
