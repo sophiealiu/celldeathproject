@@ -66,7 +66,7 @@ for (i in 1:n3) {
   W_list[[i]] <- mod_stab$w
 }
 
-pair_stab <- c()
+pair_stab <- c()                                     # close to 1
 
 for (i in 1:(n3 - 1)) {
   for (j in (i + 1):n3) {
