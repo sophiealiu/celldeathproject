@@ -111,7 +111,7 @@ spatial_red <- gam(y_disc ~ x_red_sc + s(cx, cy, bs = "gp"),
                    data = pd,
                    family = nb())
 
-# d. elastic net to account for more collinearity. 
+# d. elastic net cross-check factors. 
 library(glmnet)
 # finding optimal penalization term using cross-validation to minimize MSE
 crval <- cv.glmnet(x_scaled, y_disc, alpha = 0.5, nfolds = 10)
