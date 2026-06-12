@@ -81,7 +81,7 @@ for (ct in celltypes) {
 }
 
 saveRDS(de.mark_known, file.path(inputdir, "Seurat objects", "mark_known.rds"))
-head(rownames(de.mark_known[["Fibroblasts"]]), 10)   # inspection
+head(rownames(de.mark_known[["Fibroblasts"]]), 10)   
 
 
 # -----------------------------------------------------------------------------
