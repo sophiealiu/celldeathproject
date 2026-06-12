@@ -115,7 +115,7 @@ factor_sim <- simil(
 library(pheatmap)
 pheatmap(factor_sim, 
          clustering_distance_roW_list = "correlation",
-         clustering_distance_cols = "correlation",
+         clustering_distance_cols = "correlation")
 
          
 # -----------------------------------------------------------------------------
