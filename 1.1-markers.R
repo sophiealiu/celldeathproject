@@ -113,27 +113,7 @@ genelist <- DEgenes$gene
 
 
 # -----------------------------------------------------------------------------
-# 2. Binding expression per bin with bin coordinates
-sig_Iso <- do.call(rbind, lapply(signatures, function(genes) {
-  colMeans(expr_matIso[genes, , drop = FALSE], na.rm = TRUE)
-}))
-
-# required to transpose to match row and column names
-sig_Iso <- t(sig_Iso) %>%
-  as.data.frame()
-
-# assigning coordinates to bins
-scoresIso <- cbind(iso7_coords, sig_Iso)
-
-# transforming from pixels to microns. easier to do here/upstream
-scoresIso$x <- scoresIso$x / 1.5454 
-scoresIso$y <- scoresIso$y / 1.5454
-
-
-# -----------------------------------------------------------------------------
-# 3. Verify proper spatial location 
+# 2. Verify proper spatial location 
 plot(scoresIso, x = x, y = y)
 
-# export
-write.csv(scoresIso, file.path(inputdir, "iso7spatial_mark.csv"))
 
