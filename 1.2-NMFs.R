@@ -138,7 +138,7 @@ pd1_joined <- cbind(
 )
 
 # scale from pixels to microns for euclidean spatial alignment
-pd1_joined$x <- pd1_joined$x / 1.5454              
+pd1_joined$x <- pd1_joined$x / 1.5454              # scaling factor from imaging metadata
 pd1_joined$y <- pd1_joined$y / 1.5454              
 
 # export, repeating above for isotype control
