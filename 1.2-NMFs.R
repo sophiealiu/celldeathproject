@@ -42,13 +42,13 @@ merged_mat <- cbind(mat_iso, mat_pd1)
 # a. avg loss across runs gives us optimal rank at curvature
 library(inflection)
 ks <- 2:20
-n <- 10                                              # 10 for estimation
+nruns_loss <- 10                                     # 10 for estimation
 
-loss_matrix <- matrix(nrow = length(ks), ncol = n)
+loss_matrix <- matrix(nrow = length(ks), ncol = nruns_loss)
 
 for (i in seq_along(ks)) {
-  for (r in 1:n) {                                   # 7 is my favorite number
-    model <- nmf(merged_mat, k = i, seed = 7*n, verbose = FALSE)      
+  for (r in 1:nruns_loss) {                          # 7 is my favorite number
+    model <- nmf(merged_mat, k = i, seed = 7*nruns_loss, verbose = FALSE)      
     loss_matrix[i, r] <- mse(merged_mat, model$w, 
                                          model$d, 
                                          model$h)
@@ -59,17 +59,17 @@ mean_loss <- rowMeans(loss_matrix)
 k_opt <- uik(x = ks, y = mean_loss)
 
 # b. stability score at optimal rank
-n3 <- 30                                             # here, CLT
+nruns_stab <- 30                                     # here, CLT
 W_list <- vector("list", n3)
-for (i in 1:n3) {
+for (i in 1:nruns_stab) {
   mod_stab <- nmf(merged_mat, k = k_opt, seed = 7*i, verbose = FALSE)
   W_list[[i]] <- mod_stab$w
 }
 
 pair_stab <- c()                                     # ideal close to 1
 
-for (i in 1:(n3 - 1)) {
-  for (j in (i + 1):n3) {
+for (i in 1:(nruns_stab - 1)) {
+  for (j in (i + 1):nruns_stab) {
     # pearson correlation between runs i& j. 
     cor_mat <- cor(W_list[[i]], W_list[[j]])
     
@@ -77,7 +77,7 @@ for (i in 1:(n3 - 1)) {
     temp_mat <- cor_mat
     
     # greedy matching computationally more feasible. 
-    for (f in 1:ks) {
+    for (f in 1:k_opt) {
       max <- which(temp_mat == max(temp_mat), arr.ind = TRUE)[1, ]
       matched_corrs[f] <- temp_mat[max[1], max[2]]
       temp_mat[max[1], ] <- -1
