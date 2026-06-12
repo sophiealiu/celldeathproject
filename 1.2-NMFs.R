@@ -60,7 +60,7 @@ k_opt <- uik(x = ks, y = mean_loss)
 
 # b. stability score at optimal rank
 nruns_stab <- 30                                     # here, CLT
-W_list <- vector("list", n3)
+W_list <- vector("list", nruns_stab)
 for (i in 1:nruns_stab) {
   mod_stab <- nmf(merged_mat, k = k_opt, seed = 7*i, verbose = FALSE)
   W_list[[i]] <- mod_stab$w
@@ -73,7 +73,7 @@ for (i in 1:(nruns_stab - 1)) {
     # pearson correlation between runs i& j. 
     cor_mat <- cor(W_list[[i]], W_list[[j]])
     
-    matched_corrs <- numeric(ks)
+    matched_corrs <- numeric()
     temp_mat <- cor_mat
     
     # greedy matching computationally more feasible. 
