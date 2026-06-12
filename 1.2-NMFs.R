@@ -68,8 +68,8 @@ for (i in 1:n3) {
 
 pair_stab <- c()
 
-for (i in 1:(n - 1)) {
-  for (j in (i + 1):n) {
+for (i in 1:(n3 - 1)) {
+  for (j in (i + 1):n3) {
     # pearson correlation between runs i& j. want close to 1
     cor_mat <- cor(W_list[[i]], W_list[[j]])
     
