@@ -9,7 +9,7 @@ library(arrow)
 library(dplyr)
 library(ggplot2)
 library(limma)
-library(presto)      # Seurat V5 incompatible, forced in using remotes + Github
+library(presto)      # Seurat V5 incompatible, forced in using remotes
 library(Seurat)
 library(SeuratData)  # same as above
 
