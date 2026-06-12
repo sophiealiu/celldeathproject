@@ -158,8 +158,8 @@ for(i in 1:6) {                                   # number of reduced factors
 }
 
 # b. continuous
-qqnorm(residuals(beta, type = "quantile"))
-qqline(residuals(beta, type = "quantile"))
+qqnorm(residuals(gamma, type = "quantile"))
+qqline(residuals(gamma, type = "quantile"))
 
 # c. checking spatial autocorrelation
 library(spdep)
