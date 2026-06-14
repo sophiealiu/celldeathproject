@@ -98,6 +98,7 @@ W <- save$w
 H <- save$h  
 write.csv(W, "9NMF_W.csv")
 
+
 # -----------------------------------------------------------------------------
 # 5. viewing if the factors are orthogonal. using cosine similarity btwn vectors
 library(proxyC)
