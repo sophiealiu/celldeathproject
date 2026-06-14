@@ -28,7 +28,7 @@ df <- rbind(iso, pd1)
 
 # -----------------------------------------------------------------------------
 # 1. setting vars and family
-fact_cols <- names(df)[10:18]                         # indices, check head(df) first
+fact_cols <- names(df)[grepl("^X", names(df))]                        
 x <- as.matrix(df[, fact_cols])         
 x_scaled <- scale(x)                    # visible representation of RNA counts. z-scores
 
