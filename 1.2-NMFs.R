@@ -36,7 +36,7 @@ merged_mat <- cbind(mat_iso, mat_pd1)
 
 # -----------------------------------------------------------------------------
 # 2. testing k-ranks. 
-# a. avg MSE decreasing dim. returns at elbow/knee
+# a. avg MSE dim. returns at elbow/knee
 library(inflection)
 library(progress)
 ks <- 2:20                                               # prelim dx, < 20
