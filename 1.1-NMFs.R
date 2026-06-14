@@ -9,7 +9,7 @@ library(ggplot2)
 library(RcppML)
 library(Seurat)
 
-# importing files
+# importing files. no assumptions made hence raw data
 iso_raw <- readRDS("iso_raw.rds"))
 pd1_raw <- readRDS("pd1_raw.rds"))
 
