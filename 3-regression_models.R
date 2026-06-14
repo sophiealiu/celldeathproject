@@ -22,8 +22,8 @@ df <- rbind(iso, pd1)
 
 # What are our assumptions?
 # - know data is nonlinear and non-normal
-# - means smoothing need to incorporate density covariate
-# - better but still non-orthogonal when using NMF. raw counts, per-gene weights
+# - means smoothing, need to incorporate tumor density covariate
+# - better but still non-orthogonal when using NMF. using raw counts w/ per-gene weights
 # - pseudo-independence by sampling non-overlapping disks
 
 
