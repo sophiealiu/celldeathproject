@@ -28,7 +28,7 @@ df <- rbind(iso, pd1)
 
 # -----------------------------------------------------------------------------
 # 1. setting vars and family
-fact_cols <- names(df)[10:18]                         # indices, check head first
+fact_cols <- names(df)[10:18]                         # indices, check head(df) first
 x <- as.matrix(df[, fact_cols])         
 x_scaled <- scale(x)                    # visible representation of RNA counts. z-scores
 
@@ -151,4 +151,23 @@ set.seed(42)
 y_messUp <- sample(y_disc)
 
 nb_mess <- glm.nb(y_messUp ~ df$n_immune + trt + x_scaled + tum_off)
+
+
+# -----------------------------------------------------------------------------
+# 7. radii sensitivity (repeated for control and experimental) 3x
+df10 <- read.csv("9NMF_pd110.csv")
+df20 <- read.csv("9NMF_pd120.csv")  
+df80 <- read.csv("9NMF_pd180.csv") 
+
+x10_red <- as.matrix(df10[, red_col])         
+x10_red_sc <- scale(x_red)
+y10_disc <- d10f$n_dying
+
+trt10 <- ifelse(df10$sample == "apd1", 1, 0)
+tum10_off <- offset(log(df10$n_tumor+1)) 
+
+spatial_red10 <- gam(y10_disc ~ n_immune + trt10 + x10_red_sc + tum10_off +
+                     s(cx, cy, bs = "gp"),
+                   data = df10,
+                   family = nb())
 
