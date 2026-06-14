@@ -9,13 +9,19 @@ library(ggplot2)
 library(RcppML)
 library(Seurat)
 
-# importing files. no assumptions made, hence raw data
-iso_raw <- readRDS("iso_raw.rds"))
-pd1_raw <- readRDS("pd1_raw.rds"))
+# importing files. no assumptions made, hence raw data. bin 8 recommended by 10x
+iso_raw <- Load10X_Spatial(
+  filename = "Iso-visium/binned_outs/outs",
+  bin.size = c(8)
+)
+pd1_raw <- Load10X_Spatial(
+  filename = "Pd1-visium/binned_outs/outs",
+  bin.size = c(8)
+)
 
 
 # -----------------------------------------------------------------------------
-# 1. Expression matrix X before decomposing. merging here because raw unable to get matrix
+# 1. Expression matrix X before decomposing. 
 mat_iso <- GetAssayData(
   iso_raw,
   assay = "Spatial.008um",
