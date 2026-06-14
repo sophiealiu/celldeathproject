@@ -14,9 +14,8 @@ library(Seurat)
 library(SeuratData)  # same as above
 
 # importing files
-pd1_norm <- readRDS(file.path(inputdir, "Seurat objects", "pd1_norm.rds"))
-            # generated using Load10x function then log normalization
-iso7_norm <- readRDS(file.path(inputdir, "Seurat objects", "iso7_norm.rds"))
+pd1_raw <- readRDS("pd1_raw.rds")
+iso7_raw <- readRDS("iso_raw.rds")
 
 
 # -----------------------------------------------------------------------------
