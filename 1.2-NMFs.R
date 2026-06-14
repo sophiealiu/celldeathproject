@@ -66,9 +66,9 @@ k_opt <- uik(x = ks, y = mean_loss)
 
 # b. stability score at optimal rank 9. Hungarian algorithm 
 library(clue)
-nruns_stab <- 30                          # here CLT
+nruns_stab <- 30                                 # here CLT
 pair_stab <- c()
-W_list <- vector("list", nruns_stab)      # list weights
+W_list <- vector("list", nruns_stab)             # features
 
 for (r in 1:nruns_stab) {
   save <- nmf(merged_mat, k = 9, seed = 7+ r)
@@ -77,7 +77,7 @@ for (r in 1:nruns_stab) {
 
 for (i in 1:(nruns_stab - 1)) {
   for (j in (i + 1):nruns_stab) {
-    cor_mat <- abs(cor(W_list[[i]], W_list[[j]]))   # magnitude
+    cor_mat <- abs(cor(W_list[[i]], W_list[[j]]))        # magnitude pref.
     assign <- solve_LSAP(cor_mat, maximum = TRUE)
     
     matched <- cor_mat[cbind(1:9, assign)]
@@ -101,7 +101,7 @@ H <- save$h
 # 5. viewing if the factors are orthogonal. using cosine similarity btwn vectors
 library(proxyC)
 factor_sim <- simil(
-  t(W),                        # required to transpose to get factor x gene
+  t(W),                                          # required to transpose to get factor x gene
   method = "cosine"
 )
 
