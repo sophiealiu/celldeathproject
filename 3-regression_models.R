@@ -55,7 +55,7 @@ write.csv(head(df_weighted, 40), file.path(localdir, "factor_weights40.csv"),
 x <- as.matrix(df[, fact_cols])         # 2x repeated control condition & treated
 x_scaled <- scale(x)                    # visible representation of RNA counts. z-scores
 
-y_binar <- df$exist_dying               # binomial  [X]
+y_binar <- df$exist_dying               
 y_disc <- df$n_dying                    # overdispersion -> negative binomial
                                         # zero inflation overfit from performance stats
 trt <- ifelse(df$sample == "apd1", 1, 0)
