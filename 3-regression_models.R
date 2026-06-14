@@ -10,7 +10,11 @@ library(tidyr)
 
 # importing files
 iso <- read.csv("9NMF_iso40.csv")
+# iso <- read.csv("9NSF_iso40.csv")
+
 pd1 <- read.csv("9NMF_pd140.csv")
+# iso <- read.csv("9NSF_pd140.csv")
+
 df <- rbind(iso, pd1)
 
 
