@@ -155,18 +155,18 @@ nb_mess <- glm.nb(y_messUp ~ df$n_immune + trt + x_scaled + tum_off)
 
 # -----------------------------------------------------------------------------
 # 7. radii sensitivity (repeated for control and experimental) 3x
+# kept it nonreduced to see if anything else pops out 
 df10 <- read.csv("9NMF_pd110.csv")
 df20 <- read.csv("9NMF_pd120.csv")  
 df80 <- read.csv("9NMF_pd180.csv") 
 
-x10_red <- as.matrix(df10[, red_col])         
-x10_red_sc <- scale(x_red)
+x10_sc <- scale(as.matrix(df10[, fact_col]))        
 y10_disc <- d10f$n_dying
 
 trt10 <- ifelse(df10$sample == "apd1", 1, 0)
 tum10_off <- offset(log(df10$n_tumor+1)) 
 
-spatial_red10 <- gam(y10_disc ~ n_immune + trt10 + x10_red_sc + tum10_off +
+spatial_red10 <- gam(y10_disc ~ n_immune + trt10 + x10_sc + tum10_off +
                      s(cx, cy, bs = "gp"),
                    data = df10,
                    family = nb())
