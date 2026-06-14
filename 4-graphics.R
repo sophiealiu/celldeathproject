@@ -147,7 +147,7 @@ heat <- function(df_IF, df_visium,
 
 
 # -----------------------------------------------------------------------------
-# 3. Visualization & exporting for more graphics
+# 3. actually happening now
 colors <- c("#9678B6")                                   # purple mountain majesty, courtesy of DB
 factor_cols <- c("X11")
 
