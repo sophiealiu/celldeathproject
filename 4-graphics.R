@@ -12,7 +12,7 @@ df_isoIF <- read_csv("iso7_coordsNT.csv")
 df_iso_vis <- read_csv("iso7_coordsNT.csv")
 
 df_pd1IF <- read_csv("9NMF_isoC.csv")
-df_pd1_vis <- read_csv(file.path(inputdir, "9NMF_Apd1.csv"))
+df_pd1_vis <- read_csv("9NMF_Apd1.csv")
 
 
 # -----------------------------------------------------------------------------
