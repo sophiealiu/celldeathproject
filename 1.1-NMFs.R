@@ -127,6 +127,7 @@ corrplot(
 pd1_vis_coords <- GetTissueCoordinates(pd1_raw, image = NULL)
 iso_vis_coords <- GetTissueCoordinates(iso_raw, image = NULL)
 
+# proper prefixing
 rownames(pd1_vis_coords)  <- paste0("pd1_", rownames(pd1_vis_coords))
 rownames(iso_vis_coords) <- paste0("iso_", rownames(iso_vis_coords))
 
