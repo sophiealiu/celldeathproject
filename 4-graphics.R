@@ -8,14 +8,11 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
-inputdir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20260413_final_merge/data"
+df_isoIF <- read_csv("iso7_coordsNT.csv")
+df_iso_vis <- read_csv("iso7_coordsNT.csv")
 
-# reading in my dataframes
-df_iso7IF <- read_csv(file.path(inputdir, "iso7_coords_clean.csv"))
-df_iso7visium <- read_csv(file.path(inputdir, "iso7spatial_sig.csv"))
-
-df_pd1IF <- read_csv(file.path(inputdir, "pd1-9_coords_final.csv"))
-df_pd1visium <- read_csv(file.path(inputdir, "pd1spatial_sig.csv"))
+df_pd1IF <- read_csv("9NMF_isoC.csv")
+df_pd1_vis <- read_csv(file.path(inputdir, "9NMF_Apd1.csv"))
 
 
 # -----------------------------------------------------------------------------
@@ -70,8 +67,8 @@ draw <- function(df_IF, df_visium,
     geom_point(
       data = df_visium_long,     
       aes(
-        x = cx,                                           # vars renamed x to cx in jupyter
-        y = cy,
+        x = x,                                           
+        y = y,
         color = factor
       ),
       size = size,
@@ -115,7 +112,7 @@ heat <- function(df_IF, df_visium,
    
    ggplot() +
   
-   geom_hex(data = df_vis_filt, aes(x = cx, y = cy),
+   geom_hex(data = df_vis_filt, aes(x = x, y = y),
             bins = bin_num,
             alpha = trans) +
    scale_fill_viridis_c(option = "A") +
