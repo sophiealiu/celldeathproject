@@ -101,7 +101,7 @@ H <- save$h
 # 5. viewing if the factors are orthogonal. using cosine similarity btwn vectors
 library(proxyC)
 factor_sim <- simil(
-  t(W),                                          # required to transpose to get factor x gene
+  t(W),                                          # transpose to get factor x gene
   method = "cosine"
 )
 
