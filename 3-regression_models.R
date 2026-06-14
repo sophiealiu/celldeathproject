@@ -171,3 +171,4 @@ spatial_red10 <- gam(y10_disc ~ n_immune + trt10 + x10_red_sc + tum10_off +
                    data = df10,
                    family = nb())
 
+
