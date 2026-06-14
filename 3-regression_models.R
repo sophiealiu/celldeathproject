@@ -5,7 +5,6 @@
 # -----------------------------------------------------------------------------
 
 library(dplyr)
-library(glmnet)
 library(tidyr)
 
 # importing files
