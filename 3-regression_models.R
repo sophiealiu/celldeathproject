@@ -65,7 +65,7 @@ hist(y_disc,
 library(MASS)
 nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + tum_off)
 
-p_vals <- sort(                                   # first visualization
+p_vals <- sort(                                   # p first visualization
   coef(summary(nb))[, "Pr(>|z|)"], 
   decreasing = FALSE)
 p_vals_adj <- p.adjust(p_vals, method = "BH")     # benjamini still optimistic
