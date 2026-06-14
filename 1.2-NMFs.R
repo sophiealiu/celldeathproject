@@ -45,7 +45,7 @@ loss_matrix <- matrix(nrow = length(ks), ncol = nruns_opt)
 
 pb <- progress_bar$new(
   format = "[:bar] :percent, approx. time left: :eta",
-  total = length(ks)*nruns_opt,                          # reuse choose(nruns_stab, 2)
+  total = length(ks)*nruns_opt,                          
   clear = FALSE, 
   width = 60
 )
