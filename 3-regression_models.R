@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
 # Date : 06/14/2026 10:01pm MDT
-# Purpose: model iterations, regression dying tumor ~ NMF factors
+# Purpose: model iterations, regression dying tumor ~ factors
 # -----------------------------------------------------------------------------
 
 library(dplyr)
