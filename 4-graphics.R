@@ -8,7 +8,7 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
-# importing files
+# importing files. these are lined up in the same pixel coordinate space.
 df_isoIF <- read_csv("iso_coordsNT.csv")
 df_iso_vis <- read_csv("9NMF_isoC.csv")
 
