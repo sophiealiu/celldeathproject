@@ -116,7 +116,7 @@ testZeroInflation(sim_res)
 
 # finding the culprit throwing off my data
 full_vars <- cbind(x_red_sc, df$n_immune, trt)
-for(i in 1:4) {                                   # number of reduced factors
+for(i in 1:4) {                                   # 4 total reduced factors
   plotResiduals(sim_res, full_vars[, i],
                 main = colnames(full_vars)[i])
 }
