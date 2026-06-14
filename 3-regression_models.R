@@ -55,7 +55,7 @@ ggplot(OR_clean %>%
 
 
 # -----------------------------------------------------------------------------
-# 3. using counts considers sequencing depth. iterate after diagnosis in 5
+# 3. using counts considers sequencing depth. iterate after dx in 5
 hist(y_disc, 
      breaks = 30,
      main = "Distribution of count dying",
