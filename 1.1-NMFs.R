@@ -123,7 +123,7 @@ corrplot(
 
 
 # -----------------------------------------------------------------------------
-# 6. finalizing, binding spatial data. GetTissueCoordinates, imageNULL
+# 6. finalizing/ binding spatial data. 
 pd1_vis_coords <- GetTissueCoordinates(pd1_raw, image = NULL)
 iso_vis_coords <- GetTissueCoordinates(iso_raw, image = NULL)
 
