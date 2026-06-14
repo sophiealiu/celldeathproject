@@ -3,21 +3,18 @@
 # Date : 06/11/2026 5:58pm
 # Purpose: Creating NMF factors from Visium data and optimizing for downstream
 # -----------------------------------------------------------------------------
-
 library(Matrix)
 library(ggplot2)
-library(RcppML)                # RcppML (and Gene NMF) for sparse matrices
+library(RcppML)
 library(Seurat)
 
 # importing files
-datadir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20260413_final_merge/data"
-
-iso_raw <- readRDS(file = file.path(datadir, "iso_raw.rds"))
-pd1_raw <- readRDS(file = file.path(datadir, "pd1_raw.rds"))
+iso_raw <- readRDS("iso_raw.rds"))
+pd1_raw <- readRDS("pd1_raw.rds"))
 
 
 # -----------------------------------------------------------------------------
-# 1. expression matrix X before decomposing. merging here because raw unable
+# 1. Expression matrix X before decomposing. merging here because raw unable to get matrix
 mat_iso <- GetAssayData(
   iso_raw,
   assay = "Spatial.008um",
@@ -38,98 +35,111 @@ merged_mat <- cbind(mat_iso, mat_pd1)
 
 
 # -----------------------------------------------------------------------------
-# 2. testing k-ranks
-# a. avg loss across runs gives us optimal rank at curvature
+# 2. testing k-ranks. 
+# a. avg MSE decreasing dim. returns at elbow/knee
 library(inflection)
-ks <- 2:20                                           # I am concerned about collapsing
-n <- 10                                              # 10 for estimation
+library(progress)
+ks <- 2:20                                               # prelim dx, < 20
+nruns_opt <- 10
+loss_matrix <- matrix(nrow = length(ks), ncol = nruns_opt)
 
-loss_matrix <- matrix(nrow = length(ks), ncol = n)
+pb <- progress_bar$new(
+  format = "[:bar] :percent, approx. time left: :eta",
+  total = length(ks)*nruns_opt,                          # reuse choose(nruns_stab, 2)
+  clear = FALSE, 
+  width = 60
+)
 
 for (i in seq_along(ks)) {
-  for (r in 1:n) {                                   # 7 is my favorite number
-    model <- nmf(merged_mat, k = i, seed = 7*n)      
-    loss_matrix[i, r] <- mse(merged_mat, model$w, 
-                                         model$d, 
+  for (r in 1:nruns_opt) {
+    model <- nmf(merged_mat, k = ks[i], seed = 7* r,     # 7 is my fav number
+                 verbose = FALSE)
+    loss_matrix[i, r] <- mse(merged_mat, model$w,        
+                                         model$d,
                                          model$h)
+    pb$tick()
   }
 }
 
 mean_loss <- rowMeans(loss_matrix)
 k_opt <- uik(x = ks, y = mean_loss)
 
-# b. stability score at optimal rank
-n3 <- 30                                             # here, CLT
-Ws <- vector("list", n3)
-for (i in 1:n3) {
-  mod_stab <- nmf(merged_mat, k = k_opt, seed = 7*i, verbose = FALSE)
-  Ws[[i]] <- mod_stab$w
+# b. stability score at optimal rank 9. Hungarian algorithm 
+library(clue)
+nruns_stab <- 30                          # here CLT
+pair_stab <- c()
+W_list <- vector("list", nruns_stab)      # list weights
+
+for (r in 1:nruns_stab) {
+  save <- nmf(merged_mat, k = 9, seed = 7+ r)
+  W_list[[r]] <- save$w
 }
 
-pair_stab <- c()
-
-for (i in 1:(n - 1)) {
-  for (j in (i + 1):n) {
-    # pearson correlation between runs i& j. want close to 1
-    cor_mat <- cor(W_list[[i]], W_list[[j]])
+for (i in 1:(nruns_stab - 1)) {
+  for (j in (i + 1):nruns_stab) {
+    cor_mat <- abs(cor(W_list[[i]], W_list[[j]]))   # magnitude
+    assign <- solve_LSAP(cor_mat, maximum = TRUE)
     
-    matched_corrs <- numeric(ks)
-    temp_mat <- cor_mat
-    
-    # greedy matching computationally more feasible. sorry to marriage problem
-    for (f in 1:ks) {
-      max <- which(temp_mat == max(temp_mat), arr.ind = TRUE)[1, ]
-      matched_corrs[f] <- temp_mat[max_idx[1], max_idx[2]]
-      temp_mat[max_idx[1], ] <- -1
-      temp_mat[, max_idx[2]] <- -1
-    }
-    
-    pair_stab <- c(pair_stab, mean(matched_corrs))
+    matched <- cor_mat[cbind(1:9, assign)]
+    pair_stab <- c(pair_stab, mean(matched))
   }
 }
 
-final_stab <- mean(pair_stab)
-
 
 # -----------------------------------------------------------------------------
-# 3. final model, optimal rank was 10
-best_mod <- nmf(merged_mat, k = 10, seed = 42)
-
-# re-aligning row and column names (lost before)
-rownames(best_mod$w) <- rownames(merged_mat)
-colnames(best_mod$h) <- colnames(merged_mat)
+# 4. re-aligning row and column names (lost before). 
+# just using last save from stability, seed 37 but it doesn't take long.
+rownames(save$w) <- rownames(merged_mat)
+colnames(save$h) <- colnames(merged_mat)
 
 # renaming for ease of reference
-W <- best_mod$w
-H <- best_mod$h  
+W <- save$w
+H <- save$h  
 
 
 # -----------------------------------------------------------------------------
-# 4. factors are orthogonality. using cosine similarity btwn factors
+# 5. viewing if the factors are orthogonal. using cosine similarity btwn vectors
 library(proxyC)
 factor_sim <- simil(
-  t(W),                                            # required to transpose to get factor x gene
+  t(W),                        # required to transpose to get factor x gene
   method = "cosine"
 )
 
-library(pheatmap)
-pheatmap(factor_sim, 
-         clustering_distance_rows = "correlation",
-         clustering_distance_cols = "correlation",
+library(corrplot)
+corrplot(
+  as.matrix(factor_sim),
+  method = "color",
+  type = "upper"
+)
 
-         
+
 # -----------------------------------------------------------------------------
-# 5. finalizing, binding spatial data
-pd1_vis_coords <- readRDS(file.path(datadir, "pd1_vis_coords.rds"))
-iso_vis_coords <- readRDS(datadir, "iso_vis_coords.rds")
+# 6. finalizing, binding spatial data. GetTissueCoordinates, imageNULL
+pd1_vis_coords <- GetTissueCoordinates(pd1_raw, image = NULL)
+iso_vis_coords <- GetTissueCoordinates(iso_raw, image = NULL)
 
 rownames(pd1_vis_coords)  <- paste0("pd1_", rownames(pd1_vis_coords))
 rownames(iso_vis_coords) <- paste0("iso_", rownames(iso_vis_coords))
-coords <- rbind(pd1_vis_coords, iso_vis_coords)
 
-tH <- t(H)   # required to transpose to line up. colnamesH holds both
-joined <- cbind(coords, tH)
+tH <- t(H)   # required to transpose to line up
 
-# export
-write.csv(pd1_joined, file.path(datadir, "0612_10NMF.csv"))
+common_pd1 <- rownames(pd1_vis_coords)[
+  rownames(pd1_vis_coords) %in% colnames(H)
+]
+common_iso <- rownames(iso_vis_coords)[
+  rownames(iso_vis_coords) %in% colnames(H)
+]
+
+pd1_joined <- cbind(
+  pd1_vis_coords[common_pd1, , drop = FALSE],
+  tH[common_pd1, , drop = FALSE]
+)
+
+iso_joined <- cbind(
+  iso_vis_coords[common_iso, , drop = FALSE],
+  tH[common_iso, , drop = FALSE]
+)
+
+# export both, bind at regression step. keep in pixels
+write.csv(pd1_joined, file.path(localdir, "9NMF_Apd1.csv"))
 
