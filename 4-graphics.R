@@ -8,6 +8,7 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
+# importing files
 df_isoIF <- read_csv("iso7_coordsNT.csv")
 df_iso_vis <- read_csv("iso7_coordsNT.csv")
 
