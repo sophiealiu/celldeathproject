@@ -9,8 +9,8 @@ library(glmnet)
 library(tidyr)
 
 datadir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20260413_final_merge/data"
-iso <- read.csv(file = file.path(localdir, "0613_9NMF_iso40.csv"))
-pd1 <- read.csv(file = file.path(localdir, "0613_9NMF_pd140.csv"))
+iso <- read.csv(file = file.path(datadir, "0613_9NMF_iso40.csv"))
+pd1 <- read.csv(file = file.path(datadir, "0613_9NMF_pd140.csv"))
 df <- rbind(iso, pd1)
 
 
