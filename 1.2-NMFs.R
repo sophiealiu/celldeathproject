@@ -140,6 +140,6 @@ iso_joined <- cbind(
   tH[common_iso, , drop = FALSE]
 )
 
-# export both, bind at regression step. keep in pixels
+# export both individually, bind at regression step. keep in pixels
 write.csv(pd1_joined, file.path(localdir, "9NMF_Apd1.csv"))
 
