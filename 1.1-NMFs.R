@@ -21,7 +21,7 @@ pd1_raw <- Load10X_Spatial(
 
 
 # -----------------------------------------------------------------------------
-# 1. Expression matrix X before decomposing. 
+# 1. expression matrix before decomposing. 
 mat_iso <- GetAssayData(
   iso_raw,
   assay = "Spatial.008um",
