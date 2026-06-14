@@ -1,23 +1,24 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
-# Date : 06/11/2026 11:30am
+# Date : 06/14/2026 10:01pm MDT
 # Purpose: model iterations, regression dying tumor ~ NMF factors
 # -----------------------------------------------------------------------------
 
 library(dplyr)
 library(glmnet)
-library(pheatmap)
 library(tidyr)
 
 datadir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20260413_final_merge/data"
-df <- read.csv(file = file.path(datadir, "0528_22NMF_iso_40.csv"))
+iso <- read.csv(file = file.path(localdir, "0613_9NMF_iso40.csv"))
+pd1 <- read.csv(file = file.path(localdir, "0613_9NMF_pd140.csv"))
+df <- rbind(iso, pd1)
 
 
 # -----------------------------------------------------------------------------
 # preliminary checks of NMF factors
-fact_cols <- names(df)[13:32]                         # indices, check head first
+fact_cols <- names(df)[10:18]                         # indices, check head first
 
-sorted_genes <- (sort(W[,17], decreasing = TRUE))     # summary of top genes
+sorted_genes <- (sort(W[,9], decreasing = TRUE))      # summary of top genes
 head(names(sorted_genes), 10)
 
 sorted_factor <- list()
@@ -36,7 +37,7 @@ for (i in 1:length(fact_cols)) {
 }
 
 df_weighted <- do.call(cbind, sorted_factor)
-write.csv(head(df_weighted, 40), file.path(datadir, "factor_weights40.csv"),
+write.csv(head(df_weighted, 40), file.path(localdir, "factor_weights40.csv"),
           rownames = FALSE)
 
 # ----------------------------------------------------------------------------_
@@ -57,23 +58,21 @@ x_scaled <- scale(x)                    # visible representation of RNA counts. 
 y_binar <- df$exist_dying               # binomial  [X]
 y_disc <- df$n_dying                    # overdispersion -> negative binomial
                                         # zero inflation overfit from performance stats
-
-y_cont <- df$prop_dying                 # non-gaussian
-dens_correct <- offset(log(df$tumor))   # incorporating tumor density effects, 
-                                        # more tumor likely more dying
+trt <- ifelse(df$sample == "apd1", 1, 0)
+tum_off <- offset(log(df$n_tumor+1))    # offset term, don't treat same as coeffs
 
 
 # -----------------------------------------------------------------------------
 # 2. basic comparative univariate odds-ratios
 OR <- glm(
-  reformulate(n_immune + trt + x_scaled + dens_corect, response = y_binar),
+  reformulate(df$n_immune + trt + x_scaled + tum_off, response = y_binar),
   family = "binomial"
 )
 
 OR_clean <- tidy(OR, conf.int = TRUE, exponentiate = TRUE)
 
 ggplot(OR_clean %>% 
-       aes(x = reorder(term, estimate), y = estimate)) +
+         aes(x = reorder(term, estimate), y = estimate)) +
   geom_point() +
   geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) 
 
@@ -86,103 +85,102 @@ hist(y_disc,
      xlab = "number of dying cells in 40 micron vicinity")
 
 
-# a. negative binomial. AIC = 3994.1
+# a. negative binomial. AIC = 4390.5
 library(MASS)
-nb <- glm.nb(y_disc ~ n_immune + trt + x_scaled + dens_corect)
+nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + tum_off)
 
 p_vals <- sort(                                   # first visualization
   coef(summary(nb))[, "Pr(>|z|)"], 
   decreasing = FALSE)
 p_vals_adj <- p.adjust(p_vals, method = "BH")     # after benjamini still optimistic
 
-# b. to control for geographical trends from Moran's I. AIC = 3915.2
-library(mgcv)
-spatial <- gam(y_disc ~ n_immune + trt + x_scaled + dens_corect + 
-                        s(cx, cy, bs = "gp"),     # spatial smoothing
-               data = df,                         
-               family = nb())
+# b. zero-inflation. AIC = 4459.6
+library(glmmTMB)
+zero <- glmmTMB(y_disc ~ n_immune + trt + x_scaled, 
+                data = df, 
+                family = nbinom2)
 
-# c. reduced model, only "significant" predictors. AIC = 3959.2, not worrisome
-red_col <- fact_cols[c(1, 3, 7, 11, 17, 22)]
+# c. geographical trends, Moran's I. Not combined w/ zero. AIC = 4358.5
+library(mgcv)
+spatial <- gam(y_disc ~ n_immune + trt + x_scaled + tum_off + 
+                 s(cx, cy, bs = "gp"),     # spatial smoothing
+                data = df,                         
+                family = nb())           
+
+# d. reduced model, only "significant" predictors. AIC = 4356.9
+red_col <- fact_cols[c(1, 4)]
 x_red <- as.matrix(df[, red_col])
 x_red_sc <- scale(x_red)
 
-spatial_red <- gam(y_disc ~ n_immune + trt + x_red_sc + dens_corect +
-                            s(cx, cy, bs = "gp"),
+spatial_red <- gam(y_disc ~ n_immune + trt + x_red_sc + tum_off +
+                     s(cx, cy, bs = "gp"),
                    data = df,
                    family = nb())
 
-# d. elastic net re-visualization of collinearity and significant factors. 
+# e. elastic net re-visualization. consistent effect size
 library(glmnet)
-# finding optimal penalization term that minimizes MSE
-crval <- cv.glmnet(n_immune + trt + x_scaled + dens_corect, y_disc, 
+# finding optimal penalization term
+crval <- cv.glmnet(df$n_immune + trt + x_scaled + tum_off, y_disc, 
                    alpha = 0.5, nfolds = 10)
 optim <- crval$lambda.min
 
-elastic <- glmnet(n_immune + trt + x_scaled + dens_corect, y_disc, 
+elastic <- glmnet(df$n_immune + trt + x_scaled + tum_off, y_disc, 
                   alpha = 0.5, lambda = optim)
 coef(elastic) 
-
-# e. adding interaction terms. AIC = 3955.4
-inter24 <- x_red_sc[,2] * x_red_sc[,4]             # slope interaction
-spatial_int <- gam(y_disc ~ n_immune + trt + x_red_sc + inter24 + dens_corect + 
-                            s(cx, cy, bs = "gp"),
-                   data = df,
-                   family = nb())
-
-# f. addressing the curved residuals. parsimony!! AIC = 3945.9
-x_red_rf <- x_red_sc
-x_red_rf[,2] <- x_red_sc[,2] + I(x_red_sc[,2]^2)   # polynomial term
-spatial_intC <- gam(y_disc ~ n_immune + trt + x_red_rf + inter24 + dens_corect
-                             s(cx, cy, bs = "gp"),
-                   data = df,
-                   family = nb())
-
-
-# -----------------------------------------------------------------------------
-# 4. Examining continuous models, however, proportion is oversmoothed
-library(betareg)
-beta <- betareg(y_cont ~ n_immune + trt + x_scaled + dens_corect) 
 
 
 # -----------------------------------------------------------------------------
 # 5. diagnostic stats
-# a. discrete
 library(DHARMa)
-sim_res <- simulateResiduals(spatial_red)
-plot(sim_res)       
+sim_resR <- simulateResiduals(spatial_red)
+plot(sim_res)
+
+# ratio of zeroes, okay need to do this.
+testZeroInflation(sim_res)
 
 # finding the culprit throwing off my data
-for(i in 1:6) {                                   # number of reduced factors
-  plotResiduals(sim_res, x_red_rf[, i],
-                main = colnames(x_red_rf)[i])
+full_vars <- cbind(x_red_sc, df$n_immune, trt)
+for(i in 1:4) {                                   # number of reduced factors
+  plotResiduals(sim_res, full_vars[, i],
+                main = colnames(full_vars)[i])
 }
 
-# b. continuous
-qqnorm(residuals(beta, type = "quantile"))
-qqline(residuals(beta, type = "quantile"))
+testSpatialAutocorrelation(simulationOutput = sim_res0, 
+                           x = df$cx, 
+                           y = df$cy)
 
-# c. checking spatial autocorrelation
-library(sdfep)
-coords <- as.matrix(df[, c("cx", "cy")])
-nb <- knn2nb(knearneigh(coords, k = 4))           # baseline querying 4 nearest neighbors
-weights <- nb2listw(nb, style = "W")
-testSpatialAutocorrelation(sim_res, x = df$cx, y = df$cy)
+# c. visualization of treatment interaction
+ggplot(df, aes(x = scale(X1), y = y_disc,
+               color = factor(trt,
+                              levels = c(0,1),
+                              labels = c("control","treated")))) +
+  geom_smooth(method = "loess") +
+  scale_color_manual(
+    values = c("control" = "steelblue",
+               "treated" = "pink"),
+    name = NULL
+  ) +
+  coord_cartesian(xlim = c(0, 1.645)) + 
+  labs(
+    x = "factor 1 expression (standardized)",
+    y = "counts dying in 40 micron radius",
+    color = NULL
+  )
 
 
 # -----------------------------------------------------------------------------
-# 6. permutation test. Want to see the model fail
+# 6. permutation test. Want to see the model lose
 set.seed(42)
 y_messUp <- sample(y_disc)
 
-nb_mess <- glm.nb(y_messUp ~ x_scaled)
+nb_mess <- glm.nb(y_messUp ~ df$n_immune + trt + x_scaled + tum_off)
 
 
 # -----------------------------------------------------------------------------
 # 7. radii sensitivity
-df10 <- read.csv(file = file.path(datadir, "0602_22NMF_df1_10incl.csv"))
-df20 <- read.csv(file = file.path(datadir, "0602_22NMF_df1_20incl.csv"))  
-df80 <- read.csv(file = file.path(datadir, "0602_22NMF_df1_80incl.csv"))  
+df10 <- read.csv(file = file.path(localdir, "0602_22NMF_df1_10incl.csv"))
+df20 <- read.csv(file = file.path(localdir, "0602_22NMF_df1_20incl.csv"))  
+df80 <- read.csv(file = file.path(localdir, "0602_22NMF_df1_80incl.csv"))  
 
 x10 <- as.matrix(df10[, fact_cols])
 x10sc <- scale(x10)  
@@ -201,6 +199,6 @@ nb10 <- glm.nb(y10d ~ x10sc)
 nb20 <- glm.nb(y20d ~ x20sc)
 nb80 <- glm.nb(y80d ~ x80sc)
 
-yd_test <- df10$n_lectin            # vasculature for verification. cell type proximity
-nb_test <- glm.nb(yd_test ~ x10sc)
+yd_test <- df$n_lectin            # vasculature for verification. cell type proximity
+nb_test <- glm.nb(yd_test ~ x_scaled)
 
