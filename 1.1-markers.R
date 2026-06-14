@@ -4,8 +4,7 @@
 # Purpose: Generation of gene scores based on known genes and signatures.
 # -----------------------------------------------------------------------------
 
-# Loading in necessary libraries & directories 
-library(arrow)
+# necessary libraries & directories 
 library(dplyr)
 library(ggplot2)
 library(limma)
@@ -83,17 +82,16 @@ head(rownames(de.mark_known[["Fibroblasts"]]), 10)
 
 # -----------------------------------------------------------------------------
 # 3. binding spatially 
-iso7_coords <- readRDS(file.path(inputdir, "Seurat objects", "iso7bin_coords.rds"))
-    # from GetTissueCoordinates function, image = NULL
+iso_coords <- GetTissueCoordinates(iso_raw, image = NULL)
+pd1_coords <- GetTissueCoordinates(pd1_raw, image = NULL)
 
 # expression matrix (all the genes by expression)
-expr_matIso <- GetAssayData(iso7_norm,
+mat_iso <- GetAssayData(iso_raw,
                          assay = "Spatial.008um",
                          layer = "data")
 
 # optional explicitly making sure there's no missing genes
-all_genes <- rownames(expr_matIso)
-
+all_genes <- rownames(mat_iso)
 
 # 1a. Obtaining known signature expression per bin
 signatures <- lapply(signatures, function(genes) {   # for 2, sub mark_known for signatures
