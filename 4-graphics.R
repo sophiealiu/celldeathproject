@@ -148,11 +148,11 @@ heat <- function(df_IF, df_visium,
 colors <- c("#9678B6")                                   # purple mountain majesty, courtesy of DB
 factor_cols <- c("X11")
 
-test <- draw(df_isoIF, df_isovisium, factor_cols, colors, 1, 1, 0.6)
+test <- draw(df_isoIF, df_iso_vis, factor_cols, colors, 1, 1, 0.6)
 test
 
 #D9C20B
-test2 <- heat(df_isoIF, df_isovisium, "X17", "lectin",
+test2 <- heat(df_isoIF, df_iso_vis, "X17", "lectin",
               "#D9C20B", 3, 0.6, 30, 0)                 
 test2
 
