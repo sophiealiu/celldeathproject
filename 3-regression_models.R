@@ -69,7 +69,7 @@ nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + tum_off)
 p_vals <- sort(                                   # first visualization
   coef(summary(nb))[, "Pr(>|z|)"], 
   decreasing = FALSE)
-p_vals_adj <- p.adjust(p_vals, method = "BH")     # after benjamini still optimistic
+p_vals_adj <- p.adjust(p_vals, method = "BH")     # benjamini still optimistic
 
 # b. zero-inflation. AIC = 4459.6
 library(glmmTMB)
