@@ -9,7 +9,7 @@ library(ggplot2)
 library(RcppML)
 library(Seurat)
 
-# importing files. no assumptions made, hence raw data. bin 8 recommended by 10x
+# importing files. no assumptions made, hence raw data. bin 8 microns recommended by 10x
 iso_raw <- Load10X_Spatial(
   filename = "Iso-visium/binned_outs/outs",
   bin.size = c(8)
