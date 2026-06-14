@@ -13,9 +13,7 @@ library(presto)      # Seurat V5 incompatible, forced in using remotes
 library(Seurat)
 library(SeuratData)  # same as above
 
-
-inputdir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20260413_final_merge/data"
-
+# importing files
 pd1_norm <- readRDS(file.path(inputdir, "Seurat objects", "pd1_norm.rds"))
             # generated using Load10x function then log normalization
 iso7_norm <- readRDS(file.path(inputdir, "Seurat objects", "iso7_norm.rds"))
