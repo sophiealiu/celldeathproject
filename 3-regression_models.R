@@ -18,32 +18,6 @@ df <- rbind(iso, pd1)
 
 
 # -----------------------------------------------------------------------------
-# preliminary checks of NMF factors
-fact_cols <- names(df)[10:18]                         # indices, check head first
-
-sorted_genes <- (sort(W[,9], decreasing = TRUE))      # summary of top genes
-head(names(sorted_genes), 10)
-
-sorted_factor <- list()
-for (i in 1:length(fact_cols)) {
-  ord <- order(W[, i], decreasing = TRUE)             # re-import gene factors
-  
-  sorted_factor[[i]] <- data.frame(
-    gene   = rownames(W)[ord],
-    weight = W[ord, i]
-  )
-  
-  colnames(sorted_factor[[i]]) <- c(
-    paste0("factor_", fact_cols[i], "_gene"),
-    paste0("factor_", fact_cols[i], "_weight")
-  )
-}
-
-df_weighted <- do.call(cbind, sorted_factor)
-write.csv(head(df_weighted, 40), file.path(localdir, "factor_weights40.csv"),
-          rownames = FALSE)
-
-# ----------------------------------------------------------------------------_
 # BEGINNING MODELING
 
 # What are our assumptions?
@@ -55,6 +29,7 @@ write.csv(head(df_weighted, 40), file.path(localdir, "factor_weights40.csv"),
 
 # -----------------------------------------------------------------------------
 # 1. setting vars and family
+fact_cols <- names(df)[10:18]                         # indices, check head first
 x <- as.matrix(df[, fact_cols])         
 x_scaled <- scale(x)                    # visible representation of RNA counts. z-scores
 
