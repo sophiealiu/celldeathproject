@@ -34,7 +34,7 @@ mat_pd1 <- GetAssayData(
   layer = "counts"
 )
 
-# need to have different. double check which ones it is
+# prefixing required so we can separate downstream
 colnames(mat_iso)  <- paste0("iso_", colnames(mat_iso))
 colnames(mat_pd1) <- paste0("pd1_", colnames(mat_pd1))
 
