@@ -8,7 +8,6 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
-
 inputdir <- "I:/Hu Lab/Sophie/1. Cell death/visium image manual spot selection/20260413_final_merge/data"
 
 # reading in my dataframes
