@@ -36,7 +36,7 @@ merged_mat <- cbind(mat_iso, mat_pd1)
 
 # -----------------------------------------------------------------------------
 # 2. testing k-ranks. 
-# a. avg MSE dim. returns at elbow/knee
+# a. avg MSE dim. returns at elbow/knee, optimal rank = 9
 library(inflection)
 library(progress)
 ks <- 2:20                                               # prelim dx, < 20
@@ -64,11 +64,11 @@ for (i in seq_along(ks)) {
 mean_loss <- rowMeans(loss_matrix)
 k_opt <- uik(x = ks, y = mean_loss)
 
-# b. stability score at optimal rank 9. Hungarian algorithm 
+# b. stability score using Hungarian algorithm. result: 0.9498465 yay close to 1
 library(clue)
-nruns_stab <- 30                                 # here CLT
+nruns_stab <- 30                                   # here CLT
 pair_stab <- c()
-W_list <- vector("list", nruns_stab)             # features
+W_list <- vector("list", nruns_stab)               # features
 
 for (r in 1:nruns_stab) {
   save <- nmf(merged_mat, k = 9, seed = 7+ r)
@@ -101,7 +101,7 @@ H <- save$h
 # 5. viewing if the factors are orthogonal. using cosine similarity btwn vectors
 library(proxyC)
 factor_sim <- simil(
-  t(W),                                          # transpose to get factor x gene
+  t(W),                                     # transpose to get factor x gene
   method = "cosine"
 )
 
@@ -121,7 +121,7 @@ iso_vis_coords <- GetTissueCoordinates(iso_raw, image = NULL)
 rownames(pd1_vis_coords)  <- paste0("pd1_", rownames(pd1_vis_coords))
 rownames(iso_vis_coords) <- paste0("iso_", rownames(iso_vis_coords))
 
-tH <- t(H)                                      # transpose to line up weights
+tH <- t(H)                                  # transpose to line up weights
 
 common_pd1 <- rownames(pd1_vis_coords)[
   rownames(pd1_vis_coords) %in% colnames(H)
