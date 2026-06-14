@@ -176,10 +176,10 @@ nb_mess <- glm.nb(y_messUp ~ df$n_immune + trt + x_scaled + tum_off)
 
 
 # -----------------------------------------------------------------------------
-# 7. radii sensitivity
-df10 <- read.csv(file = file.path(localdir, "0602_22NMF_df1_10incl.csv"))
-df20 <- read.csv(file = file.path(localdir, "0602_22NMF_df1_20incl.csv"))  
-df80 <- read.csv(file = file.path(localdir, "0602_22NMF_df1_80incl.csv"))  
+# 7. radii sensitivity. base 40
+df10 <- read.csv("NMF_rad10.csv")
+df20 <- read.csv("NMF_rad20.csv") 
+df80 <- read.csv("NMF_rad80.csv")
 
 x10 <- as.matrix(df10[, fact_cols])
 x10sc <- scale(x10)  
