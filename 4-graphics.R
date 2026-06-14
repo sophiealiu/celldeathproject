@@ -4,7 +4,6 @@
 # Purpose: Nice lil spatial overlay graphics.
 # -----------------------------------------------------------------------------
 
-library(readr)
 library(dplyr)
 library(ggplot2)
 library(tidyr)
