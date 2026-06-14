@@ -153,30 +153,3 @@ y_messUp <- sample(y_disc)
 
 nb_mess <- glm.nb(y_messUp ~ df$n_immune + trt + x_scaled + tum_off)
 
-
-# -----------------------------------------------------------------------------
-# 7. radii sensitivity. base 40
-df10 <- read.csv("NMF_rad10.csv")
-df20 <- read.csv("NMF_rad20.csv") 
-df80 <- read.csv("NMF_rad80.csv")
-
-x10 <- as.matrix(df10[, fact_cols])
-x10sc <- scale(x10)  
-
-x20 <- as.matrix(df20[, fact_cols])
-x20sc <- scale(x20)  
-
-x80 <- as.matrix(df80[, fact_cols])
-x80sc <- scale(x80)  
-
-y10d <- df10$n_dying
-y20d <- df20$n_dying
-y80d <- df80$n_dying
-
-nb10 <- glm.nb(y10d ~ x10sc)
-nb20 <- glm.nb(y20d ~ x20sc)
-nb80 <- glm.nb(y80d ~ x80sc)
-
-yd_test <- df$n_lectin            # vasculature for verification. cell type proximity
-nb_test <- glm.nb(yd_test ~ x_scaled)
-
