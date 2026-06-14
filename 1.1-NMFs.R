@@ -96,7 +96,7 @@ for (i in 1:(nruns_stab - 1)) {
 
 # -----------------------------------------------------------------------------
 # 4. re-aligning row and column names (lost before). 
-# just re-using the last save, seed 37 from stability, but re-running doesn't take too long.
+# just re-using the last save seed 37 from stability, but re-running doesn't take too long.
 rownames(save$w) <- rownames(merged_mat)
 colnames(save$h) <- colnames(merged_mat)
 
