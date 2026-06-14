@@ -43,7 +43,7 @@ ks <- 2:20                                               # prelim dx, < 20
 nruns_opt <- 10
 loss_matrix <- matrix(nrow = length(ks), ncol = nruns_opt)
 
-pb <- progress_bar$new(
+pb <- progress_bar$new(                                  # it takes a while, without this I'd go insane
   format = "[:bar] :percent, approx. time left: :eta",
   total = length(ks)*nruns_opt,                          
   clear = FALSE, 
