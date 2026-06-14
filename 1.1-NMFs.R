@@ -46,7 +46,7 @@ merged_mat <- cbind(mat_iso, mat_pd1)
 # a. avg MSE dim. returns at elbow/knee, optimal rank = 9
 library(inflection)
 library(progress)
-ks <- 2:20                                               # prelim dx, < 20
+ks <- 2:20                                               # from manual sweeping by 5s, k < 20
 nruns_opt <- 10
 loss_matrix <- matrix(nrow = length(ks), ncol = nruns_opt)
 
