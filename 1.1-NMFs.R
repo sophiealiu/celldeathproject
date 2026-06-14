@@ -71,7 +71,7 @@ for (i in seq_along(ks)) {
 mean_loss <- rowMeans(loss_matrix)
 k_opt <- uik(x = ks, y = mean_loss)
 
-# b. stability score using Hungarian algorithm. result: 0.9498465
+# b. stability score using Hungarian algorithm. result: 0.9498465 yay close to 1
 # gene weights across regeneration of factors is lined up to check that stochasticity still produces stable results
 library(clue)
 nruns_stab <- 30                                   # here CLT
