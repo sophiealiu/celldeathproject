@@ -59,7 +59,7 @@ pb <- progress_bar$new(                                  # it takes ~ 3hrs, sorr
 
 for (i in seq_along(ks)) {
   for (r in 1:nruns_opt) {
-    model <- nmf(merged_mat, k = ks[i], seed = 7* r,     # 7 is my fav number
+    model <- nmf(merged_mat, k = ks[i], seed = r,     
                  verbose = FALSE)
     loss_matrix[i, r] <- mse(merged_mat, model$w,        
                                          model$d,
@@ -79,7 +79,7 @@ pair_stab <- c()
 W_list <- vector("list", nruns_stab)               # features
 
 for (r in 1:nruns_stab) {
-  save <- nmf(merged_mat, k = 9, seed = 7+ r)
+  save <- nmf(merged_mat, k = 9, seed = r)
   W_list[[r]] <- save$w
 }
 
@@ -96,7 +96,7 @@ for (i in 1:(nruns_stab - 1)) {
 
 # -----------------------------------------------------------------------------
 # 4. re-aligning row and column names (lost before). 
-# just re-using the last save seed 37 from stability, but re-running doesn't take too long.
+# just re-using the last save, but re-running doesn't take too long.
 rownames(save$w) <- rownames(merged_mat)
 colnames(save$h) <- colnames(merged_mat)
 
