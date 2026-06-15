@@ -8,9 +8,8 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
-localdir <- "C:/Users/saliu/OneDrive - Inside MD Anderson/Documents/Cell Death runover/data"
-iso <- read.csv(file = file.path(localdir, "0613_9NMF_iso40.csv"))
-pd1 <- read.csv(file = file.path(localdir, "0614_9NMF_pd140.csv"))
+iso <- read.csv("9NMF_iso40.csv"))
+pd1 <- read.csv("9NMF_pd140.csv"))
 df <- rbind(iso, pd1)
 
 # -----------------------------------------------------------------------------
@@ -184,8 +183,8 @@ nb_mess <- glm.nb(y_messUp ~ df$n_immune + trt + x_scaled + tum_off)
 
 # -----------------------------------------------------------------------------
 # 7. vasculature for verification. cell type proximity
-iso10 <- read.csv(file = file.path(localdir, "0614_9NMF_iso10.csv"))
-pd110 <- read.csv(file = file.path(localdir, "0614_9NMF_pd110.csv"))
+iso10 <- read.csv("9NMF_iso10.csv")
+pd110 <- read.csv("9NMF_pd110.csv")
 df10 <- rbind(iso10, pd110)
 
 x10 <- as.matrix(df10[, fact_cols])
@@ -202,12 +201,12 @@ nb10 <- glm.nb(y10d ~ df10$n_immune + trt + tum10_off+ x10sc)
 
 # -----------------------------------------------------------------------------
 # 8. more radii sensitivity
-iso20 <- read.csv(file = file.path(localdir, "0614_9NMF_iso20.csv"))
-pd120 <- read.csv(file = file.path(localdir, "0614_9NMF_pd120.csv"))
+iso20 <- read.csv("9NMF_iso20.csv")
+pd120 <- read.csv("9NMF_pd120.csv")
 df20 <- rbind(iso20, pd120)
 
-iso80 <- read.csv(file = file.path(localdir, "0614_9NMF_iso80.csv"))
-pd180 <- read.csv(file = file.path(localdir, "0614_9NMF_pd180.csv"))
+iso80 <- read.csv("9NMF_iso80.csv")
+pd180 <- read.csv("9NMF_pd180.csv")
 df80 <- rbind(iso20, pd120)  
 
 x20 <- as.matrix(df20[, fact_cols])
