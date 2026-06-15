@@ -100,7 +100,7 @@ for (i in 1:(nruns_stab - 1)) {
 rownames(save$w) <- rownames(merged_mat)
 colnames(save$h) <- colnames(merged_mat)
 
-# renaming for ease of reference, file creation for GSEA
+# renaming for ease of reference, file creation for GSEA block 5
 W <- save$w
 H <- save$h  
 write.csv(W, "9NMF_W.csv")
