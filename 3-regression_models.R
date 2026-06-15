@@ -141,8 +141,12 @@ library(DHARMa)
 sim_resR <- simulateResiduals(sr_int)
 plot(sim_resR)
 
-# ratio of zeroes, okay need to do this.
-testZeroInflation(sim_res)
+# ratio of zeroes and autocorrelation
+sim_res0 <- simulateResiduals(nb)
+testZeroInflation(sim_res0)
+testSpatialAutocorrelation(simulationOutput = sim_res0, 
+                           x = df$cx, 
+                           y = df$cy)
 
 # finding the culprit throwing off my data
 full_vars <- cbind(x_red_sc, trt)
@@ -150,10 +154,6 @@ for(i in 1:4) {                                   # number of reduced factors
   plotResiduals(sim_resR, full_vars[, i],
                 main = colnames(full_vars)[i])
 }
-
-testSpatialAutocorrelation(simulationOutput = sim_res0, 
-                           x = df$cx, 
-                           y = df$cy)
 
 # c. visualization of treatment interaction. not that informative but potential
 ggplot(df10, aes(x = scale(X1), y = y_disc,
