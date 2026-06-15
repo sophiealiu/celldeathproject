@@ -125,7 +125,7 @@ library(DHARMa)
 sim_resR <- simulateResiduals(sr_int)
 plot(sim_resR)
 
-# ratio of zeroes and autocorrelation
+# a. ratio of zeroes and autocorrelation
 sim_res0 <- simulateResiduals(nb)
 testZeroInflation(sim_res0)
 testSpatialAutocorrelation(simulationOutput = sim_res0, 
@@ -139,7 +139,7 @@ for(i in 1:4) {                                   # number of reduced factors
                 main = colnames(full_vars)[i])
 }
 
-# c. visualization of treatment interaction. not that informative but potential
+# b. visualization of treatment interaction. not that informative but potential
 ggplot(df10, aes(x = scale(X1), y = y_disc,
                color = factor(trt,
                               levels = c(0,1),
