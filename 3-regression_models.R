@@ -22,6 +22,7 @@ W <- read.csv(file.path(localdir, "0613_9NMF_W.csv"),row.names = 1)
 top_idx <- order(W$V8, decreasing = TRUE)
 rownames(W)[top_idx][1:10]
 
+
 # ----------------------------------------------------------------------------_
 # BEGINNING MODELING
 
