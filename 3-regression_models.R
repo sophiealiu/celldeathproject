@@ -30,12 +30,12 @@ rownames(W)[top_idx][1:10]
 # - know data is nonlinear and non-normal
 # - means smoothing need to incorporate density covariate
 # - better but still non-orthogonal when using NMF. raw counts, per-gene weights
-# - attempted to restore pseudo-independence by sampling non-overlapping disks
+# - pseudo-independence by sampling non-overlapping disks
 
 
 # -----------------------------------------------------------------------------
 # 1. setting vars and family
-x <- as.matrix(df[, fact_cols])         # 2x repeated control condition & treated
+x <- as.matrix(df[, fact_cols])         
 x_scaled <- scale(x)                    # visible representation of RNA counts. z-scores
 
 y_binar <- df$exist_dying               # binomial  [X]
