@@ -16,27 +16,11 @@ df <- rbind(iso, pd1)
 # preliminary checks of NMF factors
 fact_cols <- names(df)[10:18]                         # indices, check head first
 
-sorted_genes <- (sort(W[,9], decreasing = TRUE))      # summary of top genes
-head(names(sorted_genes), 10)
+# summary of top genes
+W <- read.csv(file.path(localdir, "0613_9NMF_W.csv"),row.names = 1)
 
-sorted_factor <- list()
-for (i in 1:length(fact_cols)) {
-  ord <- order(W[, i], decreasing = TRUE)             # re-import gene factors
-  
-  sorted_factor[[i]] <- data.frame(
-    gene   = rownames(W)[ord],
-    weight = W[ord, i]
-  )
-  
-  colnames(sorted_factor[[i]]) <- c(
-    paste0("factor_", fact_cols[i], "_gene"),
-    paste0("factor_", fact_cols[i], "_weight")
-  )
-}
-
-df_weighted <- do.call(cbind, sorted_factor)
-write.csv(head(df_weighted, 40), file.path(localdir, "factor_weights40.csv"),
-          rownames = FALSE)
+top_idx <- order(W$V8, decreasing = TRUE)
+rownames(W)[top_idx][1:10]
 
 # ----------------------------------------------------------------------------_
 # BEGINNING MODELING
