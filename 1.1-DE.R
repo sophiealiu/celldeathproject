@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
 # Date : 05/28/2026 11:31am CDT
-# Purpose: using marker genes and known signature differential expression
+# Purpose: preliminary looking at individual genes to known signatures differential expression
 # -----------------------------------------------------------------------------
 
 # necessary libraries & directories 
@@ -20,6 +20,49 @@ colnames(iso_norm) <- paste0("iso_", colnames(iso_norm))
 colnames(pd1_norm) <- paste0("pd1_", colnames(pd1_norm))
 
 merged_norm <- merge(iso_norm, pd1_norm)
+
+
+# -----------------------------------------------------------------------------
+# 2. signature finding. repeat with experimental replacing object
+pd1_vis_coords <- GetTissueCoordinates(pd1_norm, image = NULL)
+iso_vis_coords <- GetTissueCoordinates(iso_norm, image = NULL)
+
+# expression matrix (all the genes by expression) 
+merged_norm <- JoinLayers(
+  merged_norm
+)
+
+merged_matN <- GetAssayData(
+  merged_norm,
+  layer = "data"
+)
+
+tmerged_matN <- t(merged_matN)
+rownames(tmerged_matN) <- colnames(GetAssayData(merged_norm,  
+                                        layer = "data"))
+
+common_pd1 <- rownames(pd1_vis_coords)[
+  rownames(pd1_vis_coords) %in% colnames(merged_matN)
+]
+common_iso <- rownames(iso_vis_coords)[
+  rownames(iso_vis_coords) %in% colnames(merged_matN)
+]
+
+# must have large RAM to allocate vector size 58.8 Gb
+pd1_joined <- cbind(
+  pd1_vis_coords[common_pd1, , drop = FALSE],
+  tmerged_matN[common_pd1, , drop = FALSE]
+)
+
+iso_joined <- cbind(
+  iso_vis_coords[common_iso, , drop = FALSE],
+  tmerged_matN[common_iso, , drop = FALSE]
+)
+
+# writing all genes to csv takes forever. repeat with both conditions
+library(arrow) 
+write_feather(iso_joined, "iso_all_genes")
+write_feather(pd1_joined, "pd1_all_genes")
 
 
 # -----------------------------------------------------------------------------
@@ -68,23 +111,7 @@ signatures <- list(
   fibroblast = fibroblast
 )
 
-
-# -----------------------------------------------------------------------------
-# 2. signature finding. repeat with experimental replacing object
-pd1_vis_coords <- GetTissueCoordinates(pd1_norm, image = NULL)
-iso_vis_coords <- GetTissueCoordinates(iso_norm, image = NULL)
-
-# expression matrix (all the genes by expression) 
-merged_norm <- JoinLayers(
-  merged_norm
-)
-
-merged_matN <- GetAssayData(
-  merged_norm,
-  layer = "data"
-)
-
-# assigning the gene expression to each bin
+# assigning the signature expression to each bin
 sig_all <- do.call(rbind, lapply(signatures, function(genes) {
   colMeans(merged_matN[genes, , drop = FALSE], na.rm = TRUE)
 }))
@@ -93,56 +120,26 @@ sig_all <- do.call(rbind, lapply(signatures, function(genes) {
 tsig_all <- t(sig_all) %>%
   as.data.frame()
 
-common_pd1 <- rownames(pd1_vis_coords)[
+common_pd12 <- rownames(pd1_vis_coords)[
   rownames(pd1_vis_coords) %in% colnames(sig_all)
 ]
-common_iso <- rownames(iso_vis_coords)[
+common_iso2 <- rownames(iso_vis_coords)[
   rownames(iso_vis_coords) %in% colnames(sig_all)
 ]
 
-pd1_joined <- cbind(
-  pd1_vis_coords[common_pd1, , drop = FALSE],
-  tsig_all[common_pd1, , drop = FALSE]
-)
-
-iso_joined <- cbind(
-  iso_vis_coords[common_iso, , drop = FALSE],
-  tsig_all[common_iso, , drop = FALSE]
-)
-
-# exporting for jupyter block 2
-write.csv(iso_joined, "iso_sig.csv")
-write.csv(pd1_joined, "pd1_sig.csv")
-
-
-# -----------------------------------------------------------------------------
-# 2. ALL 19060 genes in object
-tmerged_matN <- t(merged_matN)
-rownames(tmerged_matN) <- colnames(GetAssayData(merged_norm,  
-                                        layer = "data"))
-
-common_pd12 <- rownames(pd1_vis_coords)[
-  rownames(pd1_vis_coords) %in% colnames(merged_matN)
-]
-common_iso2 <- rownames(iso_vis_coords)[
-  rownames(iso_vis_coords) %in% colnames(merged_matN)
-]
-
-# must have large RAM to allocate vector size 58.8 Gb
 pd1_joined2 <- cbind(
   pd1_vis_coords[common_pd12, , drop = FALSE],
-  tmerged_matN[common_pd12, , drop = FALSE]
+  tsig_all[common_pd12, , drop = FALSE]
 )
 
 iso_joined2 <- cbind(
   iso_vis_coords[common_iso2, , drop = FALSE],
-  tmerged_matN[common_iso2, , drop = FALSE]
+  tsig_all[common_iso2, , drop = FALSE]
 )
 
-# writing all genes to csv takes forever. repeat with both conditions
-library(arrow) 
-write_feather(iso_joined2, "iso_all_genes")
-write_feather(pd1_joined2, "pd1_all_genes")
+# exporting for jupyter block 2
+write.csv(iso_joined2, "iso_sig.csv")
+write.csv(pd1_joined2, "pd1_sig.csv")
 
 
 # -----------------------------------------------------------------------------
