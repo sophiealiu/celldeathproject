@@ -143,7 +143,7 @@ write.csv(pd1_joined2, "pd1_sig.csv")
 
 
 # -----------------------------------------------------------------------------
-# 4. DE with FindMarkers on annotated cells. viewing metadata first
+# 3. DE with FindMarkers on annotated cells. viewing metadata first
 celltypes <- levels(Idents(merged_annotated))     
 
 de.mark_known <- list()
