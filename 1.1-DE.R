@@ -10,12 +10,12 @@ library(ggplot2)
 library(Seurat)
 
 # recommended 8 micron bins
-pd1 <- Load10X_Spatial("Iso-7_realign/outs", bin.size = 8)
-iso <- Load10X_Spatial("PD1-9_realign/outs", bin.size = 8)
+iso_raw <- Load10X_Spatial("PD1-9_realign/outs", bin.size = 8)
+pd1_raw <- Load10X_Spatial("Iso-7_realign/outs", bin.size = 8)
 
-# log normalized with unique IDs
-iso_norm <- NormalizeData(iso)
-pd1_norm <- NormalizeData(pd1)
+# log normalized with unique IDs. following default Seurat vignette
+iso_norm <- NormalizeData(iso_raw)
+pd1_norm <- NormalizeData(pd1_raw)
 colnames(iso_norm) <- paste0("iso_", colnames(iso_norm))
 colnames(pd1_norm) <- paste0("pd1_", colnames(pd1_norm))
 
