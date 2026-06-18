@@ -155,9 +155,15 @@ for (ct in celltypes) {
   )
 }
 
+markers_all <- bind_rows(
+  lapply(names(de.mark_known), function(ct) {
+    df <- de.mark_known[[ct]]
+    df$gene <- rownames(df)
+    df$celltype <- ct
+    df
+  })
+)
+
 # exporting
-head(rownames(de.mark_known[["Fibroblasts"]]), 10) # inspection
-write.csv(de.mark_known, "mark_known.csv")
-
-
+write.csv(markers_all, "mark_known.csv", row.names = FALSE)
 
