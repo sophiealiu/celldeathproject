@@ -8,7 +8,7 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
-# 1.1
+# data from block 2 using 1.1
 # iso <- read.csv("sig_iso40.csv"))
 # pd1 <- read.csv("sig_pd140.csv"))
 # df <- rbind(iso, pd1)
