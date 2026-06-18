@@ -13,7 +13,7 @@ library(Seurat)
 iso_raw <- Load10X_Spatial("PD1-9_realign/outs", bin.size = 8)
 pd1_raw <- Load10X_Spatial("Iso-7_realign/outs", bin.size = 8)
 
-# log normalized with unique IDs. following default Seurat vignette
+# log normalized with unique IDs. following default Seurat settings
 iso_norm <- NormalizeData(iso_raw)
 pd1_norm <- NormalizeData(pd1_raw)
 colnames(iso_norm) <- paste0("iso_", colnames(iso_norm))
