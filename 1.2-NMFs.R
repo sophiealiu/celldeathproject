@@ -9,7 +9,7 @@ library(ggplot2)
 library(RcppML)
 library(Seurat)
 
-# importing files. no assumptions made, hence raw data. bin 8 microns recommended by 10x
+# importing files. no assumptions made, hence raw data. 10x recommended 8 micron bins
 iso_raw <- Load10X_Spatial("PD1-9_realign/outs", bin.size = 8)
 pd1_raw <- Load10X_Spatial("Iso-7_realign/outs", bin.size = 8)
 
