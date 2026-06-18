@@ -23,7 +23,7 @@ merged_norm <- merge(iso_norm, pd1_norm)
 
 
 # -----------------------------------------------------------------------------
-# 2. signature finding. repeat with experimental replacing object
+# 1. individual gene expression, 19060 total
 pd1_vis_coords <- GetTissueCoordinates(pd1_norm, image = NULL)
 iso_vis_coords <- GetTissueCoordinates(iso_norm, image = NULL)
 
