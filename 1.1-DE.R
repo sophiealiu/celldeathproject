@@ -164,6 +164,4 @@ markers_all <- bind_rows(
   })
 )
 
-# exporting
-write.csv(markers_all, "mark_known.csv", row.names = FALSE)
 
