@@ -59,7 +59,7 @@ iso_joined <- cbind(
   tmerged_matN[common_iso, , drop = FALSE]
 )
 
-# writing all genes to csv takes forever. repeat with both conditions
+# writing all genes to csv takes forever so use feather.
 library(arrow) 
 write_feather(iso_joined, "iso_all_genes")
 write_feather(pd1_joined, "pd1_all_genes")
