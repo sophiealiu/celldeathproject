@@ -10,14 +10,8 @@ library(RcppML)
 library(Seurat)
 
 # importing files. no assumptions made, hence raw data. bin 8 microns recommended by 10x
-iso_raw <- Load10X_Spatial(
-  filename = "Iso-visium/binned_outs/outs",
-  bin.size = c(8)
-)
-pd1_raw <- Load10X_Spatial(
-  filename = "Pd1-visium/binned_outs/outs",
-  bin.size = c(8)
-)
+iso_raw <- Load10X_Spatial("PD1-9_realign/outs", bin.size = 8)
+pd1_raw <- Load10X_Spatial("Iso-7_realign/outs", bin.size = 8)
 
 
 # -----------------------------------------------------------------------------
