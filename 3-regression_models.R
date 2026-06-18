@@ -120,7 +120,7 @@ zero <- glmmTMB(y_disc ~ n_immune + trt + x_scaled,
 # c. geographical trends, Moran's I. Not combined w/ zero. AIC = 4342.3
 library(mgcv)
 spatial <- gam(y_disc ~ n_immune + trt + x_scaled + tum_off + 
-                 s(cx, cy, bs = "gp"),     # spatial smoothing
+                 s(x, y, bs = "gp"),     # spatial smoothing
                 data = df,                         
                 family = nb())           
 
@@ -130,7 +130,7 @@ x_red <- as.matrix(df[, red_col])
 x_red_sc <- scale(x_red)
 
 spatial_red <- gam(y_disc ~ n_immune + trt + x_red_sc + tum_off +
-                     s(cx, cy, bs = "gp"),
+                     s(x, y, bs = "gp"),
                    data = df,
                    family = nb())
 
@@ -149,7 +149,7 @@ coef(elastic)
 inter1 <- scale(df$X1)*trt
 inter4 <- scale(df$X4)*trt
 sr_int <- gam(y_disc ~ n_immune + trt + x_red_sc + tum_off + inter1 + inter4
-                     + s(cx, cy, bs = "gp"),
+                     + s(x, y, bs = "gp"),
                    data = df,
                    family = nb())
 
@@ -163,8 +163,8 @@ plot(sim_resR)
 sim_res0 <- simulateResiduals(nb)
 testZeroInflation(sim_res0)
 testSpatialAutocorrelation(simulationOutput = sim_res0, 
-                           x = df$cx, 
-                           y = df$cy)
+                           x = df$x, 
+                           y = df$y)
 
 # finding the culprit throwing off my data
 full_vars <- cbind(x_red_sc, trt)
