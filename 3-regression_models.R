@@ -55,8 +55,14 @@ rownames(W)[top_idx][1:10]
 
 # -----------------------------------------------------------------------------
 # 1. setting vars and family
-x <- as.matrix(df[, fact_cols])         
+x <- as.matrix(df[, fact_cols])         # replace with cell cols or gene cols based on which block 1
 x_scaled <- scale(x)                    # visible representation of RNA counts. z-scores
+
+# distribution explains family choice
+hist(y_disc, 
+     breaks = 30,
+     main = "Distribution of count dying",
+     xlab = "number of dying cells in 40 micron vicinity")
 
 y_binar <- df$exist_dying               # binomial  [X]
 y_disc <- df$n_dying                    # overdispersion -> negative binomial
@@ -66,7 +72,21 @@ tum_off <- offset(log(df$n_tumor+1))    # offset term, don't treat same as coeff
 
 
 # -----------------------------------------------------------------------------
-# 2. basic comparative univariate odds-ratios
+# 2. weak signals from individual genes and signatures (DE) block 1.1
+# simple monotonic relationship strength
+spearman <- cor(x_scaled, y_disc, method = "spearman")
+
+names(spearman) <- cell_cols
+spearman_ordered <- sort(spearman, decreasing = TRUE)
+
+# high collinearity
+cor_mat <- cor(df[cell_cols], use = "pairwise.complete.obs")
+cor_table <- round(cor_mat, 2)
+pheatmap(cor_mat)
+
+
+# -----------------------------------------------------------------------------
+# 3. basic comparative univariate odds-ratios after moving to block 1.2
 OR <- glm(
   reformulate(df$n_immune + trt + x_scaled + tum_off, response = y_binar),
   family = "binomial"
@@ -81,13 +101,7 @@ ggplot(OR_clean %>%
 
 
 # -----------------------------------------------------------------------------
-# 3. using counts considers sequencing depth. iterate after diagnosis in 5
-hist(y_disc, 
-     breaks = 30,
-     main = "Distribution of count dying",
-     xlab = "number of dying cells in 40 micron vicinity")
-
-
+# 4. using counts considers sequencing depth. iterate after diagnosis in 5
 # a. negative binomial. AIC = 4410.3
 library(MASS)
 nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + tum_off)
@@ -160,7 +174,7 @@ for(i in 1:4) {                                   # number of reduced factors
 }
 
 # b. visualization of treatment interaction. not that informative but potential
-ggplot(df10, aes(x = scale(X1), y = y_disc,
+ggplot(df, aes(x = scale(X1), y = y_disc,
                color = factor(trt,
                               levels = c(0,1),
                               labels = c("control","treated")))) +
@@ -229,3 +243,4 @@ y80d <- df80$n_dying
 
 nb20 <- glm.nb(y20d ~ df20$n_immune + trt20 + tum20_off+ x20sc)
 nb80 <- glm.nb(y80d ~ df80$n_immune + trt80 + tum80_off+ x80sc)
+
