@@ -150,24 +150,25 @@ sr_int <- gam(y_disc ~ n_immune + trt + x_red_sc + tum_off + inter1 + inter4
 # -----------------------------------------------------------------------------
 # 5. diagnostic stats
 library(DHARMa)
-sim_resR <- simulateResiduals(sr_int)
-plot(sim_resR)
+sim_res <- simulateResiduals(nb)
+plot(sim_res)
 
-# a. ratio of zeroes and autocorrelation
-sim_res0 <- simulateResiduals(nb)
-testZeroInflation(sim_res0)
+# a. not zero-inflated
+testZeroInflation(sim_res)
+
+# but spatial effects significant
 testSpatialAutocorrelation(simulationOutput = sim_res0, 
                            x = df$x, 
                            y = df$y)
 
-# finding the culprit throwing off my data
+# b. finding the culprit throwing off my data
 full_vars <- cbind(x_red_sc, trt)
 for(i in 1:4) {                                   # number of reduced factors
   plotResiduals(sim_resR, full_vars[, i],
                 main = colnames(full_vars)[i])
 }
 
-# b. visualization of treatment interaction. not that informative but potential
+# c. visualization of treatment interaction. directionality but CI overlap
 ggplot(df, aes(x = scale(X1), y = y_disc,
                color = factor(trt,
                               levels = c(0,1),
