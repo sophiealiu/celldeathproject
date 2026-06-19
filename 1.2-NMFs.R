@@ -101,22 +101,6 @@ write.csv(W, "9NMF_W.csv")
 
 
 # -----------------------------------------------------------------------------
-# 5. viewing if the factors are orthogonal. using cosine similarity btwn vectors
-library(proxyC)
-factor_sim <- simil(
-  t(W),                                     # transpose to get factor x gene
-  method = "cosine"
-)
-
-library(corrplot)
-corrplot(
-  as.matrix(factor_sim),
-  method = "color",
-  type = "upper"
-)
-
-
-# -----------------------------------------------------------------------------
 # 6. finalizing/ binding spatial data. 
 pd1_vis_coords <- GetTissueCoordinates(pd1_raw, image = NULL)
 iso_vis_coords <- GetTissueCoordinates(iso_raw, image = NULL)
