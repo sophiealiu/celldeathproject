@@ -72,20 +72,6 @@ tum_off <- offset(log(df$n_tumor+1))    # offset term, don't treat same as coeff
 
 
 # -----------------------------------------------------------------------------
-# 2. weak signals from individual genes and signatures (DE) block 1.1
-# simple monotonic relationship strength
-spearman <- cor(x_scaled, y_disc, method = "spearman")
-
-names(spearman) <- cell_cols
-spearman_ordered <- sort(spearman, decreasing = TRUE)
-
-# high collinearity
-cor_mat <- cor(df[cell_cols], use = "pairwise.complete.obs")
-cor_table <- round(cor_mat, 2)
-pheatmap(cor_mat)
-
-
-# -----------------------------------------------------------------------------
 # 3. basic comparative univariate odds-ratios after moving to block 1.2
 OR <- glm(
   reformulate(df$n_immune + trt + x_scaled + tum_off, response = y_binar),
