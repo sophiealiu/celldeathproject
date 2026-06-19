@@ -164,4 +164,11 @@ markers_all <- bind_rows(
   })
 )
 
+# UMAP
+DimPlot(object = de.mark_known, 
+        reduction = "umap", 
+        group.by = "finercelltype", 
+        label = TRUE, 
+        pt.size = 0.5)
+
 
