@@ -165,6 +165,8 @@ markers_all <- bind_rows(
 )
 
 # UMAP
+de.mark_known <- RunUMAP(de.mark_known, dims = 1:20)
+
 DimPlot(object = de.mark_known, 
         reduction = "umap", 
         group.by = "finercelltype", 
