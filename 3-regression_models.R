@@ -37,7 +37,7 @@ df <- rbind(iso, pd1)
 fact_cols <- names(df)[10:18]                         # indices, check head first
 
 # summary of top genes
-W <- read.csv(file.path(localdir, "0613_9NMF_W.csv"),row.names = 1)
+W <- read.csv(file.path(localdir, "9NMF_W.csv"),row.names = 1)
 
 top_idx <- order(W$V8, decreasing = TRUE)
 rownames(W)[top_idx][1:10]
