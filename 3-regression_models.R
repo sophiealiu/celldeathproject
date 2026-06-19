@@ -8,19 +8,6 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
-# data from block 2 using 1.1
-# iso <- read.csv("sig_iso40.csv"))
-# pd1 <- read.csv("sig_pd140.csv"))
-# df <- rbind(iso, pd1)
-
-# iso <- read.csv("all_genes_iso40.csv"))
-# pd1 <- read.csv("all_genes_pd140.csv"))
-# df <- rbind(iso, pd1)
-
-# iso <- read.csv("DE_iso40.csv"))
-# pd1 <- read.csv("DE_pd140.csv"))
-# df <- rbind(iso, pd1)
-
 # 1.2 MAIN
 iso <- read.csv("9NMF_iso40.csv"))
 pd1 <- read.csv("9NMF_pd140.csv"))
