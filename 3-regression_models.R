@@ -114,17 +114,17 @@ p_vals_adj <- p.adjust(p_vals, method = "BH")     # after benjamini still optimi
 # b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4342.3
 library(mgcv)
 spatial <- gam(y_disc ~ n_immune + trt + x_scaled + tum_off + 
-                 s(x, y, bs = "gp"),     # spatial smoothing
+                 s(cx, cy, bs = "gp"),     # spatial smoothing
                 data = df,                         
-                family = nb())           
+                family = nb())
 
-# c. reduced model, only "significant" predictors. AIC = 4354.5
-red_col <- fact_cols[c(1, 4)]
+# c. reduced model, only "significant" predictors. AIC = 4338.5
+red_col <- fact_cols[c(1, 2, 4, 7)]
 x_red <- as.matrix(df[, red_col])
 x_red_sc <- scale(x_red)
 
 spatial_red <- gam(y_disc ~ n_immune + trt + x_red_sc + tum_off +
-                     s(x, y, bs = "gp"),
+                     s(cx, cy, bs = "gp"),
                    data = df,
                    family = nb())
 
