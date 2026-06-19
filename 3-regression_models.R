@@ -106,11 +106,6 @@ ggplot(OR_clean %>%
 library(MASS)
 nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + tum_off)
 
-p_vals <- sort(                                   # first visualization
-  coef(summary(nb))[, "Pr(>|z|)"], 
-  decreasing = FALSE)
-p_vals_adj <- p.adjust(p_vals, method = "BH")     # after benjamini still optimistic
-
 # b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4342.3
 library(mgcv)
 spatial <- gam(y_disc ~ n_immune + trt + x_scaled + tum_off + 
@@ -118,17 +113,11 @@ spatial <- gam(y_disc ~ n_immune + trt + x_scaled + tum_off +
                 data = df,                         
                 family = nb())
 
-# c. reduced model, only "significant" predictors. AIC = 4338.5
-red_col <- fact_cols[c(1, 2, 4, 7)]
-x_red <- as.matrix(df[, red_col])
-x_red_sc <- scale(x_red)
+# parametric p-vals adjusted
+p_para <- summary(spatial)$p.pv
+p_adj <- p.adjust(p_para, method = "BH")
 
-spatial_red <- gam(y_disc ~ n_immune + trt + x_red_sc + tum_off +
-                     s(cx, cy, bs = "gp"),
-                   data = df,
-                   family = nb())
-
-# d. elastic net re-visualization. consistent effect size
+# e. elastic net re-visualization. consistent effect size
 library(glmnet)
 # finding optimal penalization term
 crval <- cv.glmnet(df$n_immune + trt + x_scaled + tum_off, y_disc, 
