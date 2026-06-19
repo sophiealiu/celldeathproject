@@ -102,7 +102,7 @@ ggplot(OR_clean %>%
 
 # -----------------------------------------------------------------------------
 # 4. using counts considers sequencing depth. iterate after diagnosis in 5
-# a. negative binomial. AIC = 4410.3
+# a. negative binomial. AIC = 4368.3
 library(MASS)
 nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + tum_off)
 
@@ -111,20 +111,14 @@ p_vals <- sort(                                   # first visualization
   decreasing = FALSE)
 p_vals_adj <- p.adjust(p_vals, method = "BH")     # after benjamini still optimistic
 
-# b. zero-inflation. AIC = 4428.1
-library(glmmTMB)
-zero <- glmmTMB(y_disc ~ n_immune + trt + x_scaled, 
-                data = df, 
-                family = nbinom2)
-
-# c. geographical trends, Moran's I. Not combined w/ zero. AIC = 4342.3
+# b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4342.3
 library(mgcv)
 spatial <- gam(y_disc ~ n_immune + trt + x_scaled + tum_off + 
                  s(x, y, bs = "gp"),     # spatial smoothing
                 data = df,                         
                 family = nb())           
 
-# d. reduced model, only "significant" predictors. AIC = 4354.5
+# c. reduced model, only "significant" predictors. AIC = 4354.5
 red_col <- fact_cols[c(1, 4)]
 x_red <- as.matrix(df[, red_col])
 x_red_sc <- scale(x_red)
@@ -134,7 +128,7 @@ spatial_red <- gam(y_disc ~ n_immune + trt + x_red_sc + tum_off +
                    data = df,
                    family = nb())
 
-# e. elastic net re-visualization. consistent effect size
+# d. elastic net re-visualization. consistent effect size
 library(glmnet)
 # finding optimal penalization term
 crval <- cv.glmnet(df$n_immune + trt + x_scaled + tum_off, y_disc, 
@@ -145,7 +139,7 @@ elastic <- glmnet(df$n_immune + trt + x_scaled + tum_off, y_disc,
                   alpha = 0.5, lambda = optim)
 coef(elastic) 
 
-# f. interaction (careful overfitting). AIC = 4314.8
+# e. interaction (careful overfitting). AIC = 4314.8
 inter1 <- scale(df$X1)*trt
 inter4 <- scale(df$X4)*trt
 sr_int <- gam(y_disc ~ n_immune + trt + x_red_sc + tum_off + inter1 + inter4
