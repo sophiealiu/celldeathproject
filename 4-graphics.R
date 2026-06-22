@@ -83,7 +83,7 @@ draw <- function(df_IF, df_visium,
     theme(
       panel.background = element_rect(fill = "black"),
       plot.background  = element_rect(fill = "black"),
-      panel.grid       = element_blank(),                 # change later if I want gridlines 
+      panel.grid       = element_blank(),                                  # later gridlines
       
       axis.text.x  = element_text(color = "white", size = 12),
       axis.text.y  = element_text(color = "white", size = 12),
