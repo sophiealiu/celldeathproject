@@ -55,7 +55,6 @@ y_binar <- df$exist_dying               # binomial  [X]
 y_disc <- df$n_dying                    # overdispersion -> negative binomial
                                         # zero inflation overfit from performance stats
 trt <- ifelse(df$sample == "pd1-9", 1, 0)
-tum_off <- offset(log(df$n_tumor))      # offset term, don't treat same as coeffs
 
 
 # -----------------------------------------------------------------------------
@@ -81,10 +80,11 @@ nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + tum_off)
 
 # b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4342.3
 library(mgcv)
-spatial <- gam(y_disc ~ n_immune + trt + x_scaled + tum_off + 
-                 s(x, y, bs = "gp"),     # spatial smoothing
-                data = df,                         
-                family = nb())
+spatial <- gam(y_disc ~ n_immune + trt + x_scaled +
+                 offset = log(df$n_tumor) + 
+                 s(x, y, bs = "gp", k = 100),     # gaussian process spatial smoothing term
+                 data = df,                         
+                 family = nb())
 
 # parametric p-vals adjusted
 p_para <- summary(spatial)$p.pv
@@ -101,13 +101,6 @@ elastic <- glmnet(df$n_immune + trt + x_scaled + tum_off, y_disc,
                   alpha = 0.5, lambda = optim)
 coef(elastic) 
 
-# d. interaction (careful overfitting). AIC = 4314.8
-inter1 <- scale(df$X1)*trt
-inter4 <- scale(df$X4)*trt
-sr_int <- gam(y_disc ~ n_immune + trt + x_red_sc + tum_off + inter1 + inter4
-                     + s(x, y, bs = "gp"),
-                   data = df,
-                   family = nb())
 
 # -----------------------------------------------------------------------------
 # 5. diagnostic stats
