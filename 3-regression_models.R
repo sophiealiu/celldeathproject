@@ -80,9 +80,9 @@ nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + tum_off)
 
 # b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4342.3
 library(mgcv)
-spatial <- gam(y_disc ~ n_immune + trt + x_scaled +
-                 offset = log(df$n_tumor) + 
+spatial <- gam(y_disc ~ n_immune + trt + x_scaled + 
                  s(x, y, bs = "gp", k = 100),     # gaussian process spatial smoothing term
+                 offset = log(df$n_tumor),
                  data = df,                         
                  family = nb())
 
