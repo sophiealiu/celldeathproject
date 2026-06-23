@@ -74,13 +74,14 @@ ggplot(OR_clean %>%
 
 # -----------------------------------------------------------------------------
 # 4. using counts considers sequencing depth. iterate after diagnosis in 5
-# a. negative binomial. AIC = 4368.3
+# a. negative binomial. AIC = 4681.4
 library(MASS)
-nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + tum_off)
+nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + offset(log(df$n_tumor)))
 
-# b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4342.3
+# b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4350.9
+# excess overfit possible with smoothing taking credit. residuals much better though
 library(mgcv)
-spatial <- gam(y_disc ~ n_immune + trt + x_scaled + 
+spatial <- gam(y_disc ~ n_immune + trt + x_scaled + offset(log(df$n_tumor)) + 
                  s(x, y, bs = "gp", k = 100),     # gaussian process spatial smoothing term
                  offset = log(df$n_tumor),
                  data = df,                         
@@ -90,16 +91,25 @@ spatial <- gam(y_disc ~ n_immune + trt + x_scaled +
 p_para <- summary(spatial)$p.pv
 p_adj <- p.adjust(p_para, method = "BH")
 
-# c. elastic net re-visualization. consistent effect size
+# c. elastic net re-visualization. consistent effect size for 1 & r
 library(glmnet)
 # finding optimal penalization term
-crval <- cv.glmnet(df$n_immune + trt + x_scaled + tum_off, y_disc, 
+crval <- cv.glmnet(df$n_immune + trt + x_scaled + offset(log(df$n_tumor)), 
+                   y_disc, 
                    alpha = 0.5, nfolds = 10)
 optim <- crval$lambda.min
 
-elastic <- glmnet(df$n_immune + trt + x_scaled + tum_off, y_disc, 
+elastic <- glmnet(df$n_immune + trt + x_scaled + offset(log(df$n_tumor)), 
+                  y_disc, 
                   alpha = 0.5, lambda = optim)
 coef(elastic) 
+
+# d. fitting treatment interaction (extra info, weak effects. potential overfit.)
+spatial_interact <- gam(y_disc ~ n_immune + trt *x_scaled + 
+                 s(cx, cy, bs = "tp"),
+                 offset = log(df$n_tumor),
+                 data = df,                         
+                 family = nb())
 
 
 # -----------------------------------------------------------------------------
