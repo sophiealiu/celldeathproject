@@ -55,7 +55,7 @@ y_binar <- df$exist_dying               # binomial  [X]
 y_disc <- df$n_dying                    # overdispersion -> negative binomial
                                         # zero inflation overfit from performance stats
 trt <- ifelse(df$sample == "pd1-9", 1, 0)
-tum_off <- offset(log(df$n_tumor+1))    # offset term, don't treat same as coeffs
+tum_off <- offset(log(df$n_tumor))      # offset term, don't treat same as coeffs
 
 
 # -----------------------------------------------------------------------------
