@@ -90,7 +90,7 @@ spatial <- gam(y_disc ~ n_immune + trt + x_scaled + tum_off +
 p_para <- summary(spatial)$p.pv
 p_adj <- p.adjust(p_para, method = "BH")
 
-# e. elastic net re-visualization. consistent effect size
+# c. elastic net re-visualization. consistent effect size
 library(glmnet)
 # finding optimal penalization term
 crval <- cv.glmnet(df$n_immune + trt + x_scaled + tum_off, y_disc, 
@@ -101,7 +101,7 @@ elastic <- glmnet(df$n_immune + trt + x_scaled + tum_off, y_disc,
                   alpha = 0.5, lambda = optim)
 coef(elastic) 
 
-# e. interaction (careful overfitting). AIC = 4314.8
+# d. interaction (careful overfitting). AIC = 4314.8
 inter1 <- scale(df$X1)*trt
 inter4 <- scale(df$X4)*trt
 sr_int <- gam(y_disc ~ n_immune + trt + x_red_sc + tum_off + inter1 + inter4
