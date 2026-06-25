@@ -104,13 +104,6 @@ elastic <- glmnet(df$n_immune + trt + x_scaled + offset(log(df$n_tumor)),
                   alpha = 0.5, lambda = optim)
 coef(elastic) 
 
-# d. fitting treatment interaction (extra info, weak effects. potential overfit.)
-spatial_interact <- gam(y_disc ~ n_immune + trt *x_scaled + 
-                 s(cx, cy, bs = "tp"),
-                 offset = log(df$n_tumor),
-                 data = df,                         
-                 family = nb())
-
 
 # -----------------------------------------------------------------------------
 # 5. diagnostic stats
@@ -118,22 +111,13 @@ library(DHARMa)
 sim_res <- simulateResiduals(nb)
 plot(sim_res)
 
-# a. not zero-inflated
+# a. testing if I need an altered NB model (spatial or zero-inflated)
 testZeroInflation(sim_res)
-
-# but spatial effects significant
 testSpatialAutocorrelation(simulationOutput = sim_res0, 
                            x = df$x, 
                            y = df$y)
 
-# b. finding the culprit throwing off my data
-full_vars <- cbind(x_red_sc, trt)
-for(i in 1:4) {                                   # number of reduced factors
-  plotResiduals(sim_resR, full_vars[, i],
-                main = colnames(full_vars)[i])
-}
-
-# c. visualization of treatment interaction. directionality but CI overlap
+# b. visualization of treatment interaction. exists directionality but CI overlap
 ggplot(df, aes(x = scale(X1), y = y_disc,
                color = factor(trt,
                               levels = c(0,1),
