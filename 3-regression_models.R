@@ -154,13 +154,12 @@ df10 <- rbind(iso10, pd110)
 x10 <- as.matrix(df10[, fact_cols])
 x10sc <- scale(x10)
 trt10 <- ifelse(df10$sample == "pd1-9", 1, 0)
-tum10_off <- offset(log(df10$n_tumor+1)) 
 
 yd_test <- df10$n_lectin            
 nb_test <- glm.nb(yd_test ~ x10sc)
 
 y10d <- df10$n_dying
-nb10 <- glm.nb(y10d ~ df10$n_immune + trt + tum10_off+ x10sc)
+nb10 <- glm.nb(y10d ~ df10$n_immune + trt + offset = log(df$n_tumor)+ x10sc)
 
 
 # -----------------------------------------------------------------------------
@@ -181,11 +180,10 @@ tum20_off <- offset(log(df20$n_tumor+1))
 x80 <- as.matrix(df80[, fact_cols])
 x80sc <- scale(x80)  
 trt80 <- ifelse(df80$sample == "pd1-9", 1, 0)
-tum80_off <- offset(log(df80$n_tumor+1)) 
 
 y20d <- df20$n_dying
 y80d <- df80$n_dying
 
-nb20 <- glm.nb(y20d ~ df20$n_immune + trt20 + tum20_off+ x20sc)
-nb80 <- glm.nb(y80d ~ df80$n_immune + trt80 + tum80_off+ x80sc)
+nb20 <- glm.nb(y20d ~ df20$n_immune + trt20 + offset = log(df$n_tumor)+ x20sc)
+nb80 <- glm.nb(y80d ~ df80$n_immune + trt80 + offset = log(df$n_tumor)+ x80sc)
 
