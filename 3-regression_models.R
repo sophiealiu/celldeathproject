@@ -60,7 +60,8 @@ trt <- ifelse(df$sample == "pd1-9", 1, 0)
 # -----------------------------------------------------------------------------
 # 3. basic comparative univariate odds-ratios after moving to block 1.2
 OR <- glm(
-  reformulate(df$n_immune + trt + x_scaled + tum_off, response = y_binar),
+  reformulate(df$n_immune + trt + x_scaled + offset(log(df$n_tumor)), 
+              response = y_binar),
   family = "binomial"
 )
 
@@ -137,11 +138,11 @@ ggplot(df, aes(x = scale(X1), y = y_disc,
 
 
 # -----------------------------------------------------------------------------
-# 6. permutation test. Want to see the model lose
+# 6. permutation test, model loses significance.
 set.seed(42)
 y_messUp <- sample(y_disc)
 
-nb_mess <- glm.nb(y_messUp ~ df$n_immune + trt + x_scaled + tum_off)
+nb_mess <- glm.nb(y_messUp ~ df$n_immune + trt + x_scaled + offset(log(df$n_tumor)))
 
 
 # -----------------------------------------------------------------------------
