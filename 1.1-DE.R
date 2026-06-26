@@ -68,8 +68,8 @@ write_feather(pd1_joined, "pd1_all_genes")
 # -----------------------------------------------------------------------------
 # 2. cell-type known signatures from literature
 cd8_effector <- c("Cd8a","Cd8b1","Gzmb","Gzmk","Prf1","Ifng",
-                  "Nkg7","Cx3cr1","Klrk1","Ccl5","Xcl1")     # Cx3cr1 missing
-cd8_effector <- setdiff(cd8_effector, "Cx3cr1")
+                  "Nkg7","Cx3cr1","Klrk1","Ccl5","Xcl1")     # Cx3cr1 missing in our data.
+cd8_effector <- setdiff(cd8_effector, "Cx3cr1")              
 
 cd8_exhausted <- c("Pdcd1","Ctla4","Lag3","Havcr2","Tigit",
                    "Tox","Eomes","Cxcl13","Batf","Nr4a1")
