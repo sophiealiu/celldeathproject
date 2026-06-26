@@ -36,7 +36,7 @@ rownames(W)[top_idx][1:10]
 # What are our assumptions?
 # - know data is nonlinear and non-normal
 # - means smoothing need to incorporate density covariate
-# - better but still non-orthogonal when using NMF. raw counts, per-gene weights
+# - NMF additive non-orthogonal nature. raw counts, per-gene weights
 # - pseudo-independence by sampling non-overlapping disks
 
 
