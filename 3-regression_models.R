@@ -83,7 +83,7 @@ nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + offset(log(df$n_tumor)))
 # excess overfit possible with smoothing taking credit.
 library(mgcv)
 spatial <- gam(y_disc ~ n_immune + trt + x_scaled + offset(log(df$n_tumor)) + 
-                 s(x, y, bs = "gp", k = 100),     # gaussian process spatial smoothing term
+                 s(x, y, bs = "gp", k = 100),     # gaussian process term
                  offset = log(df$n_tumor),
                  data = df,                         
                  family = nb())
