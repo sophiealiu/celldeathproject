@@ -75,11 +75,11 @@ ggplot(OR_clean %>%
 
 # -----------------------------------------------------------------------------
 # 4. using counts considers sequencing depth. iterate after diagnosis in 5
-# a. negative binomial. AIC = 4681.4
+# a. negative binomial. AIC = 4352.6
 library(MASS)
 nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + offset(log(df$n_tumor)))
 
-# b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4350.9
+# b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4340.9
 # excess overfit possible with smoothing taking credit. residuals much better though
 library(mgcv)
 spatial <- gam(y_disc ~ n_immune + trt + x_scaled + offset(log(df$n_tumor)) + 
