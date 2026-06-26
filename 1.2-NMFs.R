@@ -6,7 +6,7 @@
 
 library(Matrix)
 library(ggplot2)
-library(RcppML)
+library(RcppML)        # our data is too sparse to use regular NMF package
 library(Seurat)
 
 # importing files. no assumptions made, hence raw data. 10x recommended 8 micron bins
