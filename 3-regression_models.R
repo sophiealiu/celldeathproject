@@ -79,7 +79,7 @@ ggplot(OR_clean %>%
 library(MASS)
 nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + offset(log(df$n_tumor)))
 
-# b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4340.9
+# b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4340.9, BIC increase 100
 # excess overfit possible with smoothing taking credit. residuals much better though
 library(mgcv)
 spatial <- gam(y_disc ~ n_immune + trt + x_scaled + offset(log(df$n_tumor)) + 
