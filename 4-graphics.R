@@ -118,7 +118,7 @@ heat <- function(df_IF, df_visium,
    
    ggplot() +
   
-   geom_hex(data = df_vis_filt, aes(x = x, y = y),
+   geom_bin2d(data = df_vis_filt, aes(x = x, y = y),
             bins = bin_num,
             alpha = trans) +
    scale_fill_viridis_c(option = "A") +
