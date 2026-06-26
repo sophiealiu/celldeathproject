@@ -138,7 +138,7 @@ ggplot(df, aes(x = scale(X1), y = y_disc,
 
 
 # -----------------------------------------------------------------------------
-# 6. permutation test, model loses significance.
+# 6. permutation test, model loses significance, good. dismissing artifact
 set.seed(42)
 y_messUp <- sample(y_disc)
 
