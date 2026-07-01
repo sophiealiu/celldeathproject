@@ -97,12 +97,7 @@ draw <- function(df_IF, df_visium,
       values = colors,
       name = "factor",
       guide = guide_legend(
-        override.aes = list(shape = 15, size = 5, alpha = 1))) +
-    annotate("segment", x = 6000, xend = 7000, y = 500, yend = 500,        # verified dims
-             colour = "white", linewidth = 3) +
-    
-    annotate("text", x = 7005, y = 800, label = "1 mm", colour = "white", 
-             size = 4.5, fontface = "bold")
+        override.aes = list(shape = 15, size = 5, alpha = 1))) 
 }
 
 
