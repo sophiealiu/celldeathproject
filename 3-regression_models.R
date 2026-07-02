@@ -155,7 +155,7 @@ x10 <- as.matrix(df10[, fact_cols])
 x10sc <- scale(x10)
 trt10 <- ifelse(df10$sample == "pd1-9", 1, 0)
 
-yd_test <- df10$n_lectin            
+yd_test <- df10$n_endothelial            
 nb_test <- glm.nb(yd_test ~ x10sc)
 
 y10d <- df10$n_dying
