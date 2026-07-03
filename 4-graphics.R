@@ -11,7 +11,7 @@ library(pheatmap)
 library(tidyr)
 library(viridis)
 
-# importing files. these are lined up in the same pixel coordinate space.
+# importing files. same µm coordinate space
 datadir <- "path/to/your/working/directory"
 df_isoIF <- read_csv(file.path(datadir,"iso_coords.csv"))
 df_iso_vis <- read_csv(file.path(datadir,"NMF_isoC.csv"))
