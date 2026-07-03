@@ -69,7 +69,7 @@ spatial <- gam(
     s(x, y, bs = "gp", k = 10) +
     offset(log(n_tumor)),
   data = df,
-  family = nb()
+  family = mgcv::nb()
 )
 
 # parametric p-vals adjusted
