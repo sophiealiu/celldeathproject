@@ -67,7 +67,6 @@ mean_loss <- rowMeans(loss_matrix)
 k_opt <- uik(x = ks, y = mean_loss)
 
 # b. stability score using Hungarian algorithm, gene weights across stochastic regeneration. 
-# result: 0.9498465
 nruns_stab <- 30                                     # here CLT
 pair_stab <- c()
 W_list <- vector("list", nruns_stab)                 # features
@@ -90,7 +89,6 @@ for (i in 1:(nruns_stab - 1)) {
 
 # -----------------------------------------------------------------------------
 # 3. re-aligning row and column names (lost before). 
-# just re-using the last save, but re-running doesn't take too long.
 best <- nmf(merged_mat, k = k_opt, seed = 42,     
                  verbose = FALSE)
 rownames(best$w) <- rownames(merged_mat)
