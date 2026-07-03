@@ -25,7 +25,7 @@ fact_cols <- names(df)[10:18]                         # indices, check head firs
 # summary of top genes
 W <- read.csv(file.path(datadir, "NMF_W.csv"),row.names = 1)
 
-top_idx <- order(W$V8, decreasing = TRUE)
+top_idx <- order(W$V1, decreasing = TRUE)            
 rownames(W)[top_idx][1:10]
 
 
@@ -41,12 +41,14 @@ rownames(W)[top_idx][1:10]
 
 # -----------------------------------------------------------------------------
 # 1. setting vars and family
-x <- as.matrix(df[, fact_cols])         # replace with cell cols or gene cols based on which block 1
-x_scaled <- scale(x)                    # visible representation of RNA counts. z-scores
+x <- as.matrix(df[, fact_cols])         
+x_scaled <- as.data.frame(scale(x))      # visible representation of RNA counts. z-scores
+colnames(x_scaled) <- paste0("factor_", seq_len(ncol(x_scaled)))
+df_model <- cbind(df, x_scaled)
 
-y_binar <- df$exist_dying               # binomial  [X]
-y_disc <- df$n_dying                    # overdispersion -> negative binomial
-                                        # zero inflation overfit from performance stats
+y_binar <- df$exist_dying                # binomial  [X]
+y_disc <- df$n_dying                     # overdispersion -> negative binomial
+                                         # zero inflation overfit from performance stats
 trt <- ifelse(df$sample == "pd1-9", 1, 0)
 
 
