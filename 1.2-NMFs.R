@@ -68,9 +68,9 @@ k_opt <- uik(x = ks, y = mean_loss)
 
 # b. stability score using Hungarian algorithm, gene weights across stochastic regeneration. 
 # result: 0.9498465
-nruns_stab <- 30                                   # here CLT
+nruns_stab <- 30                                     # here CLT
 pair_stab <- c()
-W_list <- vector("list", nruns_stab)               # features
+W_list <- vector("list", nruns_stab)                 # features
 
 for (r in 1:nruns_stab) {
   save <- nmf(merged_mat, k = k_opt, seed = r)
