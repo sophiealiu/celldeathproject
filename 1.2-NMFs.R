@@ -41,7 +41,7 @@ merged_mat <- cbind(mat_iso, mat_pd1)
 # -----------------------------------------------------------------------------
 # 2. testing k-ranks. 
 # a. avg MSE dim. unit invariant knee, optimal rank = 9
-ks <- 2:20                                               # from manual sweeping by 5s, k < 20
+ks <- 2:20                                           # from manual sweeping by 5s, k < 20
 nruns_opt <- 10
 loss_matrix <- matrix(nrow = length(ks), ncol = nruns_opt)
 
@@ -52,7 +52,7 @@ pb <- progress_bar$new(
   width = 60
 )
 
-for (i in seq_along(ks)) {                               # it takes ~ 3hrs, sorry
+for (i in seq_along(ks)) {                           # it takes ~ 3hrs
   for (r in 1:nruns_opt) {
     model <- nmf(merged_mat, k = ks[i], seed = r,     
                  verbose = FALSE)
