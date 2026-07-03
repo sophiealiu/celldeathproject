@@ -62,7 +62,7 @@ nb <- glm.nb(
   data = df
 )
 
-# b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4340.9, BIC increase 100
+# b. geographical trends, Moran's I. Not combined w/ zero. 
 # excess overfit possible with smoothing taking credit.
 spatial <- gam(
   n_dying ~ n_immune + trt + x_scaled +
