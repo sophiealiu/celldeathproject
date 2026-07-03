@@ -4,8 +4,12 @@
 # Purpose: model iterations, regression dying tumor ~ NMF factors
 # -----------------------------------------------------------------------------
 
+library(DHARMa)       # some libraries will have to be forced in using remotes::install_github
 library(dplyr)
 library(ggplot2)
+library(glmnet)
+library(MASS)
+library(mgcv)
 library(tidyr)
 
 datadir <- "path/to/your/working/directory"
@@ -77,13 +81,11 @@ ggplot(OR_clean %>%
 
 # -----------------------------------------------------------------------------
 # 4. using counts considers sequencing depth. iterate after diagnosis in 5
-# a. negative binomial. AIC = 4352.6
-library(MASS)
+# a. negative binomial.
 nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + offset(log(df$n_tumor)))
 
 # b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4340.9, BIC increase 100
 # excess overfit possible with smoothing taking credit.
-library(mgcv)
 spatial <- gam(y_disc ~ n_immune + trt + x_scaled + offset(log(df$n_tumor)) + 
                  s(x, y, bs = "gp", k = 100),     # gaussian process term
                  offset = log(df$n_tumor),
@@ -95,7 +97,6 @@ p_para <- summary(spatial)$p.pv
 p_adj <- p.adjust(p_para, method = "BH")
 
 # c. elastic net re-visualization. consistent effect size for 1 & r
-library(glmnet)
 # finding optimal penalization term
 crval <- cv.glmnet(df$n_immune + trt + x_scaled + offset(log(df$n_tumor)), 
                    y_disc, 
@@ -110,7 +111,6 @@ coef(elastic)
 
 # -----------------------------------------------------------------------------
 # 5. diagnostic stats
-library(DHARMa)
 sim_res <- simulateResiduals(nb)
 plot(sim_res)
 
