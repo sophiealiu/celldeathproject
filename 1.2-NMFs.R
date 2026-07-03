@@ -4,12 +4,12 @@
 # Purpose: Creating NMF factors from Visium data and optimizing for downstream
 # -----------------------------------------------------------------------------
 
-library(clue)
+library(clue)           # some libraries will have to be forced in using remotes::install_github
 library(ggplot2)
 library(inflection)
 library(progress)
 library(Matrix)
-library(RcppML)        # our data is too sparse to use regular NMF package
+library(RcppML)         # our data is too sparse to use regular NMF package
 library(Seurat)
 
 # importing files. no assumptions made, hence raw data. 10x recommended 8 micron bins
