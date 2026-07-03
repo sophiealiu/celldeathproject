@@ -4,8 +4,11 @@
 # Purpose: Creating NMF factors from Visium data and optimizing for downstream
 # -----------------------------------------------------------------------------
 
-library(Matrix)
+library(clue)
 library(ggplot2)
+library(inflection)
+library(progress)
+library(Matrix)
 library(RcppML)        # our data is too sparse to use regular NMF package
 library(Seurat)
 
@@ -38,8 +41,6 @@ merged_mat <- cbind(mat_iso, mat_pd1)
 # -----------------------------------------------------------------------------
 # 2. testing k-ranks. 
 # a. avg MSE dim. unit invariant knee, optimal rank = 9
-library(inflection)
-library(progress)
 ks <- 2:20                                               # from manual sweeping by 5s, k < 20
 nruns_opt <- 10
 loss_matrix <- matrix(nrow = length(ks), ncol = nruns_opt)
@@ -67,7 +68,6 @@ k_opt <- uik(x = ks, y = mean_loss)
 
 # b. stability score using Hungarian algorithm, gene weights across stochastic regeneration. 
 # result: 0.9498465 yay close to 1
-library(clue)
 nruns_stab <- 30                                   # here CLT
 pair_stab <- c()
 W_list <- vector("list", nruns_stab)               # features
