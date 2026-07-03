@@ -23,13 +23,13 @@ df_pd1_vis <- read_csv(file.path(datadir,"9NMF_Apd1.csv"))
 # -----------------------------------------------------------------------------
 # 1. regular overlay factors on top of IF
 draw <- function(df_IF, df_visium,
-                 factor_cols,
+                 factorcols,
                  colors, size, trans,
                  threshold) { 
   
   df_visium_long <- df_visium %>%                # flipping to orient
     pivot_longer(
-      cols = factor_cols,
+      cols = factorcols,
       names_to = "factor",
       values_to = "value") %>%    
       group_by(factor) %>%                       # isolate highest expressed areas
@@ -106,16 +106,16 @@ draw <- function(df_IF, df_visium,
 
 # now employing
 colors <- c("#9678B6")                                   # purple mountain majesty, courtesy of DB
-factor_cols <- c("X1")
+factorcols <- c("factor1")
 
-test <- draw(df_isoIF, df_iso_vis, factor_cols, colors, 1, 1, 0.6)
+test <- draw(df_isoIF, df_iso_vis, factorcols, colors, 1, 1, 0.6)
 test
 
 
 # -----------------------------------------------------------------------------
 # 2. summary graphs for experimental condition
-df1 <- cbind(df_pd1_vis$X1/sum(df_pd1_vis$X1), 
-             df_iso_vis$X1/sum(df_iso_vis$X1))          # for density
+df1 <- cbind(df_pd1_vis$factor1/sum(df_pd1_vis$factor1), 
+             df_iso_vis$factor1/sum(df_iso_vis$factor1))          # for density
 df1 <- as.data.frame(df1)
 
 colnames(df1) <- c("PD1", "ISO")
@@ -174,7 +174,7 @@ pheatmap(subset_mat,
 
 # -----------------------------------------------------------------------------
 # factor weights
-ggplot(df_pd1_vis, aes(x = x, y = y, z = X1)) +
+ggplot(df_pd1_vis, aes(x = x, y = y, z = factor1)) +
   stat_summary_2d(fun = mean, binwidth = c(300, 300),
                   alpha = 0.9) +      
   scale_fill_viridis_c(option = "magma") +
