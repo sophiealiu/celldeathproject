@@ -11,8 +11,8 @@ library(tidyr)
 datadir <- "path/to/your/working/directory"
 
 # 1.2 MAIN
-iso <- read.csv(file.path(datadir,"9NMF_iso40.csv")))
-pd1 <- read.csv(file.path(datadir,"9NMF_pd140.csv")))
+iso <- read.csv(file.path(datadir,"NMF_iso40.csv")))
+pd1 <- read.csv(file.path(datadir,"NMF_pd140.csv")))
 df <- rbind(iso, pd1)
 
 # 1.3
@@ -26,7 +26,7 @@ df <- rbind(iso, pd1)
 fact_cols <- names(df)[10:18]                         # indices, check head first
 
 # summary of top genes
-W <- read.csv(file.path(localdir, "9NMF_W.csv"),row.names = 1)
+W <- read.csv(file.path(localdir, "NMF_W.csv"),row.names = 1)
 
 top_idx <- order(W$V8, decreasing = TRUE)
 rownames(W)[top_idx][1:10]
@@ -149,8 +149,8 @@ nb_mess <- glm.nb(y_messUp ~ df$n_immune + trt + x_scaled + offset(log(df$n_tumo
 
 # -----------------------------------------------------------------------------
 # 7. vasculature for verification. cell type proximity
-iso10 <- read.csv("9NMF_iso10.csv")
-pd110 <- read.csv("9NMF_pd110.csv")
+iso10 <- read.csv("NMF_iso10.csv")
+pd110 <- read.csv("NMF_pd110.csv")
 df10 <- rbind(iso10, pd110)
 
 x10 <- as.matrix(df10[, fact_cols])
@@ -166,12 +166,12 @@ nb10 <- glm.nb(y10d ~ df10$n_immune + trt + offset = log(df10$n_tumor)+ x10sc)
 
 # -----------------------------------------------------------------------------
 # 8. more radii sensitivity
-iso20 <- read.csv("9NMF_iso20.csv")
-pd120 <- read.csv("9NMF_pd120.csv")
+iso20 <- read.csv("NMF_iso20.csv")
+pd120 <- read.csv("NMF_pd120.csv")
 df20 <- rbind(iso20, pd120)
 
-iso80 <- read.csv("9NMF_iso80.csv")
-pd180 <- read.csv("9NMF_pd180.csv")
+iso80 <- read.csv("NMF_iso80.csv")
+pd180 <- read.csv("NMF_pd180.csv")
 df80 <- rbind(iso20, pd120)  
 
 x20 <- as.matrix(df20[, fact_cols])
