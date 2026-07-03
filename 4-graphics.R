@@ -9,11 +9,11 @@ library(ggplot2)
 library(tidyr)
 
 # importing files. these are lined up in the same pixel coordinate space.
-df_isoIF <- read_csv("iso_coordsNT.csv")
-df_iso_vis <- read_csv("9NMF_isoC.csv")
+df_isoIF <- read_csv(file.path(datadir,"iso_coordsNT.csv"))
+df_iso_vis <- read_csv(file.path(datadir,"9NMF_isoC.csv"))
 
-df_pd1IF <- read_csv("pd1_coordsNT.csv")
-df_pd1_vis <- read_csv("9NMF_Apd1.csv")
+df_pd1IF <- read_csv(file.path(datadir,"pd1_coordsNT.csv"))
+df_pd1_vis <- read_csv(file.path(datadir,"9NMF_Apd1.csv"))
 
 
 # -----------------------------------------------------------------------------
