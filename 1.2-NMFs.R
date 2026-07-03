@@ -45,14 +45,14 @@ ks <- 2:20                                               # from manual sweeping 
 nruns_opt <- 10
 loss_matrix <- matrix(nrow = length(ks), ncol = nruns_opt)
 
-pb <- progress_bar$new(                                  # it takes ~ 3hrs, sorry
+pb <- progress_bar$new(                                  
   format = "[:bar] :percent, approx. time left: :eta",
   total = length(ks)*nruns_opt,                          
   clear = FALSE, 
   width = 60
 )
 
-for (i in seq_along(ks)) {
+for (i in seq_along(ks)) {                               # it takes ~ 3hrs, sorry
   for (r in 1:nruns_opt) {
     model <- nmf(merged_mat, k = ks[i], seed = r,     
                  verbose = FALSE)
