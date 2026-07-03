@@ -89,7 +89,7 @@ testSpatialAutocorrelation(simulationOutput = sim_res,
 
 
 # -----------------------------------------------------------------------------
-# 4. permutation test, model loses significance, good. dismissing artifact
+# 4. permutation test, random noise effects
 set.seed(42)
 df_perm <- df
 df_perm$n_dying <- sample(df_perm$n_dying)
