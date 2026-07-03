@@ -148,7 +148,7 @@ pheatmap(subset_mat,
 
 # -----------------------------------------------------------------------------
 # factor weights
-ggplot(df_pd1_vis, aes(x = x, y = y, z = factor1)) +
+ggplot(df_pd1_vis, aes(x = x, y = y, z = factor8)) +
   stat_summary_2d(fun = mean, binwidth = c(300, 300),
                   alpha = 0.9) +      
   scale_fill_viridis_c(option = "magma") +
