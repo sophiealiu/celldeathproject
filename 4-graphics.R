@@ -112,7 +112,7 @@ test
 
 
 # -----------------------------------------------------------------------------
-# 2. summary graphs for experimental condition
+# 2. summary graphs for experimental condition. repeat for factors of interest
 df1 <- cbind(df_pd1_vis$factor1/sum(df_pd1_vis$factor1), 
              df_iso_vis$factor1/sum(df_iso_vis$factor1))          # for density
 df1 <- as.data.frame(df1)
@@ -144,7 +144,7 @@ ggplot(df1_long, aes(x = "", y = value, fill = condition)) +
 
 # -----------------------------------------------------------------------------
 # gene heats
-df_weights <- read.csv(file.path(datadir, "9NMF_W.csv"))
+df_weights <- read.csv(file.path(datadir, "NMF_W.csv"))
 
 list_weights <- list()
 fact_cols <- colnames(df_weights)[-1]
