@@ -86,8 +86,9 @@ plot(sim_res)
 # testing if I need an altered NB model (spatial or zero-inflated)
 testZeroInflation(sim_res)
 testSpatialAutocorrelation(simulationOutput = sim_res, 
-                           x = df$x, 
-                           y = df$y)
+                           x = x, 
+                           y = y,
+                          data = df_model)
 
 
 # -----------------------------------------------------------------------------
