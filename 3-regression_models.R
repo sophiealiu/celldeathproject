@@ -19,17 +19,6 @@ df <- rbind(iso, pd1)
 
 
 # -----------------------------------------------------------------------------
-# preliminary checks of NMF factors
-fact_cols <- grep("^X", names(df), value = TRUE)   
-
-# summary of top genes
-W <- read.csv(file.path(datadir, "NMF_W.csv"),row.names = 1)
-
-top_idx <- order(W$V1, decreasing = TRUE)            
-rownames(W)[top_idx][1:10]
-
-
-# -----------------------------------------------------------------------------
 # BEGINNING MODELING
 
 # What are our assumptions?
@@ -41,6 +30,7 @@ rownames(W)[top_idx][1:10]
 
 # -----------------------------------------------------------------------------
 # 1. setting vars and family
+fact_cols <- grep("^X", names(df), value = TRUE)   
 x <- as.matrix(df[, fact_cols])         
 x_scaled <- scale(x)                    # visible representation of RNA counts. z-scores
 colnames(x_scaled) <- paste0("factor_", seq_len(ncol(x_scaled)))
