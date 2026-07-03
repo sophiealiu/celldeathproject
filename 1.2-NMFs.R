@@ -97,7 +97,7 @@ colnames(save$h) <- colnames(merged_mat)
 # renaming for ease of reference, file creation for GSEA block 5
 W <- save$w
 H <- save$h  
-write.csv(W, "9NMF_W.csv")
+write.csv(W, "NMF_W.csv")
 
 
 # -----------------------------------------------------------------------------
@@ -129,6 +129,6 @@ iso_joined <- cbind(
 )
 
 # export both individually, bind at regression step. keep in pixels
-write.csv(pd1_joined, file.path(datadir, "9NMF_Apd1.csv"))
-write.csv(iso_joined, file.path(datadir, "9NMF_isoC.csv"))
+write.csv(pd1_joined, file.path(datadir, "NMF_Apd1.csv"))
+write.csv(iso_joined, file.path(datadir, "NMF_isoC.csv"))
 
