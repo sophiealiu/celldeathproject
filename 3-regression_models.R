@@ -20,7 +20,7 @@ df <- rbind(iso, pd1)
 
 # -----------------------------------------------------------------------------
 # preliminary checks of NMF factors
-fact_cols <- names(df)[10:18]                         # indices, check head first
+fact_cols <- grep("^X", names(df), value = TRUE)   
 
 # summary of top genes
 W <- read.csv(file.path(datadir, "NMF_W.csv"),row.names = 1)
