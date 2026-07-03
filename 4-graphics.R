@@ -9,6 +9,7 @@ library(gghalves)
 library(ggplot2)
 library(pheatmap)
 library(tidyr)
+library(viridis)
 
 # importing files. these are lined up in the same pixel coordinate space.
 datadir <- "path/to/your/working/directory"
@@ -17,10 +18,6 @@ df_iso_vis <- read_csv(file.path(datadir,"9NMF_isoC.csv"))
 
 df_pd1IF <- read_csv(file.path(datadir,"pd1_coordsNT.csv"))
 df_pd1_vis <- read_csv(file.path(datadir,"9NMF_Apd1.csv"))
-
-# basic cleaning
-colnames(iso_dist)  <- paste0("iso_", colnames(iso_dist))
-colnames(pd1_dist) <- paste0("pd1_", colnames(pd1_dist))
 
 
 # -----------------------------------------------------------------------------
@@ -107,11 +104,18 @@ draw <- function(df_IF, df_visium,
         override.aes = list(shape = 15, size = 5, alpha = 1))) 
 }
 
+# now employing
+colors <- c("#9678B6")                                   # purple mountain majesty, courtesy of DB
+factor_cols <- c("X1")
+
+test <- draw(df_isoIF, df_iso_vis, factor_cols, colors, 1, 1, 0.6)
+test
+
 
 # -----------------------------------------------------------------------------
-# 2. dead spots on top of heatmap of factors
-df1 <- cbind(pd1_dist$pd1_X9/sum(pd1_dist$pd1_X9), 
-             iso_dist$iso_X9/sum(iso_dist$iso_X9))   # for density
+# 2. summary graphs for experimental condition
+df1 <- cbind(df_pd1_vis$X1/sum(df_pd1_vis$X1), 
+             df_iso_vis$X1/sum(df_iso_vis$X1))          # for density
 df1 <- as.data.frame(df1)
 
 colnames(df1) <- c("PD1", "ISO")
@@ -123,16 +127,7 @@ df1_long <- pivot_longer(
   values_to = "value"
 )
 
-# now employing
-colors <- c("#9678B6")                                   # purple mountain majesty, courtesy of DB
-factor_cols <- c("X1")
-
-test <- draw(df_isoIF, df_iso_vis, factor_cols, colors, 1, 1, 0.6)
-test
-
-
-# -----------------------------------------------------------------------------
-# 3. violin
+# violin
 ggplot(df1_long, aes(x = "", y = value, fill = condition)) +
   geom_half_violin(
     data = subset(df_long, condition == "ISO"),
@@ -149,7 +144,7 @@ ggplot(df1_long, aes(x = "", y = value, fill = condition)) +
 
 
 # -----------------------------------------------------------------------------
-# 4. gene heats
+# gene heats
 df_weights <- read.csv(file.path(datadir, "9NMF_W.csv"))
 
 list_weights <- list()
@@ -165,8 +160,6 @@ for (i in fact_cols) {
 
 clean_weights <- unique(list_weights)
 
-library(pheatmap)
-library(viridis)
 subset_mat <- df_weights[df_weights[,1] %in% clean_weights, -1]
 rownames(subset_mat) <- df_weights[df_weights[,1] %in% clean_weights, 1]
 
@@ -180,8 +173,8 @@ pheatmap(subset_mat,
 
 
 # -----------------------------------------------------------------------------
-# 5. factor weights
-ggplot(pd1_dist, aes(x = pd1_cx, y = pd1_cy, z = pd1_X8)) +
+# factor weights
+ggplot(pd1_dist, aes(x = pd1_x, y = pd1_y, z = pd1_X8)) +
   stat_summary_2d(fun = mean, binwidth = c(300, 300),
                   alpha = 0.9) +      
   scale_fill_viridis_c(option = "magma") +
@@ -218,7 +211,7 @@ ggplot(pd1_dist, aes(x = pd1_cx, y = pd1_cy, z = pd1_X8)) +
 
 
 # ------------------------------------------------------------------------------
-# 6. being *extra* and automating frame creation, joining to make movie in Adobe
+# 3. being *extra* and automating frame creation, joining to make movie in Adobe
 for (i in 0:30) { 
   alpha <- 0.005*i 
   p <- draw(df_IF, df_visium, alpha)                      # by transparency intervals
