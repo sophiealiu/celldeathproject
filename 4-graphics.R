@@ -5,7 +5,9 @@
 # -----------------------------------------------------------------------------
 
 library(dplyr)
+library(gghalves)
 library(ggplot2)
+library(pheatmap)
 library(tidyr)
 
 # importing files. these are lined up in the same pixel coordinate space.
@@ -15,6 +17,10 @@ df_iso_vis <- read_csv(file.path(datadir,"9NMF_isoC.csv"))
 
 df_pd1IF <- read_csv(file.path(datadir,"pd1_coordsNT.csv"))
 df_pd1_vis <- read_csv(file.path(datadir,"9NMF_Apd1.csv"))
+
+# basic cleaning
+colnames(iso_dist)  <- paste0("iso_", colnames(iso_dist))
+colnames(pd1_dist) <- paste0("pd1_", colnames(pd1_dist))
 
 
 # -----------------------------------------------------------------------------
@@ -103,63 +109,116 @@ draw <- function(df_IF, df_visium,
 
 
 # -----------------------------------------------------------------------------
-# 2. dead or cd8 spots on top of heatmap of factors
-heat <- function(df_IF, df_visium, 
-                 factor_num, type, 
-                 color, pt_size, trans, 
-                 bin_num, thresh_fact) {
-  
-   df_vis_filt <- df_visium %>% 
-     filter(.data[[factor_num]] > quantile(.data[[factor_num]], thresh_fact))
-   
-   ggplot() +
-  
-   geom_bin2d(data = df_vis_filt, aes(x = x, y = y),
-            bins = bin_num,
-            alpha = trans) +
-   scale_fill_viridis_c(option = "A") +
-   
-   geom_point(
-     data  = filter(df_IF, cell_type == type),
-     aes(x = x, y = y),
-      color = color,
-    size  = pt_size
-  ) + 
-     
-   scale_x_continuous(expand = c(0.05, 0.05)) +
-     scale_y_continuous(expand = c(0.05, 0.05)) +
-     coord_equal(clip = "off") +
-     theme(
-       panel.background = element_rect(fill = "black"),
-       plot.background  = element_rect(fill = "black"),
-       panel.grid       = element_blank(),               
-       
-       axis.text.x  = element_text(color = "white", size = 12),
-       axis.text.y  = element_text(color = "white", size = 12),
-       axis.line = element_line(color = "white"),
-       
-       plot.title = element_text(color = "white", size = 15, face = "bold"),
-       
-     )
-}
+# 2. dead spots on top of heatmap of factors
+df1 <- cbind(pd1_dist$pd1_X9/sum(pd1_dist$pd1_X9), 
+             iso_dist$iso_X9/sum(iso_dist$iso_X9))   # for density
+df1 <- as.data.frame(df1)
 
+colnames(df1) <- c("PD1", "ISO")
 
-# -----------------------------------------------------------------------------
-# 3. actually happening now
+df1_long <- pivot_longer(
+  df1,
+  cols = everything(),
+  names_to = "condition",
+  values_to = "value"
+)
+
+# now employing
 colors <- c("#9678B6")                                   # purple mountain majesty, courtesy of DB
 factor_cols <- c("X1")
 
 test <- draw(df_isoIF, df_iso_vis, factor_cols, colors, 1, 1, 0.6)
 test
 
-#D9C20B
-test2 <- heat(df_isoIF, df_iso_vis, "X2", "lectin",
-              "#D9C20B", 3, 0.6, 30, 0)                 
-test2
+
+# -----------------------------------------------------------------------------
+# 3. violin
+ggplot(df1_long, aes(x = "", y = value, fill = condition)) +
+  geom_half_violin(
+    data = subset(df_long, condition == "ISO"),
+    side = "l",
+    trim = FALSE
+  ) +
+  geom_half_violin(
+    data = subset(df1_long, condition == "PD1"),
+    side = "r",
+    trim = FALSE
+  ) +
+  theme_classic() +
+  labs(title = "factor 1", x = "", y = "distribution")
+
+
+# -----------------------------------------------------------------------------
+# 4. gene heats
+df_weights <- read.csv(file.path(datadir, "9NMF_W.csv"))
+
+list_weights <- list()
+fact_cols <- colnames(df_weights)[-1]
+
+for (i in fact_cols) {
+  top10 <-df_weights[
+    order(df_weights[[i]], decreasing = TRUE),
+    1][1:10]
+  
+  list_weights <- c(list_weights, top10)
+}
+
+clean_weights <- unique(list_weights)
+
+library(pheatmap)
+library(viridis)
+subset_mat <- df_weights[df_weights[,1] %in% clean_weights, -1]
+rownames(subset_mat) <- df_weights[df_weights[,1] %in% clean_weights, 1]
+
+pheatmap(subset_mat,
+         scale = "row", color = viridis(50),
+         main = "Top gene expression in each factor (z-scored)",
+         cluster_rows = FALSE,   
+         cluster_cols = FALSE,  
+         cellwidth = 20,         
+         cellheight = 10)
+
+
+# -----------------------------------------------------------------------------
+# 5. factor weights
+ggplot(pd1_dist, aes(x = pd1_cx, y = pd1_cy, z = pd1_X8)) +
+  stat_summary_2d(fun = mean, binwidth = c(300, 300),
+                  alpha = 0.9) +      
+  scale_fill_viridis_c(option = "magma") +
+  
+  # geom_point(
+  #   data  = filter(df_pd1IF, cell_type == "gc3ai"),
+  #   aes(x = x, y = y),
+  #   inherit.aes = FALSE,
+  #   color = "green4",
+  #   size  = 0.1,
+  #   alpha = 1
+  # ) +
+  geom_point(
+    data  = filter(df_pd1IF, cell_type == "lectin"),
+    aes(x = x, y = y),
+    inherit.aes = FALSE,
+    color = "#D9C20B",
+    alpha = 0.1,
+    size  = 0.005) +
+  
+  theme(
+    panel.background = element_rect(fill = "black"),
+    plot.background  = element_rect(fill = "black"),
+    axis.title       = element_blank(),              
+    axis.line        = element_blank(),
+    axis.text        = element_blank()
+  ) +
+  
+  scale_x_continuous(breaks = seq(0, 15454, by = 2*1545.4)) +
+  scale_y_continuous(breaks = seq(0, 15454, by = 2*1545.4)) +
+  
+  annotate("segment", x = 1550, xend = 3095.4, y = 2300, yend = 2300,        
+           colour = "white", linewidth = 3)
 
 
 # ------------------------------------------------------------------------------
-# being *extra* and automating frame creation, joining to make movie in Adobe
+# 6. being *extra* and automating frame creation, joining to make movie in Adobe
 for (i in 0:30) { 
   alpha <- 0.005*i 
   p <- draw(df_IF, df_visium, alpha)                      # by transparency intervals
