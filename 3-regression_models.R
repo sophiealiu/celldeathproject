@@ -45,7 +45,7 @@ x <- as.matrix(df[, fact_cols])
 x_scaled <- scale(x)                    # visible representation of RNA counts. z-scores
 colnames(x_scaled) <- paste0("factor_", seq_len(ncol(x_scaled)))
                 
-trt <- ifelse(df$sample == "pd1-9", 1, 0)
+trt <- ifelse(df$sample == "apd1", 1, 0)
 
 
 # -----------------------------------------------------------------------------
