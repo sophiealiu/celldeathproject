@@ -89,7 +89,7 @@ for (i in 1:(nruns_stab - 1)) {
 
 
 # -----------------------------------------------------------------------------
-# 4. re-aligning row and column names (lost before). 
+# 3. re-aligning row and column names (lost before). 
 # just re-using the last save, but re-running doesn't take too long.
 rownames(save$w) <- rownames(merged_mat)
 colnames(save$h) <- colnames(merged_mat)
@@ -101,7 +101,7 @@ write.csv(W, "9NMF_W.csv")
 
 
 # -----------------------------------------------------------------------------
-# 6. finalizing/ binding spatial data. 
+# 4. finalizing/ binding spatial data. 
 pd1_vis_coords <- GetTissueCoordinates(pd1_raw, image = NULL)
 iso_vis_coords <- GetTissueCoordinates(iso_raw, image = NULL)
 
