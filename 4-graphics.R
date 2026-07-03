@@ -214,7 +214,7 @@ ggplot(df_pd1_vis, aes(x = x, y = y, z = factor1)) +
 # 3. being *extra* and automating frame creation, joining to make movie in Adobe
 for (i in 0:30) { 
   alpha <- 0.005*i 
-  p <- draw(df_IF, df_visium, alpha)                      # by transparency intervals
+  p <- draw(df_pd1IF, df_pd1_vis, alpha)                      # by transparency intervals
     
   ggsave(
     filename <- sprintf("frames/frame_%02d_alpha_%0.1f.png", i, alpha),
