@@ -80,7 +80,7 @@ nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + offset(log(df$n_tumor)))
 
 # b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4340.9, BIC increase 100
 # excess overfit possible with smoothing taking credit.
-spatial <- gam(y_disc ~ n_immune + trt + x_scaled + offset(log(df$n_tumor)) + 
+spatial <- gam(y_disc ~ n_immune + trt + x_scaled + 
                  s(x, y, bs = "gp", k = 100),     # gaussian process term
                  offset = log(df$n_tumor),
                  data = df,                         
@@ -108,29 +108,11 @@ coef(elastic)
 sim_res <- simulateResiduals(nb)
 plot(sim_res)
 
-# a. testing if I need an altered NB model (spatial or zero-inflated)
+# testing if I need an altered NB model (spatial or zero-inflated)
 testZeroInflation(sim_res)
-testSpatialAutocorrelation(simulationOutput = sim_res0, 
+testSpatialAutocorrelation(simulationOutput = sim_res, 
                            x = df$x, 
                            y = df$y)
-
-# b. visualization of treatment interaction. exists directionality but CI overlap
-ggplot(df, aes(x = scale(X1), y = y_disc,
-               color = factor(trt,
-                              levels = c(0,1),
-                              labels = c("control","treated")))) +
-  geom_smooth(method = "loess") +
-  scale_color_manual(
-    values = c("control" = "steelblue",
-               "treated" = "pink"),
-    name = NULL
-  ) +
-  coord_cartesian(xlim = c(0, 2)) + 
-  labs(
-    x = "factor 1 expression (standardized)",
-    y = "counts dying in 40 micron radius",
-    color = NULL
-  )
 
 
 # -----------------------------------------------------------------------------
@@ -140,44 +122,4 @@ y_messUp <- sample(y_disc)
 
 nb_mess <- glm.nb(y_messUp ~ df$n_immune + trt + x_scaled + offset(log(df$n_tumor)))
 
-
-# -----------------------------------------------------------------------------
-# 7. vasculature for verification. cell type proximity
-iso10 <- read.csv("NMF_iso10.csv")
-pd110 <- read.csv("NMF_pd110.csv")
-df10 <- rbind(iso10, pd110)
-
-x10 <- as.matrix(df10[, fact_cols])
-x10sc <- scale(x10)
-trt10 <- ifelse(df10$sample == "pd1-9", 1, 0)
-
-yd_test <- df10$n_endothelial            
-nb_test <- glm.nb(yd_test ~ x10sc)
-
-y10d <- df10$n_dying
-nb10 <- glm.nb(y10d ~ df10$n_immune + trt + offset = log(df10$n_tumor)+ x10sc)
-
-
-# -----------------------------------------------------------------------------
-# 8. more radii sensitivity
-iso20 <- read.csv("NMF_iso20.csv")
-pd120 <- read.csv("NMF_pd120.csv")
-df20 <- rbind(iso20, pd120)
-
-iso80 <- read.csv("NMF_iso80.csv")
-pd180 <- read.csv("NMF_pd180.csv")
-df80 <- rbind(iso20, pd120)  
-
-x20 <- as.matrix(df20[, fact_cols])
-x20sc <- scale(x20)  
-trt20 <- ifelse(df20$sample == "pd1-9", 1, 0)
-
-x80 <- as.matrix(df80[, fact_cols])
-x80sc <- scale(x80)  
-
-y20d <- df20$n_dying
-y80d <- df80$n_dying
-
-nb20 <- glm.nb(y20d ~ df20$n_immune + trt20 + offset = log(df20$n_tumor)+ x20sc)
-nb80 <- glm.nb(y80d ~ df80$n_immune + trt80 + offset = log(df80$n_tumor)+ x80sc)
 
