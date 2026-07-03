@@ -42,7 +42,7 @@ rownames(W)[top_idx][1:10]
 # -----------------------------------------------------------------------------
 # 1. setting vars and family
 x <- as.matrix(df[, fact_cols])         
-x_scaled <- as.data.frame(scale(x))      # visible representation of RNA counts. z-scores
+x_scaled <- scale(x)                    # visible representation of RNA counts. z-scores
 colnames(x_scaled) <- paste0("factor_", seq_len(ncol(x_scaled)))
                 
 trt <- ifelse(df$sample == "pd1-9", 1, 0)
