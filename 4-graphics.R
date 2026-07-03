@@ -113,36 +113,6 @@ test
 
 # -----------------------------------------------------------------------------
 # 2. summary graphs for experimental condition. repeat for factors of interest
-df1 <- cbind(df_pd1_vis$factor1/sum(df_pd1_vis$factor1), 
-             df_iso_vis$factor1/sum(df_iso_vis$factor1))          # for density
-df1 <- as.data.frame(df1)
-
-colnames(df1) <- c("PD1", "ISO")
-
-df1_long <- pivot_longer(
-  df1,
-  cols = everything(),
-  names_to = "condition",
-  values_to = "value"
-)
-
-# violin
-ggplot(df1_long, aes(x = "", y = value, fill = condition)) +
-  geom_half_violin(
-    data = subset(df1_long, condition == "ISO"),
-    side = "l",
-    trim = FALSE
-  ) +
-  geom_half_violin(
-    data = subset(df1_long, condition == "PD1"),
-    side = "r",
-    trim = FALSE
-  ) +
-  theme_classic() +
-  labs(title = "factor 1", x = "", y = "distribution")
-
-
-# -----------------------------------------------------------------------------
 # gene heats
 df_weights <- read.csv(file.path(datadir, "NMF_W.csv"))
 
