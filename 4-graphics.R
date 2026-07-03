@@ -130,7 +130,7 @@ df1_long <- pivot_longer(
 # violin
 ggplot(df1_long, aes(x = "", y = value, fill = condition)) +
   geom_half_violin(
-    data = subset(df_long, condition == "ISO"),
+    data = subset(df1_long, condition == "ISO"),
     side = "l",
     trim = FALSE
   ) +
