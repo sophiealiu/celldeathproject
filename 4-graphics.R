@@ -109,7 +109,7 @@ draw <- function(df_IF, df_visium,
 }
 
 # now employing
-colors <- c("#9678B6")                              # purple mountain majesty, courtesy of DB
+colors <- c("#9678B6")                            # purple mountain majesty, courtesy of DB
 factorcols <- c("factor1")
 
 test <- draw(df_isoIF, df_iso_vis, factorcols, colors, 1, 1, 0.6)
