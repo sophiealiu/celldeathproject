@@ -66,7 +66,7 @@ nb <- glm.nb(
 # excess overfit possible with smoothing taking credit.
 spatial <- gam(
   n_dying ~ n_immune + trt + x_scaled +
-    s(x, y, bs = "gp", k = 10) +
+    s(x, y, bs = "gp", k = 30) +
     offset(log(n_tumor)),
   data = df,
   family = nb()
