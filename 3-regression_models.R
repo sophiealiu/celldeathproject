@@ -52,10 +52,11 @@ trt <- ifelse(df$sample == "pd1-9", 1, 0)
 # -----------------------------------------------------------------------------
 # 2. using counts considers sequencing depth. 
 # distribution explains family choice
-hist(y_disc, 
+hist(n_dying, 
      breaks = 30,
      main = "Distribution of count dying",
-     xlab = "number of dying cells in 40 micron vicinity")
+     xlab = "number of dying cells in 40 micron vicinity"
+    data = df_model)
 
 # a. negative binomial.
 nb <- glm.nb(
@@ -83,19 +84,21 @@ p_adj <- p.adjust(p_para, method = "BH")
 sim_res <- simulateResiduals(nb)
 plot(sim_res)
 
-# testing if I need an altered NB model (spatial or zero-inflated)
 testZeroInflation(sim_res)
 testSpatialAutocorrelation(simulationOutput = sim_res, 
-                           x = x, 
-                           y = y,
-                          data = df_model)
+                           x = df$x, 
+                           y = df$y)
 
 
 # -----------------------------------------------------------------------------
 # 6. permutation test, model loses significance, good. dismissing artifact
 set.seed(42)
-y_messUp <- sample(y_disc)
+df_perm <- df_model
+df_perm$n_dying <- sample(df_perm$n_dying)
 
-nb_mess <- glm.nb(y_messUp ~ df$n_immune + trt + x_scaled + offset(log(df$n_tumor)))
-
+nb_mess <- glm.nb(
+  n_dying ~ n_immune + trt + . +
+    offset(log(n_tumor)),
+  data = df_perm
+)
 
