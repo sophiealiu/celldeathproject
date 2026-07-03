@@ -20,7 +20,6 @@ df <- rbind(iso, pd1)
 
 # -----------------------------------------------------------------------------
 # BEGINNING MODELING
-
 # What are our assumptions?
 # - know data is nonlinear and non-normal
 # - means smoothing need to incorporate density covariate
