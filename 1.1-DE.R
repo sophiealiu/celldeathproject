@@ -10,8 +10,9 @@ library(ggplot2)
 library(Seurat)
 
 # recommended 8 micron bins
-iso_raw <- Load10X_Spatial("PD1-9_realign/outs", bin.size = 8)
-pd1_raw <- Load10X_Spatial("Iso-7_realign/outs", bin.size = 8)
+datadir <- "path/to/your/working/directory"
+iso_raw <- readRDS(file.path(datadir,"iso_raw.rds"))
+pd1_raw <- readRDS(file.path(datadir,"pd1_raw.rds"))
 
 # log normalized with unique IDs. following default Seurat settings
 iso_norm <- NormalizeData(iso_raw)
