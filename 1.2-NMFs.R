@@ -73,7 +73,7 @@ pair_stab <- c()
 W_list <- vector("list", nruns_stab)               # features
 
 for (r in 1:nruns_stab) {
-  save <- nmf(merged_mat, k = 9, seed = r)
+  save <- nmf(merged_mat, k = k_opt, seed = r)
   W_list[[r]] <- save$w
 }
 
@@ -82,7 +82,7 @@ for (i in 1:(nruns_stab - 1)) {
     cor_mat <- abs(cor(W_list[[i]], W_list[[j]]))        # magnitude pref.
     assign <- solve_LSAP(cor_mat, maximum = TRUE)
     
-    matched <- cor_mat[cbind(1:9, assign)]
+    matched <- cor_mat[cbind(1:k_opt, assign)]
     pair_stab <- c(pair_stab, mean(matched))
   }
 }
