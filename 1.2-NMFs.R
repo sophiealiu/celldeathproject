@@ -17,6 +17,7 @@ datadir <- "path/to/your/working/directory"
 iso_raw <- readRDS(file.path(datadir,"iso_raw.rds"))
 pd1_raw <- readRDS(file.path(datadir,"pd1_raw.rds"))
 
+
 # -----------------------------------------------------------------------------
 # 1. expression matrix before decomposing. 
 mat_iso <- GetAssayData(
