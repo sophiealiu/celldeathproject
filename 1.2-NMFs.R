@@ -4,7 +4,7 @@
 # Purpose: Creating NMF factors from Visium data and optimizing for downstream
 # -----------------------------------------------------------------------------
 
-library(clue)           # some libraries will have to be forced in using remotes::install_github
+library(clue)           # some packages will have to be forced in using remotes::install_github
 library(ggplot2)
 library(inflection)
 library(progress)
