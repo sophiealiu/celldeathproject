@@ -4,7 +4,7 @@
 # Purpose: model iterations, regression dying tumor ~ NMF factors
 # -----------------------------------------------------------------------------
 
-library(DHARMa)       # some libraries will have to be forced in using remotes::install_github
+library(DHARMa)       # some packages will have to be forced in using remotes::install_github
 library(dplyr)
 library(ggplot2)
 library(MASS)
