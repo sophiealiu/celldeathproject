@@ -67,7 +67,7 @@ mean_loss <- rowMeans(loss_matrix)
 k_opt <- uik(x = ks, y = mean_loss)
 
 # b. stability score using Hungarian algorithm, gene weights across stochastic regeneration. 
-# result: 0.9498465 yay close to 1
+# result: 0.9498465
 nruns_stab <- 30                                   # here CLT
 pair_stab <- c()
 W_list <- vector("list", nruns_stab)               # features
