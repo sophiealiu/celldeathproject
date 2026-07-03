@@ -45,12 +45,6 @@ rownames(W)[top_idx][1:10]
 x <- as.matrix(df[, fact_cols])         # replace with cell cols or gene cols based on which block 1
 x_scaled <- scale(x)                    # visible representation of RNA counts. z-scores
 
-# distribution explains family choice
-hist(y_disc, 
-     breaks = 30,
-     main = "Distribution of count dying",
-     xlab = "number of dying cells in 40 micron vicinity")
-
 y_binar <- df$exist_dying               # binomial  [X]
 y_disc <- df$n_dying                    # overdispersion -> negative binomial
                                         # zero inflation overfit from performance stats
@@ -75,6 +69,12 @@ ggplot(OR_clean %>%
 
 # -----------------------------------------------------------------------------
 # 4. using counts considers sequencing depth. iterate after diagnosis in 5
+# distribution explains family choice
+hist(y_disc, 
+     breaks = 30,
+     main = "Distribution of count dying",
+     xlab = "number of dying cells in 40 micron vicinity")
+
 # a. negative binomial.
 nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + offset(log(df$n_tumor)))
 
