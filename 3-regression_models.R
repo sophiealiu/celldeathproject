@@ -44,7 +44,6 @@ rownames(W)[top_idx][1:10]
 x <- as.matrix(df[, fact_cols])         
 x_scaled <- as.data.frame(scale(x))      # visible representation of RNA counts. z-scores
 colnames(x_scaled) <- paste0("factor_", seq_len(ncol(x_scaled)))
-df_model <- cbind(df, x_scaled)
                 
 trt <- ifelse(df$sample == "pd1-9", 1, 0)
 
@@ -52,25 +51,24 @@ trt <- ifelse(df$sample == "pd1-9", 1, 0)
 # -----------------------------------------------------------------------------
 # 2. using counts considers sequencing depth. 
 # distribution explains family choice
-hist(n_dying, 
+hist(df$n_dying, 
      breaks = 30,
      main = "Distribution of count dying",
-     xlab = "number of dying cells in 40 micron vicinity"
-    data = df_model)
+     xlab = "number of dying cells in 40 micron vicinity")
 
 # a. negative binomial.
 nb <- glm.nb(
-  n_dying ~ n_immune + trt + . + offset(log(n_tumor)),
-  data = df_model
+  n_dying ~ n_immune + trt + x_scaled + offset(log(n_tumor)),
+  data = df
 )
 
 # b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4340.9, BIC increase 100
 # excess overfit possible with smoothing taking credit.
 spatial <- gam(
-  n_dying ~ n_immune + trt + . +
+  n_dying ~ n_immune + trt + x_scaled +
     s(x, y, bs = "gp", k = 10) +
     offset(log(n_tumor)),
-  data = df_model,
+  data = df,
   family = nb()
 )
 
@@ -80,7 +78,7 @@ p_adj <- p.adjust(p_para, method = "BH")
 
 
 # -----------------------------------------------------------------------------
-# 5. diagnostic stats
+# 3. diagnostic stats
 sim_res <- simulateResiduals(nb)
 plot(sim_res)
 
@@ -91,13 +89,13 @@ testSpatialAutocorrelation(simulationOutput = sim_res,
 
 
 # -----------------------------------------------------------------------------
-# 6. permutation test, model loses significance, good. dismissing artifact
+# 4. permutation test, model loses significance, good. dismissing artifact
 set.seed(42)
-df_perm <- df_model
+df_perm <- df
 df_perm$n_dying <- sample(df_perm$n_dying)
 
 nb_mess <- glm.nb(
-  n_dying ~ n_immune + trt + . +
+  n_dying ~ n_immune + trt + x_scaled +
     offset(log(n_tumor)),
   data = df_perm
 )
