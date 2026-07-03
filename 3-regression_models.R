@@ -45,31 +45,12 @@ x <- as.matrix(df[, fact_cols])
 x_scaled <- as.data.frame(scale(x))      # visible representation of RNA counts. z-scores
 colnames(x_scaled) <- paste0("factor_", seq_len(ncol(x_scaled)))
 df_model <- cbind(df, x_scaled)
-
-y_binar <- df$exist_dying                # binomial  [X]
-y_disc <- df$n_dying                     # overdispersion -> negative binomial
-                                         # zero inflation overfit from performance stats
+                
 trt <- ifelse(df$sample == "pd1-9", 1, 0)
 
 
 # -----------------------------------------------------------------------------
-# 3. basic comparative univariate odds-ratios after moving to block 1.2
-OR <- glm(
-  reformulate(df$n_immune + trt + x_scaled + offset(log(df$n_tumor)), 
-              response = y_binar),
-  family = "binomial"
-)
-
-OR_clean <- tidy(OR, conf.int = TRUE, exponentiate = TRUE)
-
-ggplot(OR_clean %>% 
-         aes(x = reorder(term, estimate), y = estimate)) +
-  geom_point() +
-  geom_errorbar(aes(ymin = conf.low, ymax = conf.high), width = 0.2) 
-
-
-# -----------------------------------------------------------------------------
-# 4. using counts considers sequencing depth. iterate after diagnosis in 5
+# 2. using counts considers sequencing depth. 
 # distribution explains family choice
 hist(y_disc, 
      breaks = 30,
@@ -77,15 +58,20 @@ hist(y_disc,
      xlab = "number of dying cells in 40 micron vicinity")
 
 # a. negative binomial.
-nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + offset(log(df$n_tumor)))
+nb <- glm.nb(
+  n_dying ~ n_immune + trt + . + offset(log(n_tumor)),
+  data = df_model
+)
 
 # b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4340.9, BIC increase 100
 # excess overfit possible with smoothing taking credit.
-spatial <- gam(y_disc ~ n_immune + trt + x_scaled + 
-                 s(x, y, bs = "gp", k = 10),      # gaussian process term
-                 offset = log(df$n_tumor),
-                 data = df,                         
-                 family = nb())
+spatial <- gam(
+  n_dying ~ n_immune + trt + . +
+    s(x, y, bs = "gp", k = 10) +
+    offset(log(n_tumor)),
+  data = df_model,
+  family = nb()
+)
 
 # parametric p-vals adjusted
 p_para <- summary(spatial)$p.pv
