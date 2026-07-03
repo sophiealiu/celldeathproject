@@ -19,6 +19,11 @@ df_iso_vis <- read_csv(file.path(datadir,"NMF_isoC.csv"))
 df_pd1IF <- read_csv(file.path(datadir,"pd1_coords.csv"))
 df_pd1_vis <- read_csv(file.path(datadir,"NMF_Apd1.csv"))
 
+df_pd1_vis$x <- df_pd1_vis$x / 1.5454            # scaling factor from Loupe browser
+df_pd1_vis$y <- df_pd1_vis$y / 1.5454
+df_iso_vis$x <- df_iso_vis$x / 1.5454
+df_iso_vis$y <- df_iso_vis$y / 1.5454
+
 
 # -----------------------------------------------------------------------------
 # 1. regular overlay factors on top of IF
