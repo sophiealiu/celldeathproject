@@ -95,8 +95,7 @@ df_perm <- df
 df_perm$n_dying <- sample(df_perm$n_dying)
 
 nb_mess <- glm.nb(
-  n_dying ~ n_immune + trt + x_scaled +
-    offset(log(n_tumor)),
+  n_dying ~ n_immune + trt + x_scaled + offset(log(n_tumor)),
   data = df_perm
 )
 
