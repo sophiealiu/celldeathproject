@@ -8,6 +8,8 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 
+datadir <- "path/to/your/working/directory"
+
 # 1.2 MAIN
 iso <- read.csv("9NMF_iso40.csv"))
 pd1 <- read.csv("9NMF_pd140.csv"))
