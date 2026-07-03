@@ -91,12 +91,14 @@ for (i in 1:(nruns_stab - 1)) {
 # -----------------------------------------------------------------------------
 # 3. re-aligning row and column names (lost before). 
 # just re-using the last save, but re-running doesn't take too long.
-rownames(save$w) <- rownames(merged_mat)
-colnames(save$h) <- colnames(merged_mat)
+best <- nmf(merged_mat, k = k_opt, seed = 42,     
+                 verbose = FALSE)
+rownames(best$w) <- rownames(merged_mat)
+colnames(best$h) <- colnames(merged_mat)
 
 # renaming for ease of reference, file creation for GSEA block 5
-W <- save$w
-H <- save$h  
+W <- best$w
+H <- best$h  
 write.csv(W, "NMF_W.csv")
 
 
