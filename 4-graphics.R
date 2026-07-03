@@ -203,10 +203,10 @@ ggplot(df_pd1_vis, aes(x = x, y = y, z = factor1)) +
     axis.text        = element_blank()
   ) +
   
-  scale_x_continuous(breaks = seq(0, 15454, by = 2*1545.4)) +
-  scale_y_continuous(breaks = seq(0, 15454, by = 2*1545.4)) +
+  scale_x_continuous(breaks = seq(0, 10000, by = 2000)) +
+  scale_y_continuous(breaks = seq(0, 10000, by = 2000)) +
   
-  annotate("segment", x = 1550, xend = 3095.4, y = 2300, yend = 2300,        
+  annotate("segment", x = 1000, xend = 2000, y = 2000, yend = 2000,        
            colour = "white", linewidth = 3)
 
 
