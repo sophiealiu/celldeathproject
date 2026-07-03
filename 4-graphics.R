@@ -13,11 +13,11 @@ library(viridis)
 
 # importing files. these are lined up in the same pixel coordinate space.
 datadir <- "path/to/your/working/directory"
-df_isoIF <- read_csv(file.path(datadir,"iso_coordsNT.csv"))
-df_iso_vis <- read_csv(file.path(datadir,"9NMF_isoC.csv"))
+df_isoIF <- read_csv(file.path(datadir,"iso_coords.csv"))
+df_iso_vis <- read_csv(file.path(datadir,"NMF_isoC.csv"))
 
-df_pd1IF <- read_csv(file.path(datadir,"pd1_coordsNT.csv"))
-df_pd1_vis <- read_csv(file.path(datadir,"9NMF_Apd1.csv"))
+df_pd1IF <- read_csv(file.path(datadir,"pd1_coords.csv"))
+df_pd1_vis <- read_csv(file.path(datadir,"NMF_Apd1.csv"))
 
 
 # -----------------------------------------------------------------------------
