@@ -7,15 +7,14 @@
 library(DHARMa)       # some libraries will have to be forced in using remotes::install_github
 library(dplyr)
 library(ggplot2)
-library(glmnet)
 library(MASS)
 library(mgcv)
 library(tidyr)
 
 datadir <- "path/to/your/working/directory"
 
-iso <- read.csv(file.path(datadir,"NMF_iso40.csv"))
-pd1 <- read.csv(file.path(datadir,"NMF_pd140.csv
+iso <- read.csv(file.path(datadir,"NMF_iso40.csv"))   # repeat with varying radii for sensitivity analysis,
+pd1 <- read.csv(file.path(datadir,"NMF_pd140.csv      # involves regenerating from file 2
 df <- rbind(iso, pd1)
 
 
@@ -89,18 +88,6 @@ spatial <- gam(y_disc ~ n_immune + trt + x_scaled +
 # parametric p-vals adjusted
 p_para <- summary(spatial)$p.pv
 p_adj <- p.adjust(p_para, method = "BH")
-
-# c. elastic net re-visualization. consistent effect size for 1 & r
-# finding optimal penalization term
-crval <- cv.glmnet(df$n_immune + trt + x_scaled + offset(log(df$n_tumor)), 
-                   y_disc, 
-                   alpha = 0.5, nfolds = 10)
-optim <- crval$lambda.min
-
-elastic <- glmnet(df$n_immune + trt + x_scaled + offset(log(df$n_tumor)), 
-                  y_disc, 
-                  alpha = 0.5, lambda = optim)
-coef(elastic) 
 
 
 # -----------------------------------------------------------------------------
