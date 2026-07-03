@@ -14,15 +14,9 @@ library(tidyr)
 
 datadir <- "path/to/your/working/directory"
 
-# 1.2 MAIN
-iso <- read.csv(file.path(datadir,"NMF_iso40.csv")))
-pd1 <- read.csv(file.path(datadir,"NMF_pd140.csv")))
+iso <- read.csv(file.path(datadir,"NMF_iso40.csv"))
+pd1 <- read.csv(file.path(datadir,"NMF_pd140.csv
 df <- rbind(iso, pd1)
-
-# 1.3
-# iso <- read.csv(file.path(datadir,"9NSF_iso40.csv")))
-# pd1 <- read.csv(file.path(datadir,"9NSF_pd140.csv")))
-# df <- rbind(iso, pd1)
 
 
 # -----------------------------------------------------------------------------
