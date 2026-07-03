@@ -33,7 +33,7 @@ draw <- function(df_IF, df_visium,
       names_to = "factor",
       values_to = "value") %>%    
       group_by(factor) %>%                       # isolate highest expressed areas
-      filter(value > quantile(value, threshold, na.rm = TRUE))
+      filter(value > quantile(value, threshold, na.rm = TRUE)) %>%
       ungroup()
   
   ggplot() +
