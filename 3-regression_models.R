@@ -81,7 +81,7 @@ nb <- glm.nb(y_disc ~ df$n_immune + trt + x_scaled + offset(log(df$n_tumor)))
 # b. geographical trends, Moran's I. Not combined w/ zero. AIC = 4340.9, BIC increase 100
 # excess overfit possible with smoothing taking credit.
 spatial <- gam(y_disc ~ n_immune + trt + x_scaled + 
-                 s(x, y, bs = "gp", k = 100),     # gaussian process term
+                 s(x, y, bs = "gp", k = 10),      # gaussian process term
                  offset = log(df$n_tumor),
                  data = df,                         
                  family = nb())
