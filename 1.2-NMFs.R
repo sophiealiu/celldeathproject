@@ -99,6 +99,7 @@ colnames(best$h) <- colnames(merged_mat)
 # renaming for ease of reference, file creation for GSEA block 5
 W <- best$w
 H <- best$h  
+colnames(W) <- paste0("factor_", seq_len(ncol(W)))
 write.csv(W, "NMF_W.csv")
 
 
