@@ -52,7 +52,7 @@ pb <- progress_bar$new(
   width = 60
 )
 
-for (i in seq_along(ks)) {                           # it takes ~ 3hrs
+for (i in seq_along(ks)) {                           # it takes ~ 3hrs. run in background, sorry
   for (r in 1:nruns_opt) {
     model <- nmf(merged_mat, k = ks[i], seed = r,     
                  verbose = FALSE)
