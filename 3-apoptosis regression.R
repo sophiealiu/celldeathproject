@@ -63,6 +63,12 @@ spatial <- gam(
 p_para <- summary(spatial)$p.pv
 p_adj <- p.adjust(p_para, method = "BH")
 
+# c. treatment interactions
+nb_int <- glm.nb(
+  n_dying ~ n_immune + trt * x_scaled + offset(log(n_tumor)),
+  data = df
+)
+
 
 # -----------------------------------------------------------------------------
 # 3. diagnostic stats
