@@ -181,7 +181,7 @@ ggplot(df_pd1_vis, aes(x = x, y = y, z = factor8)) +
   scale_y_continuous(breaks = seq(0, 10000, by = 2000)) +
   
   annotate("segment", x = 1000, xend = 2000, y = 2000, yend = 2000,        
-           colour = "white", linewidth = 3)
+           colour = "white", linewidth = 3)                   # scaled in our data 1000 = 1mm
 
 
 # ------------------------------------------------------------------------------
