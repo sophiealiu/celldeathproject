@@ -188,8 +188,8 @@ ggplot(pd1_dist, aes(x = x, y = y, z = X9/total_umis)) +
     axis.text        = element_blank()
   ) + 
   
-  scale_x_continuous(breaks = seq(0, 15454, by = 2*1545.4)) +
-  scale_y_continuous(breaks = seq(0, 15454, by = 2*1545.4)) +
+  scale_x_continuous(breaks = seq(0, 10000, by = 2*1000)) +
+  scale_y_continuous(breaks = seq(0, 10000, by = 2*1000)) +
   
   annotate("segment", x = 1000, xend = 2000, y = 500, yend = 500,        
            colour = "white", linewidth = 3)                   # scaled in our data 1000 = 1mm
