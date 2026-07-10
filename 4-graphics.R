@@ -147,27 +147,38 @@ pheatmap(subset_mat,
 
 
 # -----------------------------------------------------------------------------
-# factor weights
-ggplot(df_pd1_vis, aes(x = x, y = y, z = factor8)) +
-  stat_summary_2d(fun = mean, binwidth = c(300, 300),
-                  alpha = 0.9) +      
-  scale_fill_viridis_c(option = "magma") +
+total_umis <- pd1_raw$nCount_Spatial.008um
+names(total_umis) <- paste0("pd1_", names(total_umis))
+# pd1_dist$total_umis <- total_umis[pd1_dist$X]
+# 
+# pd1_dist$x <- pd1_dist$x / 1.5454
+# pd1_dist$y <- pd1_dist$y / 1.5454
+
+cor(pd1_dist$X1, pd1_dist$total_umis)
+
+ggplot(pd1_dist, aes(x = x, y = y, z = X9/total_umis)) +
+  stat_summary_2d(binwidth = c(48, 48),
+                  alpha = 1) +      
+  scale_fill_viridis_c(
+    option = "magma",
+    trans = "sqrt"
+  ) +
   
-  # geom_point(
-  #   data  = filter(df_pd1IF, cell_type == "gc3ai"),
-  #   aes(x = x, y = y),
-  #   inherit.aes = FALSE,
-  #   color = "green4",
-  #   size  = 0.1,
-  #   alpha = 1
-  # ) +
   geom_point(
-    data  = filter(df_pd1IF, cell_type == "lectin"),
+    data  = filter(df_pd1IF, cell_type == "gc3ai"),
     aes(x = x, y = y),
     inherit.aes = FALSE,
-    color = "#D9C20B",
-    alpha = 0.1,
-    size  = 0.005) +
+    color = "green4",
+    size  = 0.5,
+    alpha = 0.3
+  ) +
+  # geom_point(
+  #   data  = filter(df_pd1IF, cell_type == "lectin"),
+  #   aes(x = x, y = y),
+  #   inherit.aes = FALSE,
+  #   color = "#D9C20B",
+  #   alpha = 0.1,
+  #   size  = 0.005) +
   
   theme(
     panel.background = element_rect(fill = "black"),
@@ -175,12 +186,12 @@ ggplot(df_pd1_vis, aes(x = x, y = y, z = factor8)) +
     axis.title       = element_blank(),              
     axis.line        = element_blank(),
     axis.text        = element_blank()
-  ) +
+  ) + 
   
-  scale_x_continuous(breaks = seq(0, 10000, by = 2000)) +
-  scale_y_continuous(breaks = seq(0, 10000, by = 2000)) +
+  scale_x_continuous(breaks = seq(0, 15454, by = 2*1545.4)) +
+  scale_y_continuous(breaks = seq(0, 15454, by = 2*1545.4)) +
   
-  annotate("segment", x = 1000, xend = 2000, y = 2000, yend = 2000,        
+  annotate("segment", x = 1000, xend = 2000, y = 500, yend = 500,        
            colour = "white", linewidth = 3)                   # scaled in our data 1000 = 1mm
 
 
