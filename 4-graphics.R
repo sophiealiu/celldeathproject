@@ -160,8 +160,7 @@ ggplot(pd1_dist, aes(x = x, y = y, z = X9/total_umis)) +
   stat_summary_2d(binwidth = c(48, 48),
                   alpha = 1) +      
   scale_fill_viridis_c(
-    option = "magma",
-    trans = "sqrt"
+    option = "magma"
   ) +
   
   geom_point(
