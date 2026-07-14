@@ -48,6 +48,7 @@ nb <- glm.nb(
   n_dying ~ n_immune + trt + x_scaled + offset(log(n_tumor)),
   data = df
 )
+summary(nb)
 
 # b. geographical trends, Moran's I. Not combined w/ zero. 
 # excess overfit possible with smoothing taking credit.
