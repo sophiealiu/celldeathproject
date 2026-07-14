@@ -159,7 +159,10 @@ cor(pd1_dist$X1, pd1_dist$total_umis)
 ggplot(pd1_dist, aes(x = x, y = y, z = X9/total_umis)) +
   stat_summary_2d(binwidth = c(48, 48),
                   alpha = 1) +      
-  scale_fill_viridis_c(option = "magma") +
+  scale_fill_viridis_c(
+    option = "magma",
+    limits = c(0, )           # for comparison btwn conditions but not along factors
+  ) +
   
   geom_point(
     data  = filter(df_pd1IF, cell_type == "gc3ai"),
