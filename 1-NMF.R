@@ -90,7 +90,7 @@ for (i in 1:(nruns_stab - 1)) {
 
 # -----------------------------------------------------------------------------
 # 3. re-aligning row and column names (lost before). 
-best <- nmf(merged_mat, k = k_opt, seed = 42,     
+best <- nmf(merged_mat, k = k_opt, seed = 42,           # the answer to life, the universe, and everything
                  verbose = FALSE)
 rownames(best$w) <- rownames(merged_mat)
 colnames(best$h) <- colnames(merged_mat)
