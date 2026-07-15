@@ -149,10 +149,7 @@ pheatmap(subset_mat,
 # -----------------------------------------------------------------------------
 total_umis <- pd1_raw$nCount_Spatial.008um
 names(total_umis) <- paste0("pd1_", names(total_umis))
-# pd1_dist$total_umis <- total_umis[pd1_dist$X]
-# 
-# pd1_dist$x <- pd1_dist$x / 1.5454
-# pd1_dist$y <- pd1_dist$y / 1.5454
+pd1_dist$total_umis <- total_umis[pd1_dist$X]
 
 cor(pd1_dist$X1, pd1_dist$total_umis)
 
