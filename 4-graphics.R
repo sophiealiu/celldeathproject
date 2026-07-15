@@ -158,7 +158,7 @@ ggplot(df_pd1_vis, aes(x = x, y = y, z = X9/total_umis)) +
                   alpha = 1) +      
   scale_fill_viridis_c(
     option = "magma",
-    limits = c(0, )           # for comparison btwn conditions but not along factors
+    limits = c(0, )           # alter upper limit for comparison btwn conditions but not along factors
   ) +
   
   geom_point(
