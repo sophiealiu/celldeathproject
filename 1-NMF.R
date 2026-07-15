@@ -65,6 +65,7 @@ for (i in seq_along(ks)) {                           # it takes ~ 3hrs. run in b
 
 mean_loss <- rowMeans(loss_matrix)
 k_opt <- uik(x = ks, y = mean_loss)
+print(k_opt)
 
 # b. stability score using Hungarian algorithm, gene weights across stochastic regeneration. 
 nruns_stab <- 30                                     # here CLT
