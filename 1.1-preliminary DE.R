@@ -1,6 +1,5 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
-# Date : 05/28/2026 11:31am CDT
 # Purpose: exploratory individual genes then moving to known signatures differential expression
 # -----------------------------------------------------------------------------
 
