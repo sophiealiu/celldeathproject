@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
-# Purpose: exploratory individual genes then moving to known signatures differential expression
+# Purpose: Exploring individual genes then moving to differential expression
 # -----------------------------------------------------------------------------
 
 # necessary libraries & directories 
