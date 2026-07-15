@@ -11,7 +11,7 @@ library(Matrix)
 library(RcppML)         # our data is too sparse to use regular NMF package
 library(Seurat)
 
-# importing files. no assumptions made, hence raw data. 10x recommended 8 micron bins
+# importing files. no assumptions made, hence raw data. 10x Genomics recommended 8 micron bins
 datadir <- "path/to/your/working/directory"
 iso_raw <- readRDS(file.path(datadir,"iso_raw.rds"))
 pd1_raw <- readRDS(file.path(datadir,"pd1_raw.rds"))
