@@ -1,6 +1,5 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
-# Date : 06/11/2026 5:58pm MDT
 # Purpose: Creating NMF factors from Visium data and optimizing for downstream
 # -----------------------------------------------------------------------------
 
