@@ -149,11 +149,11 @@ pheatmap(subset_mat,
 # -----------------------------------------------------------------------------
 total_umis <- pd1_raw$nCount_Spatial.008um
 names(total_umis) <- paste0("pd1_", names(total_umis))
-pd1_dist$total_umis <- total_umis[pd1_dist$X]
+df_pd1_vis$total_umis <- total_umis[df_pd1_vis$X]
 
-cor(pd1_dist$X1, pd1_dist$total_umis)
+# cor(df_pd1_vis$X1, df_pd1_vis$total_umis)
 
-ggplot(pd1_dist, aes(x = x, y = y, z = X9/total_umis)) +
+ggplot(df_pd1_vis, aes(x = pd1_x, y = pd1_y, z = pd1_X9/total_umis)) +
   stat_summary_2d(binwidth = c(48, 48),
                   alpha = 1) +      
   scale_fill_viridis_c(
