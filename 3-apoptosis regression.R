@@ -29,7 +29,7 @@ df <- rbind(iso, pd1)
 # 1. setting vars and family
 fact_cols <- grep("^factor", names(df), value = TRUE)   
 fact <- as.matrix(df[, fact_cols])         
-fact_sc <- scale(fact)                    # visible representation of RNA counts. z-scores
+fact_sc <- scale(fact)                      # visible representation of RNA counts. z-scores
                 
 trt <- ifelse(df$sample == "apd1", 1, 0)
 
@@ -53,7 +53,7 @@ summary(nb)
 # excess overfit possible with smoothing taking credit.
 spatial <- gam(
   n_dying ~ n_immune + trt + fact_sc +
-    s(x, y, bs = "gp", k = 30) +          # depends on power of gaussian process smoothing
+    s(x, y, bs = "gp", k = 30) +            # depends on power of gaussian process smoothing
     offset(log(n_tumor)),
   data = df,
   family = nb()
