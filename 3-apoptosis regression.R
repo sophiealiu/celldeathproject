@@ -42,7 +42,7 @@ hist(df$n_dying,
      main = "Distribution of count dying",
      xlab = "number of dying cells in 40 micron vicinity")
 
-# a. negative binomial.
+# a. negative binomial family model.
 nb <- glm.nb(
   n_dying ~ n_immune + trt + fact_sc + offset(log(n_tumor)),
   data = df
