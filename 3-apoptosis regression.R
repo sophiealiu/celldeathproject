@@ -60,8 +60,8 @@ spatial <- gam(
 )
 
 # parametric p-vals adjusted
-p_para <- summary(spatial)$p.pv                # extracts p-vals from spatial model
-p_adj <- p.adjust(p_para, method = "BH")       # benjamini-hochberg correction
+p_para <- summary(spatial)$p.pv                   # extracts p-vals from spatial model
+p_adj <- p.adjust(p_para, method = "BH")          # benjamini-hochberg correction
 
 # c. treatment interactions
 nb_int <- glm.nb(
