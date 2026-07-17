@@ -117,7 +117,7 @@ test
 
 # -----------------------------------------------------------------------------
 # 2. summary graphs for experimental condition. repeat for factors of interest
-# gene heatmap using internally generated file with gene list for each factor from block 1
+# gene heatmap using internally generated file with gene list for each factor (from block 1)
 df_weights <- read.csv(file.path(datadir, "NMF_W.csv"))
 
 list_weights <- list()
@@ -126,7 +126,7 @@ fact_cols <- colnames(df_weights)[-1]
 for (i in fact_cols) {
   top10 <-df_weights[
     order(df_weights[[i]], decreasing = TRUE),
-    1][1:10]
+    1][1:10]          
   
   list_weights <- c(list_weights, top10)
 }
