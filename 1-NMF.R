@@ -66,6 +66,21 @@ mean_loss <- rowMeans(loss_matrix)
 k_opt <- uik(x = ks, y = mean_loss)                  
 print(k_opt)
 
+# visualizing optimal 
+plot_data <- data.frame(
+  k = rep(ks, times = ncol(loss_matrix)),
+  loss = as.vector(loss_matrix)
+)
+boxplot(loss ~ k, data = plot_data, 
+        xlab = "factors (k)", ylab = "mean-squared error",
+        main = paste("optimal UIK =", k_opt),
+        col = "lightgray", border = "darkgray")
+
+lines(1:length(ks), mean_loss, col = "blue", lwd = 2, type = "b", pch = 18)
+
+k_index <- which(ks == k_opt)
+abline(v = k_index, col = "red", lty = 2, lwd = 2)
+
 # b. stability score using Hungarian algorithm, gene weights across stochastic regeneration. 
 nruns_stab <- 30                                  # here CLT
 pair_stab <- c()
