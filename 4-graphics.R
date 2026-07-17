@@ -110,7 +110,7 @@ draw <- function(df_IF, df_visium,
 colors <- c("#9678B6", "pink")                    # hex code for purple mountain majesty, courtesy of DB
 facts <- c("factor1", "factor2")                  # etc. sub in factors of interest
 
-# recall function takes size, transparency, and threshold percentile (1 is 100th) for expression as numbers
+# recall function takes size, transparency, and threshold percentile (1 is 100th) for top expression
 test <- draw(df_isoIF, df_iso_vis, facts, colors, 1, 1, 0.6)
 test
 
