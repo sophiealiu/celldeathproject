@@ -131,6 +131,7 @@ for (i in fact_cols) {
   list_weights <- c(list_weights, top10)
 }
 
+# accounting for overlap in genes across factors
 clean_weights <- unique(list_weights)
 
 subset_mat <- df_weights[df_weights[,1] %in% clean_weights, -1]
