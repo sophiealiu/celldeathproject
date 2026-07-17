@@ -67,7 +67,7 @@ k_opt <- uik(x = ks, y = mean_loss)
 print(k_opt)
 
 # b. stability score using Hungarian algorithm, gene weights across stochastic regeneration. 
-nruns_stab <- 30                                     # here CLT
+nruns_stab <- 30                                  # here CLT
 pair_stab <- c()
 W_list <- vector("list", nruns_stab)                 
 
@@ -92,8 +92,8 @@ print(pair_stab)
 # 3. re-aligning row and column names (lost before). 
 best <- nmf(merged_mat, k = k_opt, seed = 42,            # the answer to life, the universe, and everything
                  verbose = FALSE)
-rownames(best$w) <- rownames(merged_mat)      # gene names
-colnames(best$h) <- colnames(merged_mat)      # factor names
+rownames(best$w) <- rownames(merged_mat)          # gene names
+colnames(best$h) <- colnames(merged_mat)          # factor names
 
 # file creation for GSEA block 5, W: gene list for factors, H: weights of factors at bins
 # a. optimal rank minimizes MSE
