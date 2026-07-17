@@ -39,8 +39,8 @@ merged_mat <- cbind(mat_iso, mat_pd1)
 
 
 # -----------------------------------------------------------------------------
-# 2. testing k-ranks (goal number of NMFs)
-# a. avg MSE dim. unit invariant knee
+# 2. testing k-ranks (goal number of NMFs), W: gene list for factors, H: weights of factors at bins
+# a. optimal rank minimizes MSE
 ks <- 2:20                                           # from our manual sweeping by 5s, k < 20
 nruns_opt <- 10
 loss_matrix <- matrix(nrow = length(ks), ncol = nruns_opt)
@@ -64,7 +64,7 @@ for (i in seq_along(ks)) {                           # it takes ~ 3hrs. run in b
 }
 
 mean_loss <- rowMeans(loss_matrix)
-k_opt <- uik(x = ks, y = mean_loss)                  # optimal rank minimizes MSE
+k_opt <- uik(x = ks, y = mean_loss)                  
 print(k_opt)
 
 # b. stability score using Hungarian algorithm, gene weights across stochastic regeneration. 
