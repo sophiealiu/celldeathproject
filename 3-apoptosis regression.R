@@ -29,7 +29,7 @@ df <- rbind(iso, pd1)
 # 1. setting vars and family
 fact_cols <- grep("^factor", names(df), value = TRUE)   
 fact <- as.matrix(df[, fact_cols])         
-fact_sc <- scale(f)                    # visible representation of RNA counts. z-scores
+fact_sc <- scale(fact)                 # visible representation of RNA counts. z-scores
                 
 trt <- ifelse(df$sample == "apd1", 1, 0)
 
