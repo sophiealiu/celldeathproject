@@ -64,13 +64,13 @@ for (i in seq_along(ks)) {                           # it takes ~ 3hrs. run in b
 }
 
 mean_loss <- rowMeans(loss_matrix)
-k_opt <- uik(x = ks, y = mean_loss)
+k_opt <- uik(x = ks, y = mean_loss)                  # optimal rank minimizes MSE
 print(k_opt)
 
 # b. stability score using Hungarian algorithm, gene weights across stochastic regeneration. 
 nruns_stab <- 30                                     # here CLT
 pair_stab <- c()
-W_list <- vector("list", nruns_stab)                 # features
+W_list <- vector("list", nruns_stab)                 
 
 for (r in 1:nruns_stab) {
   save <- nmf(merged_mat, k = k_opt, seed = r)
