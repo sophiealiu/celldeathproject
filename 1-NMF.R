@@ -39,7 +39,7 @@ merged_mat <- cbind(mat_iso, mat_pd1)
 
 
 # -----------------------------------------------------------------------------
-# 2. testing k-ranks. 
+# 2. testing k-ranks (goal number of NMFs)
 # a. avg MSE dim. unit invariant knee
 ks <- 2:20                                           # from our manual sweeping by 5s, k < 20
 nruns_opt <- 10
