@@ -112,7 +112,7 @@ iso_vis_coords <- GetTissueCoordinates(iso_raw, image = NULL)
 rownames(pd1_vis_coords)  <- paste0("pd1_", rownames(pd1_vis_coords))
 rownames(iso_vis_coords) <- paste0("iso_", rownames(iso_vis_coords))
 
-tH <- t(H)                                  # transpose/convert to line up weights
+tH <- t(H)                                        # transpose/convert to line up weights
 
 common_pd1 <- rownames(pd1_vis_coords)[
   rownames(pd1_vis_coords) %in% colnames(H)
