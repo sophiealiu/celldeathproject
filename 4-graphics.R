@@ -139,7 +139,7 @@ rownames(subset_mat) <- df_weights[df_weights[,1] %in% clean_weights, 1]
 pheatmap(subset_mat,
          scale = "row", color = viridis(50),
          main = "Top gene expression in each factor (z-scored)",
-         cluster_rows = FALSE,   
+         cluster_rows = TRUE,   
          cluster_cols = FALSE,  
          cellwidth = 20,         
          cellheight = 10)
