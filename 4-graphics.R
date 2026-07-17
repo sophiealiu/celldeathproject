@@ -41,7 +41,6 @@ draw <- function(df_IF, df_visium,
       ungroup()
   
   ggplot() +
-    
     stat_density_2d(
       data = filter(df_IF, cell_type == "tdtomato"), 
       aes(x = x, y = y),
