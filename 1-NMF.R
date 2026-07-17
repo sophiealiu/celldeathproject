@@ -39,8 +39,7 @@ merged_mat <- cbind(mat_iso, mat_pd1)
 
 
 # -----------------------------------------------------------------------------
-# 2. testing k-ranks (goal number of NMFs), W: gene list for factors, H: weights of factors at bins
-# a. optimal rank minimizes MSE
+# 2. testing k-ranks (goal number of NMFs)
 ks <- 2:20                                           # from our manual sweeping by 5s, k < 20
 nruns_opt <- 10
 loss_matrix <- matrix(nrow = length(ks), ncol = nruns_opt)
@@ -97,6 +96,8 @@ rownames(best$w) <- rownames(merged_mat)
 colnames(best$h) <- colnames(merged_mat)
 
 # renaming for ease of reference, file creation for GSEA block 5
+# W: gene list for factors, H: weights of factors at bins
+# a. optimal rank minimizes MSE
 W <- best$w
 H <- best$h  
 colnames(W) <- paste0("factor", seq_len(ncol(W)))
