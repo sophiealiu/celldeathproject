@@ -28,8 +28,8 @@ df <- rbind(iso, pd1)
 # -----------------------------------------------------------------------------
 # 1. setting vars and family
 fact_cols <- grep("^factor", names(df), value = TRUE)   
-f <- as.matrix(df[, fact_cols])         
-f_scaled <- scale(f)                    # visible representation of RNA counts. z-scores
+fact <- as.matrix(df[, fact_cols])         
+fact_sc <- scale(f)                    # visible representation of RNA counts. z-scores
                 
 trt <- ifelse(df$sample == "apd1", 1, 0)
 
@@ -44,7 +44,7 @@ hist(df$n_dying,
 
 # a. negative binomial.
 nb <- glm.nb(
-  n_dying ~ n_immune + trt + f_scaled + offset(log(n_tumor)),
+  n_dying ~ n_immune + trt + fact_sc + offset(log(n_tumor)),
   data = df
 )
 summary(nb)
@@ -52,7 +52,7 @@ summary(nb)
 # b. geographical trends, Moran's I. Not combined w/ zero. 
 # excess overfit possible with smoothing taking credit.
 spatial <- gam(
-  n_dying ~ n_immune + trt + f_scaled +
+  n_dying ~ n_immune + trt + fact_sc +
     s(x, y, bs = "gp", k = 30) +        # depends on power of gaussian process smoothing
     offset(log(n_tumor)),
   data = df,
@@ -65,7 +65,7 @@ p_adj <- p.adjust(p_para, method = "BH")
 
 # c. treatment interactions
 nb_int <- glm.nb(
-  n_dying ~ n_immune + trt * f_scaled + offset(log(n_tumor)),
+  n_dying ~ n_immune + trt * fact_sc + offset(log(n_tumor)),
   data = df
 )
 
@@ -88,7 +88,7 @@ df_perm <- df
 df_perm$n_dying <- sample(df_perm$n_dying)
 
 nb_mess <- glm.nb(
-  n_dying ~ n_immune + trt + f_scaled + offset(log(n_tumor)),
+  n_dying ~ n_immune + trt + fact_sc + offset(log(n_tumor)),
   data = df_perm
 )
 
