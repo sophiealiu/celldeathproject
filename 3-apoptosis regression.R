@@ -49,11 +49,11 @@ nb <- glm.nb(
 )
 summary(nb)
 
-# b. geographical trends, Moran's I. Not combined w/ zero. 
+# b. geographical trends, Moran's I to address spatial autocorrelation, cautious overfitting. 
 # excess overfit possible with smoothing taking credit.
 spatial <- gam(
   n_dying ~ n_immune + trt + fact_sc +
-    s(x, y, bs = "gp", k = 30) +            # depends on power of gaussian process smoothing
+    s(x, y, bs = "gp", k = 30) +            # smoothing using coordinates depends on power of gaussian process
     offset(log(n_tumor)),
   data = df_merged,
   family = nb()
