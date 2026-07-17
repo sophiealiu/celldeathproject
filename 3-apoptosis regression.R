@@ -58,16 +58,20 @@ spatial <- gam(
   data = df_merged,
   family = nb()
 )
+summary(spatial)
 
 # parametric p-vals adjusted
 p_para <- summary(spatial)$p.pv                   # extracts p-vals from spatial model
 p_adj <- p.adjust(p_para, method = "BH")          # benjamini-hochberg correction
+print(p_para)
+print(p_adj)
 
 # c. inspecting treatment interactions
 nb_int <- glm.nb(
   n_dying ~ n_immune + trt * fact_sc + offset(log(n_tumor)),
   data = df_merged
 )
+summary(nb_int)
 
 
 # -----------------------------------------------------------------------------
@@ -83,7 +87,7 @@ testSpatialAutocorrelation(simulationOutput = sim_res,
 
 # -----------------------------------------------------------------------------
 # 4. permutation to test random noise effects
-# would like to see permutation model lose significance
+# would like to see permutation model lose significance. checking diagnostics as well
 set.seed(42)
 df_perm <- df_merged
 df_perm$n_dying <- sample(df_merged_perm$n_dying)
@@ -92,4 +96,4 @@ nb_mess <- glm.nb(
   n_dying ~ n_immune + trt + fact_sc + offset(log(n_tumor)),
   data = df_merged_perm
 )
-
+summary(nb_mess)
