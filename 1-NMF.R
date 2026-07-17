@@ -92,11 +92,10 @@ print(pair_stab)
 # 3. re-aligning row and column names (lost before). 
 best <- nmf(merged_mat, k = k_opt, seed = 42,            # the answer to life, the universe, and everything
                  verbose = FALSE)
-rownames(best$w) <- rownames(merged_mat)
-colnames(best$h) <- colnames(merged_mat)
+rownames(best$w) <- rownames(merged_mat)      # gene names
+colnames(best$h) <- colnames(merged_mat)      # factor names
 
-# renaming for ease of reference, file creation for GSEA block 5
-# W: gene list for factors, H: weights of factors at bins
+# file creation for GSEA block 5, W: gene list for factors, H: weights of factors at bins
 # a. optimal rank minimizes MSE
 W <- best$w
 H <- best$h  
