@@ -107,7 +107,7 @@ draw <- function(df_IF, df_visium,
 }
 
 # now employing
-colors <- c("#9678B6")                            # purple mountain majesty, courtesy of DB
+colors <- c("#9678B6", "pink")                    # hex code for purple mountain majesty, courtesy of DB
 facts <- c("factor1", "factor2")                  # etc. sub in factors of interest
 
 # recall function takes size, transparency, and threshold percentile for expression as numbers
