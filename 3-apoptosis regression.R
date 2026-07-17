@@ -44,7 +44,7 @@ hist(df_merged$n_dying,
 
 # a. negative binomial family model, number dying was our response variable.
 nb <- glm.nb(
-  n_dying ~ n_immune + trt + fact_sc + offset(log(n_tumor)),
+  n_dying ~ n_immune + trt + fact_sc + offset(log(n_tumor)),        # offset accounting for density effects
   data = df_merged
 )
 summary(nb)
