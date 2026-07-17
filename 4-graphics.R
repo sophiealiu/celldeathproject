@@ -108,9 +108,10 @@ draw <- function(df_IF, df_visium,
 
 # now employing
 colors <- c("#9678B6")                            # purple mountain majesty, courtesy of DB
-factorcols <- c("factor1", "factor2")             # etc. sub in factors of interest
+facts <- c("factor1", "factor2")                  # etc. sub in factors of interest
 
-test <- draw(df_isoIF, df_iso_vis, factorcols, colors, 1, 1, 0.6)
+# recall df_IF, df_vis, factors, colors, size, transparency, and threshold percentile for expression
+test <- draw(df_isoIF, df_iso_vis, facts, colors, 1, 1, 0.6)
 test
 
 
