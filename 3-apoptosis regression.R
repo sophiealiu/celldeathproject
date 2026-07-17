@@ -83,9 +83,10 @@ testSpatialAutocorrelation(simulationOutput = sim_res,
 
 # -----------------------------------------------------------------------------
 # 4. permutation to test random noise effects
+# would like to see permutation model lose significance
 set.seed(42)
-df_merged_perm <- df_merged
-df_merged_perm$n_dying <- sample(df_merged_perm$n_dying)
+df_perm <- df_merged
+df_perm$n_dying <- sample(df_merged_perm$n_dying)
 
 nb_mess <- glm.nb(
   n_dying ~ n_immune + trt + fact_sc + offset(log(n_tumor)),
