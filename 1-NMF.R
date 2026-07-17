@@ -86,6 +86,7 @@ for (i in 1:(nruns_stab - 1)) {
     pair_stab <- c(pair_stab, mean(matched))
   }
 }
+print(pair_stab)
 
 
 # -----------------------------------------------------------------------------
