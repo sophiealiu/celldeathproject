@@ -99,7 +99,7 @@ colnames(best$h) <- colnames(merged_mat)          # factor names
 # a. optimal rank minimizes MSE
 W <- best$w
 H <- best$h  
-colnames(W) <- paste0("factor", seq_len(ncol(W)))
+colnames(W) <- paste0("factor", seq_len(ncol(W)))        # prefixing so downstream looks nice
 write.csv(W, "NMF_W.csv")
 
 
