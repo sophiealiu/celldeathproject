@@ -13,7 +13,7 @@ library(tidyr)
 datadir <- "path/to/your/working/directory"
 iso <- read.csv(file.path(datadir,"NMF_iso40.csv"))       # repeat with varying radii for sensitivity analysis,
 pd1 <- read.csv(file.path(datadir,"NMF_pd140.csv"))       # which involves regenerating from file 2
-df_merged_merged <- rbind(iso, pd1)
+df_merged <- rbind(iso, pd1)
 
 
 # -----------------------------------------------------------------------------
