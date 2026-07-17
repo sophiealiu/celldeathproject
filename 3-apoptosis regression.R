@@ -71,7 +71,7 @@ nb_int <- glm.nb(
 
 
 # -----------------------------------------------------------------------------
-# 3. diagnostic stats
+# 3. diagnostic stats to check model
 sim_res <- simulateResiduals(nb)
 plot(sim_res)
 
@@ -82,7 +82,7 @@ testSpatialAutocorrelation(simulationOutput = sim_res,
 
 
 # -----------------------------------------------------------------------------
-# 4. permutation test, random noise effects
+# 4. permutation to test random noise effects
 set.seed(42)
 df_merged_perm <- df_merged
 df_merged_perm$n_dying <- sample(df_merged_perm$n_dying)
