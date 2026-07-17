@@ -1,6 +1,7 @@
 # -----------------------------------------------------------------------------
 # Author: Sophie A. Liu
 # Purpose: Exploring individual genes then moving to differential expression
+#        - similar to existing Seurat vignettes
 # -----------------------------------------------------------------------------
 
 # necessary libraries & directories 
