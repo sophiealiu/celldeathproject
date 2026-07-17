@@ -66,7 +66,7 @@ mean_loss <- rowMeans(loss_matrix)
 k_opt <- uik(x = ks, y = mean_loss)                  
 print(k_opt)
 
-# visualizing optimal 
+# visualizing optimal rank
 plot_data <- data.frame(
   k = rep(ks, times = ncol(loss_matrix)),
   loss = as.vector(loss_matrix)
