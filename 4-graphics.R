@@ -31,7 +31,7 @@ draw <- function(df_IF, df_visium,
                  colors, size, trans,
                  threshold) { 
   
-  df_visium_long <- df_visium %>%            # flipping to orient factors and location
+  df_visium_long <- df_visium %>%            # flipping format for R to understand/process
     pivot_longer(
       cols = factorcols,
       names_to = "factor",
