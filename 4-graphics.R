@@ -31,12 +31,12 @@ draw <- function(df_IF, df_visium,
                  colors, size, trans,
                  threshold) { 
   
-  df_visium_long <- df_visium %>%                # flipping to orient
+  df_visium_long <- df_visium %>%            # flipping to orient factors and location
     pivot_longer(
       cols = factorcols,
       names_to = "factor",
       values_to = "value") %>%    
-      group_by(factor) %>%                       # isolate highest expressed areas
+      group_by(factor) %>%                   # isolate highest expressed areas
       filter(value > quantile(value, threshold, na.rm = TRUE)) %>%
       ungroup()
   
