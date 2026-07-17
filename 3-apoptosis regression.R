@@ -13,7 +13,7 @@ library(tidyr)
 datadir <- "path/to/your/working/directory"
 iso <- read.csv(file.path(datadir,"NMF_iso40.csv"))       # repeat with varying radii for sensitivity analysis,
 pd1 <- read.csv(file.path(datadir,"NMF_pd140.csv"))       # which involves regenerating from file 2
-df <- rbind(iso, pd1)
+df_merged_merged <- rbind(iso, pd1)
 
 
 # -----------------------------------------------------------------------------
@@ -27,17 +27,17 @@ df <- rbind(iso, pd1)
 
 # -----------------------------------------------------------------------------
 # 1. setting vars and family
-fact_cols <- grep("^factor", names(df), value = TRUE)   
-fact <- as.matrix(df[, fact_cols])         
+fact_cols <- grep("^factor", names(df_merged), value = TRUE)   
+fact <- as.matrix(df_merged[, fact_cols])         
 fact_sc <- scale(fact)                      # visible representation of RNA counts. z-scores
                 
-trt <- ifelse(df$sample == "apd1", 1, 0)
+trt <- ifelse(df_merged$sample == "apd1", 1, 0)
 
 
 # -----------------------------------------------------------------------------
 # 2. using counts considers sequencing depth. 
 # distribution explains family choice
-hist(df$n_dying, 
+hist(df_merged$n_dying, 
      breaks = 30,
      main = "Distribution of count dying",
      xlab = "number of dying cells in 40 micron vicinity")
@@ -45,7 +45,7 @@ hist(df$n_dying,
 # a. negative binomial family model, number dying was our response variable.
 nb <- glm.nb(
   n_dying ~ n_immune + trt + fact_sc + offset(log(n_tumor)),
-  data = df
+  data = df_merged
 )
 summary(nb)
 
@@ -55,7 +55,7 @@ spatial <- gam(
   n_dying ~ n_immune + trt + fact_sc +
     s(x, y, bs = "gp", k = 30) +            # depends on power of gaussian process smoothing
     offset(log(n_tumor)),
-  data = df,
+  data = df_merged,
   family = nb()
 )
 
@@ -66,7 +66,7 @@ p_adj <- p.adjust(p_para, method = "BH")
 # c. treatment interactions
 nb_int <- glm.nb(
   n_dying ~ n_immune + trt * fact_sc + offset(log(n_tumor)),
-  data = df
+  data = df_merged
 )
 
 
@@ -77,18 +77,18 @@ plot(sim_res)
 
 testZeroInflation(sim_res)
 testSpatialAutocorrelation(simulationOutput = sim_res, 
-                           x = df$x, 
-                           y = df$y)
+                           x = df_merged$x, 
+                           y = df_merged$y)
 
 
 # -----------------------------------------------------------------------------
 # 4. permutation test, random noise effects
 set.seed(42)
-df_perm <- df
-df_perm$n_dying <- sample(df_perm$n_dying)
+df_merged_perm <- df_merged
+df_merged_perm$n_dying <- sample(df_merged_perm$n_dying)
 
 nb_mess <- glm.nb(
   n_dying ~ n_immune + trt + fact_sc + offset(log(n_tumor)),
-  data = df_perm
+  data = df_merged_perm
 )
 
