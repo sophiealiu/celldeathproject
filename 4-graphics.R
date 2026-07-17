@@ -147,18 +147,19 @@ pheatmap(subset_mat,
 
 
 # -----------------------------------------------------------------------------
+# plotting location and intensity of factors, accounting for sequencing depth
 total_umis <- pd1_raw$nCount_Spatial.008um
 names(total_umis) <- paste0("pd1_", names(total_umis))
 df_pd1_vis$total_umis <- total_umis[df_pd1_vis$X]
 
 # cor(df_pd1_vis$X1, df_pd1_vis$total_umis)
 
-ggplot(df_pd1_vis, aes(x = x, y = y, z = X9/total_umis)) +
+ggplot(df_pd1_vis, aes(x = x, y = y, z = factor9/total_umis)) +
   stat_summary_2d(binwidth = c(48, 48),
                   alpha = 1) +      
   scale_fill_viridis_c(
     option = "magma",
-    limits = c(0, )           # alter upper limit for comparison btwn conditions but not along factors
+    limits = c(0, 1)           # alter upper limit for comparison btwn conditions but not along factors
   ) +
   
   geom_point(
