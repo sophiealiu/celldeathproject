@@ -63,7 +63,7 @@ spatial <- gam(
 p_para <- summary(spatial)$p.pv                   # extracts p-vals from spatial model
 p_adj <- p.adjust(p_para, method = "BH")          # benjamini-hochberg correction
 
-# c. treatment interactions
+# c. inspecting treatment interactions
 nb_int <- glm.nb(
   n_dying ~ n_immune + trt * fact_sc + offset(log(n_tumor)),
   data = df_merged
