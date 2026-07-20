@@ -158,7 +158,7 @@ df_merged <- as.data.frame(df_temp)
 colnames(df_merged) <- c("PD1", "ISO")
 
 df_long <- pivot_longer(
-  df,
+  df_merged,
   cols = everything(),
   names_to = "condition",
   values_to = "value"
