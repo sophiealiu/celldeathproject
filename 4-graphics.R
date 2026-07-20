@@ -26,6 +26,7 @@ df_iso_vis$y <- df_iso_vis$y / 1.5454
 
 # -----------------------------------------------------------------------------
 # 1. function for regular overlay factors on top of IF
+# Figure 5, panel 
 draw <- function(df_IF, df_visium,
                  factorcols,
                  colors, size, trans,
@@ -131,7 +132,7 @@ for (i in fact_cols) {
   list_weights <- c(list_weights, top10)
 }
 
-# accounting for overlap in genes across factors
+# accounting for overlap in genes across factors (Figure 5, panel D)
 clean_weights <- unique(list_weights)
 
 subset_mat <- df_weights[df_weights[,1] %in% clean_weights, -1]
@@ -147,7 +148,36 @@ pheatmap(subset_mat,
 
 
 # -----------------------------------------------------------------------------
+# summary graphs: Figure 5, panel G
+ ggplot(df_long, aes(x = "", y = value, fill = condition)) +
+    geom_half_violin(
+      data = subset(df_long, condition == "ISO"),
+      side = "l",
+      trim = FALSE
+    ) +
+    geom_half_violin(
+      data = subset(df_long, condition == "PD1"),
+      side = "r",
+      trim = FALSE
+    ) +
+    geom_boxplot(
+      data = subset(df_long, condition == "ISO"),
+      width = 0.05, color = "black", fill = NA, outlier.shape = NA,
+      position = position_nudge(x = -0.05) 
+    ) + 
+    geom_boxplot(
+      data = subset(df_long, condition == "PD1"),
+      width = 0.05, color = "black", fill = NA, outlier.shape = NA,
+      position = position_nudge(x = 0.05) 
+    ) + 
+    coord_cartesian(ylim = c(0, 3e-8)) + 
+    theme_classic()                    
+    labs(title = "factor 4 / umi", x = "", y = "expression")
+
+
+# -----------------------------------------------------------------------------
 # plotting location and intensity of factors, accounting for sequencing depth
+# Figure 5, panel H
 total_umis <- pd1_raw$nCount_Spatial.008um
 names(total_umis) <- paste0("pd1_", names(total_umis))
 df_pd1_vis$total_umis <- total_umis[df_pd1_vis$X]
