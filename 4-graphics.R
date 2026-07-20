@@ -148,7 +148,21 @@ pheatmap(subset_mat,
 
 
 # -----------------------------------------------------------------------------
-# summary graphs: Figure 5, panel G
+# 3. summary graphs: Figure 5, panel G
+pd1_exp <- df_pd1_vis$factor9/ df_pd1_vis$total_umis
+iso_exp <- df_iso_vis$factor9/ df_iso_vis$total_umis
+
+df_temp <- cbind(pd1_exp, iso_exp)   # for density
+df_merged <- as.data.frame(df_temp)
+
+colnames(df_merged) <- c("PD1", "ISO")
+
+df_long <- pivot_longer(
+  df,
+  cols = everything(),
+  names_to = "condition",
+  values_to = "value"
+)
  ggplot(df_long, aes(x = "", y = value, fill = condition)) +
     geom_half_violin(
       data = subset(df_long, condition == "ISO"),
@@ -176,7 +190,7 @@ pheatmap(subset_mat,
 
 
 # -----------------------------------------------------------------------------
-# plotting location and intensity of factors, accounting for sequencing depth
+# 4. plotting location and intensity of factors, accounting for sequencing depth
 # Figure 5, panel H
 total_umis <- pd1_raw$nCount_Spatial.008um
 names(total_umis) <- paste0("pd1_", names(total_umis))
@@ -224,7 +238,7 @@ ggplot(df_pd1_vis, aes(x = x, y = y, z = factor9/total_umis)) +
 
 
 # ------------------------------------------------------------------------------
-# 3. being *extra* and automating frame creation, joining to make movie in Adobe
+# 5. being *extra* and automating frame creation, joining to make movie in Adobe
 for (i in 0:30) { 
   alpha <- 0.005*i 
   p <- draw(df_pd1IF, df_pd1_vis, alpha)                      # by transparency intervals
