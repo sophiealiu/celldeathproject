@@ -12,7 +12,7 @@ library(viridis)
 
 # importing files
 # datadir <- "path/to/your/working/directory"
-datadir <- ""I:\Hu Lab\Sophie\1. Cell death\all final data"
+datadir <- "I:\Hu Lab\Sophie\1. Cell death\all final data"
 
 df_isoIF <- read_csv(file.path(datadir,"iso_coords.csv"))
 df_iso_vis <- read_csv(file.path(datadir,"NMF_isoC.csv"))
