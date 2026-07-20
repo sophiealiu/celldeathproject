@@ -4,6 +4,7 @@
 # -----------------------------------------------------------------------------
 
 library(DHARMa)       # some packages will have to be forced in using remotes::install_github
+library(EnhancedVolcano)
 library(dplyr)
 library(ggplot2)
 library(MASS)
@@ -83,6 +84,49 @@ testZeroInflation(sim_res)
 testSpatialAutocorrelation(simulationOutput = sim_res, 
                            x = df_merged$x, 
                            y = df_merged$y)
+
+nice_labels <- c(
+  "xscfactor1"    = "1",
+  "xscfactor2"    = "2",
+  "xscfactorX3"    = "3",
+  "xscfactor4"    = "4",
+  "xscfactor5"    = "5",
+  "xscfactor6"    = "6",
+  "xscfactor7"    = "7",
+  "xscfactor8"    = "8",
+  "xscfactor9"    = "9"
+)
+
+nb_nice <- as.data.frame(summary(nb_test)$coeff)
+nb_nice <- nb_nice %>%
+  rename(
+    `effect size` = "Estimate",
+    p_value = `Pr(>|z|)`
+  )
+
+nb_nice$"effect size" <- as.numeric(nb_nice$"effect size")
+nb_nice$BH <- p.adjust(nb_nice$p_value, method = "BH")
+
+nb_nice <- nb_nice[grepl("^xsc", rownames(nb_nice)), ]  
+rownames(nb_nice) <- nice_labels[rownames(nb_nice)]
+
+# Figure 5, panel E. visualization of BH
+EnhancedVolcano(nb_nice,
+                lab = rownames(nb_nice), 
+                selectLab = rownames(nb_nice),
+                x = 'effect size',
+                y = 'BH',  pCutoff = 0.05, FCcutoff = 0.5,
+                xlim = c(-0.6,0.6),
+                ylim = c(0,30),
+                xlab = "effect size (regression coefficient)",
+                title = "Benjamini-Hochberg adjusted p-value vs effect size",
+                
+                labSize = 7,
+                pointSize = 4,
+                
+                maxoverlapsConnectors = Inf, 
+                drawConnectors = TRUE
+)
 
 
 # -----------------------------------------------------------------------------
