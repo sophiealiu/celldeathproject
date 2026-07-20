@@ -10,7 +10,9 @@ library(ggplot2)
 library(Seurat)
 
 # recommended 8 micron bins
-datadir <- "path/to/your/working/directory"
+# datadir <- "path/to/your/working/directory"
+datadir <- "I:\Hu Lab\Sophie\1. Cell death\all final data"
+
 iso_raw <- readRDS(file.path(datadir,"iso_raw.rds"))
 pd1_raw <- readRDS(file.path(datadir,"pd1_raw.rds"))
 
