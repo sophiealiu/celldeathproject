@@ -12,7 +12,7 @@ library(mgcv)
 library(tidyr)
 
 # datadir <- "path/to/your/working/directory"
-datadir <- ""I:/Hu Lab/Sophie/1. Cell death/all final data"
+datadir <- "I:/Hu Lab/Sophie/1. Cell death/all final data"
 
 df_iso <- read.csv(file.path(datadir,"NMF_iso40.csv"))         # repeat with varying radii for sensitivity analysis,
 df_pd1 <- read.csv(file.path(datadir,"NMF_pd140.csv"))         # which involves regenerating from file 2
