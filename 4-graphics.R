@@ -20,10 +20,13 @@ df_iso_vis <- read.csv(file.path(datadir,"NMF_isoC.csv"))
 df_pd1IF <- read.csv(file.path(datadir,"apd1_coords.csv"))
 df_pd1_vis <- read.csv(file.path(datadir,"NMF_Apd1.csv"))
 
-df_pd1_vis$x <- df_pd1_vis$x / 1.5454            # scaling factor from Loupe browser 
-df_pd1_vis$y <- df_pd1_vis$y / 1.5454            # to align in the same µm coordinate space
-df_iso_vis$x <- df_iso_vis$x / 1.5454
-df_iso_vis$y <- df_iso_vis$y / 1.5454
+df_pd1_trans <- df_pd1_vis
+df_pd1_trans$x <- df_pd1_vis$x / 1.5454            # scaling factor from Loupe browser 
+df_pd1_trans$y <- df_pd1_vis$y / 1.5454            # to align in the same µm coordinate space
+
+df_iso_trans <- df_iso_vis                         # avoiding overwriting
+df_iso_trans$x <- df_iso_vis$x / 1.5454
+df_iso_trans$y <- df_iso_vis$y / 1.5454
 
 
 # -----------------------------------------------------------------------------
@@ -114,7 +117,7 @@ colors <- c("#9678B6", "pink")                    # hex code for purple mountain
 facts <- c("factor1", "factor2")                  # etc. sub in factors of interest
 
 # recall function takes size, transparency, and threshold percentile (1 is 100th) for top expression
-test <- draw(df_isoIF, df_iso_vis, facts, colors, 1, 1, 0.6)
+test <- draw(df_isoIF, df_iso_trans, facts, colors, 1, 1, 0.6)
 test
 
 
