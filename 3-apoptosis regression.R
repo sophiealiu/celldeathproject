@@ -39,7 +39,7 @@ trt <- ifelse(df_merged$sample == "apd1", 1, 0)
 
 # -----------------------------------------------------------------------------
 # 2. using counts considers sequencing depth. 
-# distribution explains family choice
+# distribution explains family choice. Supplemental figure
 hist(df_merged$n_dying, 
      breaks = 30,
      main = "Distribution of count dying",
@@ -80,7 +80,7 @@ summary(nb_int)
 # -----------------------------------------------------------------------------
 # 3. diagnostic stats to check model
 sim_res <- simulateResiduals(nb)
-plot(sim_res)
+plot(sim_res)              # Supplemental figure
 
 testZeroInflation(sim_res)
 testSpatialAutocorrelation(simulationOutput = sim_res, 
