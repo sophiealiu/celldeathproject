@@ -99,7 +99,7 @@ nice_labels <- c(
   "fact_scfactor9"    = "9"
 )
 
-nb_nice <- as.data.frame(summary(nb_test)$coeff)
+nb_nice <- as.data.frame(summary(nb)$coeff)
 nb_nice <- nb_nice %>%
   rename(
     `effect size` = "Estimate",
