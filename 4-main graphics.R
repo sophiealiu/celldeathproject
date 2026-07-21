@@ -171,13 +171,13 @@ df_temp <- cbind(pd1_exp9, iso_exp9)   # for density
 df_plot <- as.data.frame(df_temp)
 
 colnames(df_plot) <- c("PD1", "ISO")
-
 df_long <- pivot_longer(
   df_plot,
   cols = everything(),
   names_to = "condition",
   values_to = "value"
 )
+
  ggplot(df_long, aes(x = "", y = value, fill = condition)) +
     geom_half_violin(
       data = subset(df_long, condition == "ISO"),
