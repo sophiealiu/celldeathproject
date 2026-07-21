@@ -69,7 +69,7 @@ p_adj <- p.adjust(p_para, method = "BH")          # benjamini-hochberg correctio
 print(p_para)
 print(p_adj)
 
-# c. inspecting treatment interactions
+# c. incorporating treatment interactions into NB model
 nb_int <- glm.nb(
   n_dying ~ n_immune + trt * fact_sc + offset(log(n_tumor)),
   data = df_merged
