@@ -84,7 +84,7 @@ plot(sim_res)
 
 testZeroInflation(sim_res)
 testSpatialAutocorrelation(simulationOutput = sim_res,         # Moran's I
-                           x = df_merged$x,                    # spatial transcriptomics bound to have this
+                           x = df_merged$x,                    
                            y = df_merged$y)                    
 
 nice_labels <- c(
