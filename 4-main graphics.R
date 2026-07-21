@@ -163,10 +163,11 @@ names(total_umisP) <- paste0("pd1_", names(total_umisP))
 df_iso_vis$total_umis <- total_umisI[df_iso_vis$X]
 df_pd1_vis$total_umis <- total_umisP[df_pd1_vis$X]
 
-pd1_exp <- df_pd1_vis$factor9/ df_pd1_vis$total_umis
-iso_exp <- df_iso_vis$factor9/ df_iso_vis$total_umis
+# change for each factor
+pd1_exp9 <- df_pd1_vis$factor9/ df_pd1_vis$total_umis
+iso_exp9 <- df_iso_vis$factor9/ df_iso_vis$total_umis
 
-df_temp <- cbind(pd1_exp, iso_exp)   # for density
+df_temp <- cbind(pd1_exp9, iso_exp9)   # for density
 df_plot <- as.data.frame(df_temp)
 
 colnames(df_plot) <- c("PD1", "ISO")
