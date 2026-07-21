@@ -79,7 +79,7 @@ summary(nb_int)
 
 # -----------------------------------------------------------------------------
 # 3. diagnostic stats to check model. Supplemental figure
-sim_res <- simulateResiduals(nb)
+sim_res <- simulateResiduals(spatial)
 plot(sim_res)              
 
 testZeroInflation(sim_res)
