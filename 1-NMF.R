@@ -43,7 +43,7 @@ merged_mat <- cbind(mat_iso, mat_pd1)
 
 # -----------------------------------------------------------------------------
 # 2. testing k-ranks (goal number of NMFs), optimal minimizes MSE
-# able to skip for cell death project, found to be 9, hard code k_opt
+# able to skip for this particular project, found to be 9, hard code k_opt
 ks <- 2:20                                           # from our manual sweeping by 5s, k < 20
 nruns_opt <- 10
 loss_matrix <- matrix(nrow = length(ks), ncol = nruns_opt)
@@ -70,7 +70,7 @@ mean_loss <- rowMeans(loss_matrix)
 k_opt <- uik(x = ks, y = mean_loss)                  
 print(k_opt)
 
-# visualizing optimal rank
+# visualizing optimal rank. Supplemental figure
 plot(ks, mean_loss, type = "b", pch = 19, col = "blue", lwd = 2)
 abline(v = k_opt, col = "red", lty = 2, lwd = 2)
 
