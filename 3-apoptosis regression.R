@@ -79,7 +79,7 @@ summary(nb_int)
 
 # -----------------------------------------------------------------------------
 # 3. diagnostic stats to check model. Supplemental figure
-sim_res <- simulateResiduals(spatial)
+sim_res <- simulateResiduals(nb_int)
 plot(sim_res)              
 
 testZeroInflation(sim_res)
@@ -90,7 +90,7 @@ testSpatialAutocorrelation(simulationOutput = sim_res,         # Moran's I
 nice_labels <- c(
   "fact_scfactor1"    = "1",
   "fact_scfactor2"    = "2",
-  "fact_scfactorX3"    = "3",
+  "fact_scfactor3"    = "3",
   "fact_scfactor4"    = "4",
   "fact_scfactor5"    = "5",
   "fact_scfactor6"    = "6",
