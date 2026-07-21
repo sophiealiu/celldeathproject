@@ -102,8 +102,6 @@ draw <- function(df_IF, df_visium,
       axis.text.x  = element_text(color = "white", size = 12),
       axis.text.y  = element_text(color = "white", size = 12),
       axis.line = element_line(color = "white")
-      
-      plot.title = element_text(color = "white", size = 15, face = "bold"),
     )  +
     
     scale_color_manual(
