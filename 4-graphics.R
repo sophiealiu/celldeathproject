@@ -193,7 +193,9 @@ df_long <- pivot_longer(
 
 # -----------------------------------------------------------------------------
 # 4. plotting location and intensity of factors, accounting for sequencing depth
-# Figure 5, panel H
+# Figure 5, panel H. Panel C is from an older dataframe (block 1.1 giving cell type signatures)
+# to plot panel C, just replace z with the cell type and the dataframe in the function to df_sig
+df_sig <- 
 total_umis <- pd1_raw$nCount_Spatial.008um
 names(total_umis) <- paste0("pd1_", names(total_umis))
 df_pd1_vis$total_umis <- total_umis[df_pd1_vis$X]
