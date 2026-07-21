@@ -28,7 +28,7 @@ df_iso_vis$y <- df_iso_vis$y / 1.5454
 
 # -----------------------------------------------------------------------------
 # 1. function for regular overlay factors on top of IF
-# Figure 5, panel 
+# Figure 5, panel B
 draw <- function(df_IF, df_visium,
                  factorcols,
                  colors, size, trans,
