@@ -218,7 +218,7 @@ ggplot(df_pd1_trans, aes(x = x, y = y, z = factor9/total_umis)) +
   scale_fill_viridis_c(
     option = "magma",
     limits = c(0, 1e-7)           # alter upper limit for comparison btwn conditions but not along factors
-  ) +
+  ) +                             # cell signatures on order of 0.1-1, factors (because additive) ~1e-7-1e-6
   
   geom_point(
     data  = filter(df_pd1IF, cell_type == "gc3ai"),
