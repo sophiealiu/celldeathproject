@@ -17,7 +17,7 @@ datadir <- "I:/Hu Lab/Sophie/1. Cell death/all final data"
 df_isoIF <- read.csv(file.path(datadir,"iso_coords.csv"))
 df_iso_vis <- read.csv(file.path(datadir,"NMF_isoC.csv"))
 
-df_pd1IF <- read.csv(file.path(datadir,"pd1_coords.csv"))
+df_pd1IF <- read.csv(file.path(datadir,"apd1_coords.csv"))
 df_pd1_vis <- read.csv(file.path(datadir,"NMF_Apd1.csv"))
 
 df_pd1_vis$x <- df_pd1_vis$x / 1.5454            # scaling factor from Loupe browser 
