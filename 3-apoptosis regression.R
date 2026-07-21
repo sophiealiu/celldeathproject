@@ -109,7 +109,7 @@ nb_nice <- nb_nice %>%
 nb_nice$"effect size" <- as.numeric(nb_nice$"effect size")
 nb_nice$BH <- p.adjust(nb_nice$p_value, method = "BH")
 
-nb_nice <- nb_nice[grepl("^xsc", rownames(nb_nice)), ]  
+nb_nice <- nb_nice[grepl("^fact_sc", rownames(nb_nice)), ]  
 rownames(nb_nice) <- nice_labels[rownames(nb_nice)]
 
 # Figure 5, panel E. visualization of BH
