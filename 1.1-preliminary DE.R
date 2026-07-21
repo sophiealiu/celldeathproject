@@ -175,3 +175,92 @@ DimPlot(object = de.mark_known,
         group.by = "finercelltype", 
         label = TRUE, 
         pt.size = 0.5)
+
+
+# -----------------------------------------------------------------------------
+# 4. clustering
+Assays(pd1_raw)
+DefaultAssay(pd1_raw) <- "Spatial.008um" # do we want higher or lower resolution?
+pd1_norm <- NormalizeData(pd1_raw)
+
+# unsupervised: ML, finding similar gene expression profiles w/o knowing cell type
+DefaultAssay(pd1_norm) <- "Spatial.008um"
+pd1_norm <- FindVariableFeatures(pd1_norm)
+pd1_norm <- ScaleData(pd1_norm)
+
+pd1_norm <- SketchData(
+  object = pd1_norm,
+  ncells = 50000,
+  method = "LeverageScore",
+  sketched.assay = "sketch"
+)
+
+# beginning adding more metadata
+pd1_norm <- RunPCA(pd1_norm, assay = "sketch", reduction.name = "pca.sketch")
+pd1_norm <- FindNeighbors(pd1_norm, assay = "sketch", reduction = "pca.sketch", dims = 1:10)
+pd1_norm <- FindClusters(pd1_norm, cluster.name = "seurat_cluster.sketched", resolution = 1) 
+        #Shared Nearest Neighbor (SNN) graph, cells are nodes and edges weighted 
+        #based on shared local neighborhoods.
+pd1_norm <- RunUMAP(pd1_norm, reduction = "pca.sketch", reduction.name = "umap.sketch", return.model = T, dims = 1:50)
+
+# ProjectData maps results from the sketch subset to the entire dataset
+options(future.globals.maxSize = 2000 * 1024^2)  # 2 GB Because otherwise too big, whoopsie!
+pd1_norm <- ProjectData(
+  object = pd1_norm, # FUNCTION DEFINITION
+  assay = "Spatial.008um",
+  full.reduction = "full.pca.sketch",
+  sketched.assay = "sketch",
+  sketched.reduction = "pca.sketch",
+  umap.model = "umap.sketch", # WHAT IS THIS
+  dims = 1:50,
+  refdata = list(seurat_cluster.projected = "seurat_cluster.sketched")
+)
+
+# clusters by similarity & density. Figure 5, panel B
+Idents(pd1_norm) <- "seurat_cluster.sketched"
+p008 <- DimPlot(pd1_norm, reduction = "umap.sketch", label = F) 
+ggtitle("Sketched clustering (50000 cells)") 
+theme(legend.position = "bottom") 
+coord_fixed()
+p008
+
+Idents(pd1_norm) <- "seurat_cluster.projected"
+cells <- CellsByIdentities(pd1_norm, idents = c(0:15))
+      # it appears that only clusters 2&13 have much that's interesting tbh
+pCluster <- SpatialDimPlot(
+  pd1_norm,
+  cells.highlight = cells[setdiff(names(cells), "NA")],
+  cols.highlight = c("#FF0000", "transparent"), 
+  image.alpha = 0,
+  facet.highlight = TRUE, 
+  combine = TRUE # get them in the same panel for easier visualization...
+)
+pCluster
+
+
+# appending coordinates
+coords2 <- GetTissueCoordinates(pd1_norm)
+coords2$cluster <- Idents(pd1_norm)[rownames(coords2)]
+head(coords2)
+
+write.csv(coords2, file.path(datadir,"apd1_clusters.csv"), row.names = FALSE)
+
+# supplemental figure
+unique <- unique(top7$gene)
+DotPlot(
+  pd1_norm,
+  features = unique,
+  cols = c("lightgrey", "blue"),
+  col.min = -2.5,
+  col.max = 2.5,
+  dot.min = 0,
+  dot.scale = 6,
+  idents = NULL,
+  group.by = NULL,
+  split.by = NULL,
+  cluster.idents = FALSE,
+  scale = TRUE,
+  scale.by = "radius",
+  scale.min = NA,
+  scale.max = NA
+)
