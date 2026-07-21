@@ -142,7 +142,7 @@ iso_joined2 <- cbind(
 
 # exporting for jupyter block 2
 write.csv(iso_joined2, "iso_sig.csv")
-write.csv(pd1_joined2, "pd1_sig.csv")
+write.csv(pd1_joined2, "apd1_sig.csv")
 
 
 # -----------------------------------------------------------------------------
