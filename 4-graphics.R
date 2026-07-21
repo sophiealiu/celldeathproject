@@ -200,7 +200,7 @@ df_long <- pivot_longer(
 # Panel C is from an older dataframe (block 1.1 giving cell type signatures)
 # to plot panel C, just replace z with the cell type and the dataframe in the function to df_sig.
 
-df_sig <- read.csv(file.path(datadir, "pd1_sig.csv"))
+df_sig <- read.csv(file.path(datadir, "apd1_sig.csv"))
 total_umis <- pd1_raw$nCount_Spatial.008um
 names(total_umis) <- paste0("pd1_", names(total_umis))
 df_pd1_vis$total_umis <- total_umis[df_pd1_vis$X]
