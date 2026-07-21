@@ -7,6 +7,7 @@ library(dplyr)
 library(gghalves)
 library(ggplot2)
 library(pheatmap)
+library(scales)
 library(tidyr)
 library(viridis)
 
