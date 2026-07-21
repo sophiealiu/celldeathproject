@@ -88,15 +88,15 @@ testSpatialAutocorrelation(simulationOutput = sim_res,
                            y = df_merged$y)
 
 nice_labels <- c(
-  "xscfactor1"    = "1",
-  "xscfactor2"    = "2",
-  "xscfactorX3"    = "3",
-  "xscfactor4"    = "4",
-  "xscfactor5"    = "5",
-  "xscfactor6"    = "6",
-  "xscfactor7"    = "7",
-  "xscfactor8"    = "8",
-  "xscfactor9"    = "9"
+  "fact_scfactor1"    = "1",
+  "fact_scfactor2"    = "2",
+  "fact_scfactorX3"    = "3",
+  "fact_scfactor4"    = "4",
+  "fact_scfactor5"    = "5",
+  "fact_scfactor6"    = "6",
+  "fact_scfactor7"    = "7",
+  "fact_scfactor8"    = "8",
+  "fact_scfactor9"    = "9"
 )
 
 nb_nice <- as.data.frame(summary(nb_test)$coeff)
