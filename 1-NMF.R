@@ -4,6 +4,7 @@
 # -----------------------------------------------------------------------------
 
 library(clue)           # some packages will have to be forced in using remotes::install_github
+library(dplyr)
 library(ggplot2)
 library(inflection)
 library(progress)
