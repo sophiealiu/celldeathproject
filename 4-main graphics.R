@@ -211,8 +211,6 @@ df_long <- pivot_longer(
 # to plot panel C, just replace z with the cell type and the dataframe to be cell-type signatures
 df_sig <- read.csv(file.path(datadir, "apd1_sig.csv"))
 df_sig_trans <- df_sig
-df_sig_trans$x <- df_sig$x / 1.5454            # scaling factor from Loupe browser again
-df_sig_trans$y <- df_sig$y / 1.5454            
 
 ggplot(df_pd1_trans, aes(x = x, y = y, z = factor9/total_umis)) +
   stat_summary_2d(binwidth = c(48, 48),
