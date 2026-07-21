@@ -154,13 +154,14 @@ pheatmap(subset_mat,
 
 # -----------------------------------------------------------------------------
 # 3. summary graphs: Figure 5, panel G
-total_umisP <- pd1_raw$nCount_Spatial.008um
-names(total_umisP) <- paste0("pd1_", names(total_umisP))
-df_pd1_vis$total_umis <- total_umisP[df_pd1_vis$X]
-
 total_umisI <- iso_raw$nCount_Spatial.008um
+total_umisP <- pd1_raw$nCount_Spatial.008um
+
 names(total_umisI) <- paste0("iso_", names(total_umisI))
+names(total_umisP) <- paste0("pd1_", names(total_umisP))
+
 df_iso_vis$total_umis <- total_umisI[df_iso_vis$X]
+df_pd1_vis$total_umis <- total_umisP[df_pd1_vis$X]
 
 pd1_exp <- df_pd1_vis$factor9/ df_pd1_vis$total_umis
 iso_exp <- df_iso_vis$factor9/ df_iso_vis$total_umis
