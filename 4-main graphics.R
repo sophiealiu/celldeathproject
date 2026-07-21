@@ -31,7 +31,7 @@ df_iso_trans$y <- df_iso_vis$y / 1.5454
 
 # -----------------------------------------------------------------------------
 # 1. function for regular overlay factors on top of IF
-# Figure 5, panel B
+# Figure 5, panel B. replace with clusters when calling the function
 draw <- function(df_IF, df_visium,
                  factorcols,
                  colors, size, trans,
@@ -112,11 +112,12 @@ draw <- function(df_IF, df_visium,
         override.aes = list(shape = 15, size = 5, alpha = 1))) 
 }
 
-# now employing
+# now employing. remove factors to "" to get panel with no overlay or comment out from above function
 colors <- c("#9678B6", "pink")                    # hex code for purple mountain majesty, courtesy of DB
 facts <- c("factor1", "factor2")                  # etc. sub in factors of interest
 
 # recall function takes size, transparency, and threshold percentile (1 is 100th) for top expression
+# df_clus <- read.csv(file.path(datadir,"apd1_clusters.csv"))
 test <- draw(df_isoIF, df_iso_trans, facts, colors, 1, 1, 0.6)
 test
 
