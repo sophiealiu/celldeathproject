@@ -17,7 +17,7 @@ library(Seurat)
 datadir <- "I:/Hu Lab/Sophie/1. Cell death/all final data"
 
 iso_raw <- readRDS(file.path(datadir,"iso_raw.rds"))
-pd1_raw <- readRDS(file.path(datadir,"pd1_raw.rds"))
+pd1_raw <- readRDS(file.path(datadir,"apd1_raw.rds"))
 
 
 # -----------------------------------------------------------------------------
