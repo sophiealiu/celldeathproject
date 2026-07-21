@@ -84,8 +84,8 @@ plot(sim_res)
 
 testZeroInflation(sim_res)
 testSpatialAutocorrelation(simulationOutput = sim_res,         # Moran's I
-                           x = df_merged$x,                    # naturally our data will be affected
-                           y = df_merged$y)                    # spatial transcriptomics
+                           x = df_merged$x,                    # spatial transcriptomics bound to have this
+                           y = df_merged$y)                    
 
 nice_labels <- c(
   "fact_scfactor1"    = "1",
