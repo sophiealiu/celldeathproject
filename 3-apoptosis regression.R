@@ -140,6 +140,6 @@ df_perm$n_dying <- sample(df_perm$n_dying)
 
 nb_mess <- glm.nb(
   n_dying ~ n_immune + trt + fact_sc + offset(log(n_tumor)),
-  data = df_merged_perm
+  data = df_perm
 )
 summary(nb_mess)
