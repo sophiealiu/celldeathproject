@@ -256,7 +256,6 @@ ggplot(df_pd1_trans, aes(x = x, y = y, z = factor9/total_umis)) +
 for (i in 0:30) { 
   alpha <- 0.005*i 
   p <- draw(df_pd1IF, df_pd1_trans, alpha)                      # by transparency intervals
-    
   ggsave(
     filename <- sprintf("frames/frame_%02d_alpha_%0.1f.png", i, alpha),
     plot = p,
