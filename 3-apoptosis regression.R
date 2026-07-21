@@ -130,16 +130,3 @@ EnhancedVolcano(nb_nice,
                 drawConnectors = TRUE
 )
 
-
-# -----------------------------------------------------------------------------
-# 4. permutation to test random noise effects
-# would like to see permutation model lose significance. checking diagnostics as well
-set.seed(7)
-df_perm <- df_merged
-df_perm$n_dying <- sample(df_perm$n_dying)
-
-nb_mess <- glm.nb(
-  n_dying ~ n_immune + trt + fact_sc + offset(log(n_tumor)),
-  data = df_perm
-)
-summary(nb_mess)
