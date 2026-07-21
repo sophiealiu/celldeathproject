@@ -56,8 +56,8 @@ summary(nb)
 # excess overfit possible with smoothing taking credit.
 spatial <- gam(
   n_dying ~ n_immune + trt + fact_sc +
-    s(x, y, bs = "gp", k = 30) +            # smoothing using coordinates depends on power of gaussian process
-    offset(log(n_tumor)),
+    s(x, y, bs = "gp", k = 20) +            # smoothing using coordinates depends on power of gaussian process
+    offset(log(n_tumor)),                   # underdispersion when smoothing. potentially too aggressive
   data = df_merged,
   family = nb()
 )
