@@ -120,6 +120,8 @@ rownames(pd1_vis_coords)  <- paste0("pd1_", rownames(pd1_vis_coords))
 rownames(iso_vis_coords) <- paste0("iso_", rownames(iso_vis_coords))
 
 tH <- t(H)                                        # transpose/convert to line up weights
+tH <- tH %>% 
+  rename_with(~ paste0("factor", .), all_of(as.character(1:k_opt)))
 
 common_pd1 <- rownames(pd1_vis_coords)[
   rownames(pd1_vis_coords) %in% colnames(H)
