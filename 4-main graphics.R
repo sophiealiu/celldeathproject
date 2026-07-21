@@ -158,12 +158,12 @@ pd1_exp <- df_pd1_vis$factor9/ df_pd1_vis$total_umis
 iso_exp <- df_iso_vis$factor9/ df_iso_vis$total_umis
 
 df_temp <- cbind(pd1_exp, iso_exp)   # for density
-df_merged <- as.data.frame(df_temp)
+df_plot <- as.data.frame(df_temp)
 
-colnames(df_merged) <- c("PD1", "ISO")
+colnames(df_plot) <- c("PD1", "ISO")
 
 df_long <- pivot_longer(
-  df_merged,
+  df_plot,
   cols = everything(),
   names_to = "condition",
   values_to = "value"
