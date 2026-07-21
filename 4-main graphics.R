@@ -38,7 +38,7 @@ draw <- function(df_IF, df_visium,
                  threshold) { 
   
   df_visium_long <- df_visium %>%            # flipping format for R to understand/process
-    pivot_longer(
+    pivot_longer(                            # not necessary for clusters
       cols = factorcols,
       names_to = "factor",
       values_to = "value") %>%    
