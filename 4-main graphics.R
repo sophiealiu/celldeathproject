@@ -210,6 +210,7 @@ df_long <- pivot_longer(
 # Panel C is from an older dataframe (block 1.1 giving cell type signatures)
 # to plot panel C, just replace z with the cell type and the dataframe in the function to df_sig.
 df_sig <- read.csv(file.path(datadir, "apd1_sig.csv"))
+df_sig_trans <- df_sig
 df_sig_trans$x <- df_sig$x / 1.5454            # scaling factor from Loupe browser again
 df_sig_trans$y <- df_sig$y / 1.5454            
 
