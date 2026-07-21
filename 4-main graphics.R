@@ -158,7 +158,7 @@ total_umisP <- pd1_raw$nCount_Spatial.008um
 names(total_umisP) <- paste0("pd1_", names(total_umisP))
 df_pd1_vis$total_umis <- total_umisP[df_pd1_vis$X]
 
-total_umisI <- pd1_raw$nCount_Spatial.008um
+total_umisI <- iso_raw$nCount_Spatial.008um
 names(total_umisI) <- paste0("iso_", names(total_umisI))
 df_pd1_vis$total_umis <- total_umisI[df_iso_vis$X]
 
