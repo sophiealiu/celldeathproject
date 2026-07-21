@@ -136,7 +136,7 @@ EnhancedVolcano(nb_nice,
 # would like to see permutation model lose significance. checking diagnostics as well
 set.seed(42)
 df_perm <- df_merged
-df_perm$n_dying <- sample(df_merged_perm$n_dying)
+df_perm$n_dying <- sample(df_perm$n_dying)
 
 nb_mess <- glm.nb(
   n_dying ~ n_immune + trt + fact_sc + offset(log(n_tumor)),
