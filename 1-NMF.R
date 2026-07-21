@@ -70,7 +70,7 @@ mean_loss <- rowMeans(loss_matrix)
 k_opt <- uik(x = ks, y = mean_loss)                  
 print(k_opt)
 
-# visualizing optimal rank. Supplemental figure
+# visualizing optimal rank. Grayscale version of supplemental figure
 plot(ks, mean_loss, type = "b", pch = 19, col = "blue", lwd = 2)
 abline(v = k_opt, col = "red", lty = 2, lwd = 2)
 
