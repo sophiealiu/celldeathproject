@@ -154,6 +154,14 @@ pheatmap(subset_mat,
 
 # -----------------------------------------------------------------------------
 # 3. summary graphs: Figure 5, panel G
+total_umisP <- pd1_raw$nCount_Spatial.008um
+names(total_umisP) <- paste0("pd1_", names(total_umisP))
+df_pd1_vis$total_umis <- total_umisP[df_pd1_vis$X]
+
+total_umisI <- pd1_raw$nCount_Spatial.008um
+names(total_umisI) <- paste0("iso_", names(total_umisI))
+df_pd1_vis$total_umis <- total_umisI[df_iso_vis$X]
+
 pd1_exp <- df_pd1_vis$factor9/ df_pd1_vis$total_umis
 iso_exp <- df_iso_vis$factor9/ df_iso_vis$total_umis
 
@@ -200,15 +208,6 @@ df_long <- pivot_longer(
 # Panel C is from an older dataframe (block 1.1 giving cell type signatures)
 # to plot panel C, just replace z with the cell type and the dataframe in the function to df_sig.
 df_sig <- read.csv(file.path(datadir, "apd1_sig.csv"))
-
-total_umisP <- pd1_raw$nCount_Spatial.008um
-names(total_umisP) <- paste0("pd1_", names(total_umisP))
-df_pd1_vis$total_umis <- total_umisP[df_pd1_vis$X]
-
-total_umisI <- pd1_raw$nCount_Spatial.008um
-names(total_umisI) <- paste0("iso_", names(total_umisI))
-df_pd1_vis$total_umis <- total_umisI[df_iso_vis$X]
-
 # cor(df_pd1_vis$X1, df_pd1_vis$total_umis)
 
 ggplot(df_pd1_vis, aes(x = x, y = y, z = factor9/total_umis)) +
