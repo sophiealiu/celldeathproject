@@ -52,7 +52,7 @@ nb <- glm.nb(
 )
 summary(nb)
 
-# b. geographical trends, Moran's I to address spatial autocorrelation, cautious overfitting. 
+# b. geographical trends, Moran's I to address spatial autocorrelation, cautious of overfitting. 
 # excess overfit possible with smoothing taking credit.
 spatial <- gam(
   n_dying ~ n_immune + trt + fact_sc +
@@ -79,7 +79,7 @@ summary(nb_int)
 
 # -----------------------------------------------------------------------------
 # 3. diagnostic stats to check model. Supplemental figure
-sim_res <- simulateResiduals(nb)
+sim_res <- simulateResiduals(spatial)
 plot(sim_res)              
 
 testZeroInflation(sim_res)
