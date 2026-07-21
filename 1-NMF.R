@@ -120,7 +120,7 @@ iso_vis_coords <- GetTissueCoordinates(iso_raw, image = NULL)
 rownames(pd1_vis_coords)  <- paste0("pd1_", rownames(pd1_vis_coords))
 rownames(iso_vis_coords) <- paste0("iso_", rownames(iso_vis_coords))
 
-tH <- t(H)                                        # transpose/convert to line up weights
+tH <- t(H)                                        # transpose factors by bins to bins by factors to add x &y
 # prefixing again for better downstream
 tH <- as.data.frame(tH) %>%
   rename_with(~ paste0("factor", seq_along(.x)))
